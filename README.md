@@ -2,6 +2,10 @@
 
 > Delete Your Data
 
+## Prerequisites
+
+Install [Yarn](https://yarnpkg.com/lang/en/docs/install/)
+
 ## Build Setup
 
 ``` bash
