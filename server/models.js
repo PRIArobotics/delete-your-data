@@ -1,4 +1,9 @@
-const Model = Sequelize.Model;
+import { Sequelize, Model }  from 'sequelize';
+
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: 'database.sqlite',
+});
 
 class Plugins extends Model {}
 Plugins.init({
@@ -36,10 +41,10 @@ Users.init({
       references: {
         // This is a reference to another model
         model: Plugins,
-   
+
         // This is the column name of the referenced model
         key: 'plugin_uuid',
-   
+
         // This declares when to check the foreign key constraint. PostgreSQL only.
         deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
       }
@@ -64,10 +69,10 @@ Index.init({
       references: {
         // This is a reference to another model
         model: Users,
-   
+
         // This is the column name of the referenced model
         key: 'user_uuid',
-   
+
         // This declares when to check the foreign key constraint. PostgreSQL only.
         deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
       }
