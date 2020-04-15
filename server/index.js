@@ -24,12 +24,13 @@ async function start() {
   app.use(nuxt.render);
 
   // Listen the server
-  db.authenticate().then(() => {
-    app.listen(port, host),
-    consola.ready({
-      message: `Server listening on http://${host}:${port}`,
-      badge: true,
-    });
+  (async () => {
+    await db.authenticate();
+    await app.listen(port,host);
+  });
+  consola.ready({
+    message: `Server listening on http://${host}:${port}`,
+    badge: true,
   });
 }
 start();
