@@ -1,7 +1,7 @@
 const express = require('express');
 const consola = require('consola');
 const { Nuxt, Builder } = require('nuxt');
-const db = require('./models.js');
+const {sequelize} = require('../models');
 const app = express();
 
 // Import and Set Nuxt.js options
@@ -14,6 +14,7 @@ async function start() {
   const { host, port } = nuxt.options.server;
 
   await nuxt.ready();
+
   // Build only in dev mode
   if (config.dev) {
     const builder = new Builder(nuxt);
@@ -24,11 +25,14 @@ async function start() {
   app.use(nuxt.render);
 
   // Listen the server
-  await db.authenticate();
+  await sequelize.authenticate();
+  //await sequelize.sync(); // TypeError: Dependency name must be given as a not empty string
+
   app.listen(port, host);
   consola.ready({
     message: `Server listening on http://${host}:${port}`,
     badge: true,
   });
 }
+
 start();
