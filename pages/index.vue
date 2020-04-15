@@ -11,9 +11,8 @@
         </v-card-title>
         <v-card-text>
           <p>
-            Vuetify is a progressive Material Design component framework for
-            Vue.js. It was designed to empower developers to create amazing
-            applications.
+            Vuetify is a progressive Material Design component framework for Vue.js. It was designed
+            to empower developers to create amazing applications.
           </p>
           <p>
             For more information on Vuetify, check out the
@@ -36,8 +35,8 @@
             </a>.
           </p>
           <p>
-            Thank you for developing with Vuetify and I look forward to bringing
-            more exciting features in the future.
+            Thank you for developing with Vuetify and I look forward to bringing more exciting
+            features in the future.
           </p>
           <div class="text-xs-right">
             <em><small>&mdash; John Leider</small></em>

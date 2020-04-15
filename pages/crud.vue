@@ -2,9 +2,7 @@
   <v-app id="keep">
     <v-app-bar app clipped-left color="grey darken-3">
       <v-app-bar-nav-icon @click="drawer = !drawer" />
-      <span class="title ml-3 mr-5">
-        <span class="font-weight-light">Delete Your</span> Data
-      </span>
+      <span class="title ml-3 mr-5"> <span class="font-weight-light">Delete Your</span> Data </span>
       <v-text-field
         solo-inverted
         flat
@@ -36,10 +34,7 @@
               <v-icon class="black--text">{{ item.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title
-                @click="openCRUD(item.info)"
-                class="black--text"
-              >
+              <v-list-item-title @click="openCRUD(item.info)" class="black--text">
                 {{ item.text }}
               </v-list-item-title>
             </v-list-item-content>
