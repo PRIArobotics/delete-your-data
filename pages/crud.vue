@@ -102,7 +102,7 @@ export default {
       alert(openWhat);
     },
     searchPlugin: function() {
-      alert(this.app);
+      alert(this.searchTerm);
     },
   },
 };
