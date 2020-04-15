@@ -10,7 +10,7 @@
         label="Search"
         prepend-inner-icon="mdi-magnify"
         v-model="searchTerm"
-        @keydown="searchPlugin"
+        @keyup="searchPlugin"
       />
       <v-spacer />
     </v-app-bar>
