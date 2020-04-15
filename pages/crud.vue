@@ -1,7 +1,7 @@
 <template>
   <v-app id="keep">
     <v-app-bar app clipped-left color="grey darken-3">
-      <v-app-bar-nav-icon @keydown="drawer = !drawer" />
+      <v-app-bar-nav-icon @click="drawer = !drawer" />
       <span class="title ml-3 mr-5"> <span class="font-weight-light">Delete Your</span> Data </span>
       <v-text-field
         solo-inverted
@@ -10,7 +10,7 @@
         label="Search"
         prepend-inner-icon="mdi-magnify"
         v-model="searchTerm"
-        @change="searchPlugin"
+        @keydown="searchPlugin"
       />
       <v-spacer />
     </v-app-bar>
@@ -71,7 +71,7 @@
 </template>
 
 <script>
-//import Models from '~/server/models.js' // missing dependencies?
+//import sequalize from '~/server/models.js' // missing dependencies?
 /*These dependencies were not found:
  * aws-sdk
  * child_process
@@ -102,7 +102,7 @@ export default {
       alert(openWhat);
     },
     searchPlugin: function() {
-      alert(this.searchTerm);
+      alert(this.app);
     },
   },
 };
