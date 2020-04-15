@@ -1,8 +1,8 @@
-import { Sequelize, Model } from 'sequelize';
+const { Sequelize, Model } = require('sequelize');
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: 'database.sqlite',
+  storage: './database.sqlite'
 });
 
 class Plugins extends Model {}
@@ -88,3 +88,5 @@ Index.init(
   },
   { sequelize, modelName: 'index' },
 );
+
+module.exports = sequelize
