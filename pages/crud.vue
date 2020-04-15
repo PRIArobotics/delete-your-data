@@ -1,7 +1,7 @@
 <template>
   <v-app id="keep">
     <v-app-bar app clipped-left color="grey darken-3">
-      <v-app-bar-nav-icon @click="drawer = !drawer" />
+      <v-app-bar-nav-icon @keydown="drawer = !drawer" />
       <span class="title ml-3 mr-5"> <span class="font-weight-light">Delete Your</span> Data </span>
       <v-text-field
         solo-inverted
@@ -102,7 +102,7 @@ export default {
       alert(openWhat);
     },
     searchPlugin: function() {
-      alert(searchTerm);
+      alert(this.searchTerm);
     },
   },
 };
