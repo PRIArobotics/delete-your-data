@@ -9,6 +9,7 @@ const config = require('../nuxt.config.js');
 config.dev = process.env.NODE_ENV !== 'production';
 
 async function start() {
+
   // Init Nuxt.js
   const nuxt = new Nuxt(config);
   const { host, port } = nuxt.options.server;
@@ -24,12 +25,35 @@ async function start() {
   // Give nuxt middleware to express
   app.use(nuxt.render);
 
+consola.log("-----------------------------------");
   // Listen the server
-  await sequelize.authenticate();
-  //await sequelize.sync(); // TypeError: Dependency name must be given as a not empty string
+  try {
+    await sequelize.authenticate();
+    consola.success({
+      message: 'sequelize.authenticate working'
+    });
+  } catch (err) {
+    consola.error({
+      message: "sequelize.authenticate: " + err,
+      badge: true
+    });
+  }
 
+  try {
+    await sequelize.sync();
+    consola.success({
+      message: 'sequelize.sync working'
+    });
+  } catch (err) {
+    consola.error({
+      message: "sequelize.sync: " + err,
+      badge: false
+    });
+  }
+
+  require("./routes")(app);
   app.listen(port, host);
-  consola.ready({
+  consola.success({
     message: `Server listening on http://${host}:${port}`,
     badge: true,
   });

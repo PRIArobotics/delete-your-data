@@ -1,3 +1,4 @@
+const consola = require('consola');
 const fs = require('fs')
 const path = require('path')
 const Sequelize = require('sequelize')
@@ -8,14 +9,25 @@ const sequelize = new Sequelize({
   storage: './database.sqlite',
 });
 
+consola.log("--------- models/index.js ---------");
+consola.info({
+  message: "Finding all Models:",
+  badge: true
+});
 fs.readdirSync(__dirname).filter((file) => file !== 'index.js')
   .forEach((file) => {
     const model = sequelize.import(path.join(__dirname, file));
-    //console.log("Log: " + model.name);
+    consola.info("Model loaded: " + model.name);
     db[model.name] = model
   })
 
 db.sequelize = sequelize
 db.Sequelize = Sequelize
 
+consola.debug("sequelize: " + db.sequelize);
+consola.debug("db: " + db);
+
+consola.log("- - - - - - - - -");
+consola.success("models/index.js");
+consola.log("-----------------------------------");
 module.exports = db

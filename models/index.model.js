@@ -12,14 +12,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
 
       references: {
-        // This is a reference to another model
         model: User,
-
-        // This is the column name of the referenced model
         key: 'user_uuid',
 
         // This declares when to check the foreign key constraint. PostgreSQL only.
-        deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
+        //deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
       },
     },
     savelocation: {

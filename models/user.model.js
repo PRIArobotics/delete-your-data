@@ -18,9 +18,9 @@ module.exports = (sequelize, DataTypes) => {
       references: {
         model: Plugin,
         key: 'plugin_uuid',
-
+        
         // This declares when to check the foreign key constraint. PostgreSQL only.
-        deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
+        //deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
       },
     },
     native_id: {
