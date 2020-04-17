@@ -1,7 +1,8 @@
-const { User } = require('./user.model.js');
 const { Sequelize } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
+  const User = sequelize.import('./user.model.js');
+
   const Index = sequelize.define('Index', {
     index_id: {
       type: DataTypes.INTEGER,
