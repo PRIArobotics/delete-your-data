@@ -10,7 +10,7 @@ module.exports = app => {
   });
   fs.readdirSync(__dirname).filter((file) => file !== 'index.js')
     .forEach((file) => {
-      const route = require(__dirname + "\\" + file + "\\");
+      const route = require(path.join(__dirname, file));
       route.doRouting(app);
       consola.info("Routes found: " + route.name);
       routes[route.name] = route;
