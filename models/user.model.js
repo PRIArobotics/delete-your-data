@@ -1,20 +1,18 @@
-const { Sequelize } = require('sequelize');
-
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize, Sequelize) => {
   const Plugin = sequelize.import('./plugin.model.js');
 
   const User = sequelize.define('User', {
     user_id: {
-      type: DataTypes.INTEGER,
+      type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
     user_uuid: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: Sequelize.UUID,
+      defaultValue: Sequelize.UUIDV4,
     },
     plugin_uuid: {
-      type: DataTypes.UUID,
+      type: Sequelize.UUID,
 
       references: {
         model: Plugin,
@@ -25,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     native_id: {
-      type: DataTypes.STRING(256),
+      type: Sequelize.STRING(256),
     },
   });
 

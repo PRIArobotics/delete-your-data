@@ -1,16 +1,14 @@
-const { Sequelize } = require('sequelize');
-
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize, Sequelize) => {
   const User = sequelize.import('./user.model.js');
 
   const Index = sequelize.define('Index', {
     index_id: {
-      type: DataTypes.INTEGER,
+      type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
     user_uuid: {
-      type: DataTypes.UUID,
+      type: Sequelize.UUID,
 
       references: {
         model: User,
@@ -21,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     savelocation: {
-      type: DataTypes.STRING(256),
+      type: Sequelize.STRING(256),
     },
   });
 
