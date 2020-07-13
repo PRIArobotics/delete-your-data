@@ -1,7 +1,7 @@
 const express = require('express');
 const consola = require('consola');
 const { Nuxt, Builder } = require('nuxt');
-const {sequelize} = require('../models');
+const { sequelize } = require('../models');
 const app = express();
 
 // Import and Set Nuxt.js options
@@ -9,7 +9,6 @@ const config = require('../nuxt.config.js');
 config.dev = process.env.NODE_ENV !== 'production';
 
 async function start() {
-
   // Init Nuxt.js
   const nuxt = new Nuxt(config);
   const { host, port } = nuxt.options.server;
@@ -25,33 +24,29 @@ async function start() {
   // Give nuxt middleware to express
   app.use(nuxt.render);
 
-consola.log("-----------------------------------");
+  consola.log('-----------------------------------');
   // Listen the server
   try {
     await sequelize.authenticate();
-    consola.success({
-      message: 'sequelize.authenticate working'
-    });
+    consola.success('sequelize.authenticate working');
   } catch (err) {
     consola.error({
-      message: "sequelize.authenticate: " + err,
-      badge: true
+      message: 'sequelize.authenticate: ' + err,
+      badge: true,
     });
   }
 
   try {
     await sequelize.sync();
-    consola.success({
-      message: 'sequelize.sync working'
-    });
+    consola.success('sequelize.sync working');
   } catch (err) {
     consola.error({
-      message: "sequelize.sync: " + err,
-      badge: false
+      message: 'sequelize.sync: ' + err,
+      badge: true,
     });
   }
 
-  require("./routes")(app);
+  require('./routes')(app);
   app.listen(port, host);
   consola.success({
     message: `Server listening on http://${host}:${port}`,

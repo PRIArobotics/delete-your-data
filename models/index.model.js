@@ -24,4 +24,4 @@ module.exports = (sequelize, Sequelize) => {
   });
 
   return Index;
-}
+};

@@ -15,4 +15,4 @@ module.exports = (sequelize, Sequelize) => {
   });
 
   return Plugin;
-}
+};
