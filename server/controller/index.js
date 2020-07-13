@@ -3,7 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const cntr = {};
 
-fs.readdirSync(__dirname).filter((file) => file !== 'index.js')
+fs.readdirSync(__dirname).filter((file) => file.endsWith('.controller.js'))
   .forEach((file) => {
     const controller = require(path.join(__dirname, file));
     consola.info("Controller loaded: " + controller.name);

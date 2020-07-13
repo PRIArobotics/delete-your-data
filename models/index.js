@@ -14,7 +14,7 @@ consola.info({
   message: "Finding all Models:",
   badge: true
 });
-fs.readdirSync(__dirname).filter((file) => file !== 'index.js')
+fs.readdirSync(__dirname).filter((file) => file.endsWith('.model.js'))
   .forEach((file) => {
     const model = sequelize.import(path.join(__dirname, file));
     consola.info("Model loaded: " + model.name);
