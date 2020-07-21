@@ -5,21 +5,19 @@ const Op = db.Sequelize.Op;
 module.exports.name = 'Plugin';
 
 module.exports.create = (req, res) => {
-  if (!req.body.plugin_name) {
+  // get POST data
+  const { name: plugin_name, config } = req.body;
+
+  // validate data
+  if (!plugin_name) {
     res.status(400).send({
-      message: 'Content can not be empty!',
+      message: '`name` can not be empty!',
     });
     return;
   }
 
-  // Create a Tutorial
-  const plugin = {
-    plugin_uuid: req.body.plugin_uuid,
-    plugin_name: req.body.plugin_name,
-    config: req.body.config,
-  };
-
-  // Save Tutorial in the database
+  // save to database
+  const plugin = { plugin_name, config };
   db.Plugin.create(plugin)
     .then(data => {
       res.send(data);
@@ -31,7 +29,25 @@ module.exports.create = (req, res) => {
     });
 };
 
-module.exports.readAll = (req, res) => {};
+module.exports.readAll = (req, res) => {
+  // get GET data
+  const { name: plugin_name } = req.query;
+
+  // create filter
+  var condition = plugin_name ? { plugin_name: { [Op.like]: `%${plugin_name}%` } } : null;
+
+  // query database
+  db.Plugin.findAll({ where: condition })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving tutorials."
+      });
+    });
+};
 
 module.exports.read = (req, res) => {};
 
