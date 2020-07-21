@@ -1,9 +1,11 @@
 const consola = require('consola');
 const fs = require('fs');
 const path = require('path');
-const { Router } = require('express');
+const { json, Router } = require('express');
 
 const router = Router();
+// parse JSON on a request's body
+router.use(json());
 
 consola.info({
   message: 'Finding all Routes and Controller:',
