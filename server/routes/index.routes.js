@@ -14,7 +14,7 @@ module.exports.doRouting = app => {
 
   router.delete('/', controller.Plugin.deleteAll);
 
-  app.use('/api/plugin', router);
+  app.use('/api/index', router);
 };
 
-module.exports.name = 'Plugin';
+module.exports.name = 'Index';
