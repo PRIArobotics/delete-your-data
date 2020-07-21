@@ -2,11 +2,27 @@ const db = require('../../models');
 
 const Op = db.Sequelize.Op;
 
+function dbToApi({ plugin_uuid, plugin_name, config }) {
+  return {
+    uuid: plugin_uuid,
+    name: plugin_name,
+    config,
+  };
+}
+
+function apiToDb({ uuid, name, config }) {
+  return {
+    plugin_uuid: uuid,
+    plugin_name: name,
+    config,
+  };
+}
+
 module.exports.name = 'Plugin';
 
 module.exports.create = (req, res) => {
   // get POST data
-  const { name: plugin_name, config } = req.body;
+  const { plugin_name, config } = apiToDb(req.body);
 
   // validate data
   if (!plugin_name) {
@@ -19,8 +35,8 @@ module.exports.create = (req, res) => {
   // save to database
   const plugin = { plugin_name, config };
   db.Plugin.create(plugin)
-    .then(({ plugin_uuid: uuid, plugin_name: name, config }) => {
-      res.send({ uuid, name, config });
+    .then(data => {
+      res.send(dbToApi(data));
     })
     .catch(err => {
       res.status(500).send({
@@ -39,7 +55,7 @@ module.exports.readAll = (req, res) => {
   // query database
   db.Plugin.findAll({ where: condition })
     .then(data => {
-      res.send(data.map(({ plugin_uuid: uuid, plugin_name: name, config }) => ({ uuid, name, config })));
+      res.send(data.map(dbToApi));
     })
     .catch(err => {
       res.status(500).send({
