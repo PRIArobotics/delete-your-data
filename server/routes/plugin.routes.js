@@ -1,18 +1,21 @@
-const controller = require('../controller');
+const { Router } = require('express');
+
+const { Plugin } = require('../controller');
+
 module.exports.doRouting = app => {
-  var router = require('express').Router();
+  var router = Router();
 
-  router.post('/', controller.Plugin.create);
+  router.post('/', Plugin.create);
 
-  router.get('/', controller.Plugin.readAll);
+  router.get('/', Plugin.readAll);
 
-  router.get('/:id', controller.Plugin.read);
+  router.get('/:id', Plugin.read);
 
-  router.put('/:id', controller.Plugin.update);
+  router.put('/:id', Plugin.update);
 
-  router.delete('/:id', controller.Plugin.delete);
+  router.delete('/:id', Plugin.delete);
 
-  router.delete('/', controller.Plugin.deleteAll);
+  router.delete('/', Plugin.deleteAll);
 
   app.use('/api/plugin', router);
 };

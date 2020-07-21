@@ -1,18 +1,21 @@
-const controller = require('../controller');
+const { Router } = require('express');
+
+const { Index } = require('../controller');
+
 module.exports.doRouting = app => {
-  var router = require('express').Router();
+  var router = Router();
 
-  router.post('/', controller.Plugin.create);
+  router.post('/', Index.create);
 
-  router.get('/', controller.Plugin.readAll);
+  router.get('/', Index.readAll);
 
-  router.get('/:id', controller.Plugin.read);
+  router.get('/:id', Index.read);
 
-  router.put('/:id', controller.Plugin.update);
+  router.put('/:id', Index.update);
 
-  router.delete('/:id', controller.Plugin.delete);
+  router.delete('/:id', Index.delete);
 
-  router.delete('/', controller.Plugin.deleteAll);
+  router.delete('/', Index.deleteAll);
 
   app.use('/api/index', router);
 };

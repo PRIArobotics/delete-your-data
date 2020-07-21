@@ -1,7 +1,8 @@
+const consola = require('consola');
+const fs = require('fs');
+const path = require('path');
+
 module.exports = app => {
-  const consola = require('consola');
-  const fs = require('fs');
-  const path = require('path');
   const routes = {};
 
   consola.info({
