@@ -2,6 +2,8 @@ const express = require('express');
 const consola = require('consola');
 const { Nuxt, Builder } = require('nuxt');
 const { sequelize } = require('../models');
+const apiRoutes = require('./apiRoutes');
+
 const app = express();
 
 // Import and Set Nuxt.js options
@@ -22,7 +24,7 @@ async function start() {
   }
 
   // register API routes before nuxt middleware
-  require('./routes')(app);
+  app.use('/api', apiRoutes);
 
   // Give nuxt middleware to express
   app.use(nuxt.render);

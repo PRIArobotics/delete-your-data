@@ -17,7 +17,7 @@ module.exports.doRouting = app => {
 
   router.delete('/', Index.deleteAll);
 
-  app.use('/api/index', router);
+  app.use('/index', router);
 };
 
 module.exports.name = 'Index';
