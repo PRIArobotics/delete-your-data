@@ -2,12 +2,12 @@ module.exports = (sequelize, Sequelize) => {
   const Plugin = sequelize.import('./plugin.model.js');
 
   const User = sequelize.define('User', {
-    user_id: {
+    id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    user_uuid: {
+    uuid: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
     },
@@ -16,7 +16,7 @@ module.exports = (sequelize, Sequelize) => {
 
       references: {
         model: Plugin,
-        key: 'plugin_uuid',
+        key: 'uuid',
 
         // This declares when to check the foreign key constraint. PostgreSQL only.
         //deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
