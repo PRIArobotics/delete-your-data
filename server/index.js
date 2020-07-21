@@ -21,6 +21,9 @@ async function start() {
     await builder.build();
   }
 
+  // register API routes before nuxt middleware
+  require('./routes')(app);
+
   // Give nuxt middleware to express
   app.use(nuxt.render);
 
@@ -46,7 +49,6 @@ async function start() {
     });
   }
 
-  require('./routes')(app);
   app.listen(port, host);
   consola.success({
     message: `Server listening on http://${host}:${port}`,
