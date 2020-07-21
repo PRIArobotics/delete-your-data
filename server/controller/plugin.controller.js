@@ -19,8 +19,8 @@ module.exports.create = (req, res) => {
   // save to database
   const plugin = { plugin_name, config };
   db.Plugin.create(plugin)
-    .then(data => {
-      res.send(data);
+    .then(({ plugin_uuid: uuid, plugin_name: name, config }) => {
+      res.send({ uuid, name, config });
     })
     .catch(err => {
       res.status(500).send({
@@ -39,7 +39,7 @@ module.exports.readAll = (req, res) => {
   // query database
   db.Plugin.findAll({ where: condition })
     .then(data => {
-      res.send(data);
+      res.send(data.map(({ plugin_uuid: uuid, plugin_name: name, config }) => ({ uuid, name, config })));
     })
     .catch(err => {
       res.status(500).send({
