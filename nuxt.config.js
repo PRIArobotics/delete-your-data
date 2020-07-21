@@ -41,6 +41,8 @@ module.exports = {
   ** Nuxt.js modules
   */
   modules: [
+    // https://axios.nuxtjs.org/
+    '@nuxtjs/axios',
   ],
   /*
   ** vuetify module configuration
