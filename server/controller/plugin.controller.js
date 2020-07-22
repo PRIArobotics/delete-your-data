@@ -61,6 +61,9 @@ module.exports.update = async (uuid, { name, type, config }) => {
   // save to database
   let num;
   try {
+    // update returns one or two numbers (usually one, except for special circumstances:
+    // https://sequelize.org/v5/class/lib/model.js~Model.html#static-method-update)
+    // we want the first of those numbers, i.e. do an array destructuring assignment here:
     [num] = await db.Plugin.update({ name, type, config }, {
       where: { uuid },
     });
