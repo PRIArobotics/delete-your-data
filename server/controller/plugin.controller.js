@@ -6,18 +6,25 @@ module.exports.name = 'Plugin';
 
 module.exports.create = (req, res) => {
   // get POST data
-  const { plugin_name, config } = req.body;
+  const { name, type, config } = req.body;
 
   // validate data
-  if (!plugin_name) {
+  if (!name) {
     res.status(400).send({
       message: '`name` can not be empty!',
     });
     return;
   }
 
+  if (!type) {
+    res.status(400).send({
+      message: '`type` can not be empty!',
+    });
+    return;
+  }
+
   // save to database
-  const plugin = { plugin_name, config };
+  const plugin = { name, type, config };
   db.Plugin.create(plugin)
     .then(data => {
       res.send(data);
@@ -31,10 +38,10 @@ module.exports.create = (req, res) => {
 
 module.exports.readAll = (req, res) => {
   // get GET data
-  const { name: plugin_name } = req.query;
+  const { name } = req.query;
 
   // create filter
-  var condition = plugin_name ? { plugin_name: { [Op.like]: `%${plugin_name}%` } } : null;
+  var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
   // query database
   db.Plugin.findAll({ where: condition })

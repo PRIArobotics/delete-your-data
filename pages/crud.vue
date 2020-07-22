@@ -5,8 +5,9 @@
       <v-expansion-panel v-for="plugin in plugins" :key="plugin.uuid">
         <v-expansion-panel-header v-slot="{ open }">
           <v-row no-gutters>
-            <v-col cols="4">{{ plugin.name }}</v-col>
-            <v-col cols="8" class="text--secondary">
+            <v-col cols="3">{{ plugin.name }}</v-col>
+            <v-col cols="3">{{ plugin.type }}</v-col>
+            <v-col cols="6" class="text--secondary">
               <v-fade-transition leave-absolute>
                 <span v-if="open">Config File:</span>
                 <v-row v-else no-gutters style="width: 100%">
@@ -41,6 +42,7 @@ export default {
     async createPlugin() {
       const plugin = await this.$axios.$post('/api/plugin/', {
         name: 'dummy',
+        type: 'dummy',
         config: { foo: 0 },
       });
       console.log('created', plugin);
