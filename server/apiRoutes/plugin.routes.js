@@ -2,12 +2,20 @@ const { Router } = require('express');
 
 const { Plugin } = require('../controller');
 
+function expressify(asyncHandler) {
+  return (req, res, next) => {
+    asyncHandler(req)
+      .then(data => res.send(data))
+      .catch(next);
+  };
+}
+
 module.exports.doRouting = app => {
   var router = Router();
 
-  router.post('/', Plugin.create);
+  router.post('/', expressify(req => Plugin.create(req.body)));
 
-  router.get('/', Plugin.readAll);
+  router.get('/', expressify(req => Plugin.readAll(req.query)));
 
   router.get('/:id', Plugin.read);
 
