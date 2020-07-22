@@ -38,10 +38,57 @@ module.exports.readAll = async({ name }) => {
   }
 }
 
-module.exports.read = async (uuid) => {};
+module.exports.read = async (uuid) => {
+  // query database
+  try {
+    const plugin = await db.Plugin.findByPk(uuid);
+    return plugin;
+  } catch (err) {
+    throw new httpErrors[500](err.message || 'An error occurred...');
+  }
+};
 
-module.exports.update = async (uuid, { name, type, config }) => {};
+module.exports.update = async (uuid, { name, type, config }) => {
+  // validate data
+  if (!name) {
+    throw new httpErrors[400]('`name` can not be empty!');
+  }
 
-module.exports.delete = async (uuid) => {};
+  if (!type) {
+    throw new httpErrors[400]('`type` can not be empty!');
+  }
 
-module.exports.deleteAll = async () => {};
+  // save to database
+  let num;
+  try {
+    [num] = await db.Plugin.update({ name, type, config }, {
+      where: { uuid },
+    });
+  } catch (err) {
+    throw new httpErrors[500](err.message || 'An error occurred...');
+  }
+
+  if (num !== 1) {
+    throw new httpErrors[400](`Updating Plugin with UUID=${uuid} failed`);
+  }
+
+  return { message: 'Plugin was updated successfully.' };
+};
+
+module.exports.delete = async (uuid) => {
+  // save to database
+  let num;
+  try {
+    num = await db.Plugin.destroy({
+      where: { uuid },
+    });
+  } catch (err) {
+    throw new httpErrors[500](err.message || 'An error occurred...');
+  }
+
+  if (num !== 1) {
+    throw new httpErrors[400](`Deleting Plugin with UUID=${uuid} failed`);
+  }
+
+  return { message: 'Plugin was deleted successfully.' };
+};

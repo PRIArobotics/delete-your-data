@@ -23,8 +23,6 @@ module.exports.doRouting = app => {
 
   router.delete('/:uuid', expressify(req => Plugin.delete(req.params.uuid)));
 
-  router.delete('/', expressify(req => Plugin.deleteAll()));
-
   app.use('/plugin', router);
 };
 
