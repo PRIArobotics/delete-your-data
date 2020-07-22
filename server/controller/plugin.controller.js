@@ -38,10 +38,10 @@ module.exports.readAll = async({ name }) => {
   }
 }
 
-module.exports.read = (req, res) => {};
+module.exports.read = async (uuid) => {};
 
-module.exports.update = (req, res) => {};
+module.exports.update = async (uuid, { name, type, config }) => {};
 
-module.exports.delete = (req, res) => {};
+module.exports.delete = async (uuid) => {};
 
-module.exports.deleteAll = (req, res) => {};
+module.exports.deleteAll = async () => {};

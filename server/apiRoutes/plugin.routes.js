@@ -17,13 +17,13 @@ module.exports.doRouting = app => {
 
   router.get('/', expressify(req => Plugin.readAll(req.query)));
 
-  router.get('/:id', Plugin.read);
+  router.get('/:uuid', expressify(req => Plugin.read(req.params.uuid)));
 
-  router.put('/:id', Plugin.update);
+  router.put('/:uuid', expressify(req => Plugin.update(req.params.uuid, req.body)));
 
-  router.delete('/:id', Plugin.delete);
+  router.delete('/:uuid', expressify(req => Plugin.delete(req.params.uuid)));
 
-  router.delete('/', Plugin.deleteAll);
+  router.delete('/', expressify(req => Plugin.deleteAll()));
 
   app.use('/plugin', router);
 };
