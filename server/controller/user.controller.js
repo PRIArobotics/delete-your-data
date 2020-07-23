@@ -25,9 +25,41 @@ module.exports.create = async({ plugin_uuid, native_id }) => {
     }
   }
 
-module.exports.readAll = (req, res) => {};
+  module.exports.readAll = async({}) => {
+    // create filter
+    var condition = name ? {} : null;
+  
+    // query database
+    try {
+      const user = await db.User.findAll({ where: condition });
+      return user;
+    } catch (err) {
+      throw new httpErrors[500](err.message || 'An error occurred...');
+    }
+  }
 
-module.exports.read = (req, res) => {};
+  module.exports.readByUuid = async({ uuid }) => {
+    // create filter
+    var condition = uuid ? { uuid: { [Op.like]: `%${uuid}%` } } : null;
+  
+    // query database
+    try {
+      const user = await db.User.findAll({ where: condition });
+      return user;
+    } catch (err) {
+      throw new httpErrors[500](err.message || 'An error occurred...');
+    }
+  }
+  
+  module.exports.read = async (id) => {
+    // query database
+    try {
+      const user = await db.User.findByPk(id);
+      return user;
+    } catch (err) {
+      throw new httpErrors[500](err.message || 'An error occurred...');
+    }
+  };
 
 module.exports.update = async (id, { plugin_id, native_id}) => {
     // validate data
