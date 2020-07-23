@@ -6,7 +6,7 @@ const Op = db.Sequelize.Op;
 
 module.exports.name = 'Plugin';
 
-module.exports.create = async({ name, type, config }) => {
+module.exports.create = async ({ name, type, config }) => {
   // validate data
   if (!name) {
     throw new httpErrors[400]('`name` can not be empty!');
@@ -23,9 +23,9 @@ module.exports.create = async({ name, type, config }) => {
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
-}
+};
 
-module.exports.readAll = async({ name }) => {
+module.exports.readAll = async ({ name }) => {
   // create filter
   var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
@@ -36,7 +36,7 @@ module.exports.readAll = async({ name }) => {
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
-}
+};
 
 module.exports.read = async (uuid) => {
   // query database
@@ -64,9 +64,12 @@ module.exports.update = async (uuid, { name, type, config }) => {
     // update returns one or two numbers (usually one, except for special circumstances:
     // https://sequelize.org/v5/class/lib/model.js~Model.html#static-method-update)
     // we want the first of those numbers, i.e. do an array destructuring assignment here:
-    [num] = await db.Plugin.update({ name, type, config }, {
-      where: { uuid },
-    });
+    [num] = await db.Plugin.update(
+      { name, type, config },
+      {
+        where: { uuid },
+      },
+    );
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }

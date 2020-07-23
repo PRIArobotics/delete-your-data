@@ -10,25 +10,31 @@ const { Log } = require('../controller');
 function expressify(asyncHandler) {
   return (req, res, next) => {
     asyncHandler(req)
-      .then(data => res.send(data))
+      .then((data) => res.send(data))
       .catch(next);
   };
 }
 
-module.exports.doRouting = app => {
+module.exports.doRouting = (app) => {
   var router = Router();
 
-  router.post('/', expressify(req => Log.create(req.body)));
+  const create = expressify((req) => Log.create(req.body));
+  router.post('/', create);
 
-  router.get('/', expressify(req => Log.readAll(req.query)));
+  const readAll = expressify((req) => Log.readAll(req.query));
+  router.get('/', readAll);
 
-  router.get('/:id', expressify(req => Log.read(req.params.id)));
+  const read = expressify((req) => Log.read(req.params.id));
+  router.get('/:id', read);
 
-  router.get('/:user_id', expressify(req => Log.readByUserID(req.params.user_id)));
+  const readByUserID = expressify((req) => Log.readByUserID(req.params.user_id));
+  router.get('/:user_id', readByUserID);
 
-  router.put('/:id', expressify(req => Log.update(req.params.id, req.body)));
+  const update = expressify((req) => Log.update(req.params.id, req.body));
+  router.put('/:id', update);
 
-  router.delete('/:id', expressify(req => Log.delete(req.params.id)));
+  const del = expressify((req) => Log.delete(req.params.id));
+  router.delete('/:id', del);
 
   app.use('/log', router);
 };

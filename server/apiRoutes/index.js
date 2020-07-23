@@ -13,8 +13,8 @@ consola.info({
 });
 
 fs.readdirSync(__dirname)
-  .filter(file => file.endsWith('.routes.js'))
-  .forEach(file => {
+  .filter((file) => file.endsWith('.routes.js'))
+  .forEach((file) => {
     const route = require(path.join(__dirname, file));
     route.doRouting(router);
     consola.info('Routes found: ' + route.name);

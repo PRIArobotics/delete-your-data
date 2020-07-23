@@ -10,23 +10,28 @@ const { Plugin } = require('../controller');
 function expressify(asyncHandler) {
   return (req, res, next) => {
     asyncHandler(req)
-      .then(data => res.send(data))
+      .then((data) => res.send(data))
       .catch(next);
   };
 }
 
-module.exports.doRouting = app => {
+module.exports.doRouting = (app) => {
   var router = Router();
 
-  router.post('/', expressify(req => Plugin.create(req.body)));
+  const create = expressify((req) => Plugin.create(req.body));
+  router.post('/', create);
 
-  router.get('/', expressify(req => Plugin.readAll(req.query)));
+  const readAll = expressify((req) => Plugin.readAll(req.query));
+  router.get('/', readAll);
 
-  router.get('/:uuid', expressify(req => Plugin.read(req.params.uuid)));
+  const read = expressify((req) => Plugin.read(req.params.uuid));
+  router.get('/:uuid', read);
 
-  router.put('/:uuid', expressify(req => Plugin.update(req.params.uuid, req.body)));
+  const update = expressify((req) => Plugin.update(req.params.uuid, req.body));
+  router.put('/:uuid', update);
 
-  router.delete('/:uuid', expressify(req => Plugin.delete(req.params.uuid)));
+  const del = expressify((req) => Plugin.delete(req.params.uuid));
+  router.delete('/:uuid', del);
 
   app.use('/plugin', router);
 };

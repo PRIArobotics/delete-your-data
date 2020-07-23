@@ -10,27 +10,34 @@ const { User } = require('../controller');
 function expressify(asyncHandler) {
   return (req, res, next) => {
     asyncHandler(req)
-      .then(data => res.send(data))
+      .then((data) => res.send(data))
       .catch(next);
   };
 }
 
-module.exports.doRouting = app => {
+module.exports.doRouting = (app) => {
   var router = Router();
 
-  router.post('/', expressify(req => User.create(req.body)));
+  const create = expressify((req) => User.create(req.body));
+  router.post('/', create);
 
-  router.get('/', expressify(req => User.readAll(req.query)));
+  const readAll = expressify((req) => User.readAll(req.query));
+  router.get('/', readAll);
 
-  router.get('/:id', expressify(req => User.read(req.params.id)));
+  const read = expressify((req) => User.read(req.params.id));
+  router.get('/:id', read);
 
-  router.get('/:uuid', expressify(req => User.readByUuid(req.params.uuid)));
+  const readByUuid = expressify((req) => User.readByUuid(req.params.uuid));
+  router.get('/:uuid', readByUuid);
 
-  router.get('/:uuid/:plugin_uuid', expressify(req => User.readByUuid(req.params.uuid)));
+  const readByUuid2 = expressify((req) => User.readByUuid(req.params.uuid));
+  router.get('/:uuid/:plugin_uuid', readByUuid2);
 
-  router.put('/:id', expressify(req => User.update(req.params.id, req.body)));
+  const update = expressify((req) => User.update(req.params.id, req.body));
+  router.put('/:id', update);
 
-  router.delete('/:uuid', expressify(req => User.delete(req.params.uuid)));
+  const del = expressify((req) => User.delete(req.params.uuid));
+  router.delete('/:uuid', del);
 
   app.use('/user', router);
 };

@@ -63,10 +63,10 @@ export default {
     ],
   }),
   methods: {
-    openCRUD: openWhat => {
+    openCRUD(openWhat) {
       alert(openWhat);
     },
-    searchPlugin: function() {
+    searchPlugin() {
       alert(this.searchTerm);
     },
   },

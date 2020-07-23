@@ -15,8 +15,8 @@ consola.info({
   badge: true,
 });
 fs.readdirSync(__dirname)
-  .filter(file => file.endsWith('.model.js'))
-  .forEach(file => {
+  .filter((file) => file.endsWith('.model.js'))
+  .forEach((file) => {
     const model = sequelize.import(path.join(__dirname, file));
     consola.info('Model loaded: ' + model.name);
     db[model.name] = model;
