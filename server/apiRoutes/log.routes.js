@@ -1,6 +1,6 @@
 const { Router } = require('express');
 
-const { Index } = require('../controller');
+const { Log } = require('../controller');
 
 // Converts an async function into an express-conformant request handler
 // If the function is successful (Promise resolves),
@@ -18,19 +18,19 @@ function expressify(asyncHandler) {
 module.exports.doRouting = app => {
   var router = Router();
 
-  router.post('/', expressify(req => Index.create(req.body)));
+  router.post('/', expressify(req => Log.create(req.body)));
 
-  router.get('/', expressify(req => Index.readAll(req.query)));
+  router.get('/', expressify(req => Log.readAll(req.query)));
 
-  router.get('/:id', expressify(req => Index.read(req.params.id)));
+  router.get('/:id', expressify(req => Log.read(req.params.id)));
 
-  router.get('/:user_id', expressify(req => Index.readByUserID(req.params.user_id)));
+  router.get('/:user_id', expressify(req => Log.readByUserID(req.params.user_id)));
 
-  router.put('/:id', expressify(req => Index.update(req.params.id, req.body)));
+  router.put('/:id', expressify(req => Log.update(req.params.id, req.body)));
 
-  router.delete('/:id', expressify(req => Index.delete(req.params.id)));
+  router.delete('/:id', expressify(req => Log.delete(req.params.id)));
 
-  app.use('/index', router);
+  app.use('/log', router);
 };
 
-module.exports.name = 'Index';
+module.exports.name = 'Log';

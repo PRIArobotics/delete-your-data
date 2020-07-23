@@ -1,7 +1,7 @@
 module.exports = (sequelize, Sequelize) => {
   const User = sequelize.import('./user.model.js');
 
-  const Index = sequelize.define('Index', {
+  const Log = sequelize.define('Log', {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
@@ -23,5 +23,5 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
-  return Index;
+  return Log;
 };
