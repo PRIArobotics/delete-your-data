@@ -6,7 +6,14 @@ const db = {};
 
 let config;
 if (process.env.NODE_ENV === 'production') {
-  throw new Error('production DB config not implemented yet!');
+  consola.warn({
+    message: 'production DB config not implemented yet!',
+    badge: true,
+  });
+  config = {
+    dialect: 'sqlite',
+    storage: './database.sqlite',
+  };
 } else {
   config = {
     dialect: 'sqlite',
