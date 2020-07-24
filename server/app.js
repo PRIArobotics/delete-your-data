@@ -6,7 +6,7 @@ const apiRoutes = require('./apiRoutes');
 
 // Import and Set Nuxt.js options
 const config = require('../nuxt.config.js');
-config.dev = process.env.NODE_ENV !== 'production';
+config.dev = process.env.NODE_ENV === 'development';
 
 // Init Nuxt.js
 const nuxt = new Nuxt(config);
