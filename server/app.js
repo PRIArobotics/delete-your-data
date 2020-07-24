@@ -53,8 +53,7 @@ async function createApp() {
   return app;
 };
 
-module.exports.appPromise = createApp();
+export default createApp();
 
 const { host, port } = nuxt.options.server;
-module.exports.host = host;
-module.exports.port = port;
+export { host, port };

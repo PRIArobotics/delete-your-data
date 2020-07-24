@@ -1,6 +1,6 @@
 import request from 'supertest';
 
-import { appPromise } from '@/server/app';
+import appPromise from '@/server/app';
 
 describe('REST API', () => {
   test('works', async () => {

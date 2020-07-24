@@ -1,4 +1,4 @@
-import { appPromise, host, port } from './app';
+import appPromise, { host, port } from './app';
 
 appPromise.then((app) => {
   app.listen(port, host);
