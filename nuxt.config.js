@@ -74,5 +74,18 @@ module.exports = {
     */
     extend(config, ctx) {
     },
+    babel: {
+      // envName: server, client, modern
+      presets({ envName }) {
+        return [
+          [
+            '@nuxt/babel-preset-app',
+            {
+              corejs: { version: 3 }
+            }
+          ]
+        ]
+      }
+    }
   },
 };
