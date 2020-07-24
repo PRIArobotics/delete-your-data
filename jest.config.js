@@ -10,5 +10,10 @@ module.exports = {
     '.*\\.(vue)$': 'vue-jest',
   },
   collectCoverage: true,
-  collectCoverageFrom: ['<rootDir>/components/**/*.vue', '<rootDir>/pages/**/*.vue'],
+  collectCoverageFrom: [
+    // consider all source directories
+    '<rootDir>/{components,layouts,middleware,models,pages,plugins,server,store}/**/*.{vue,js}',
+    // model files are declarative, their coverage doesn't tell us anything
+    '!<rootDir>/models/**/*.model.js',
+  ],
 };
