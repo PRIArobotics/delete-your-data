@@ -4,10 +4,17 @@ const path = require('path');
 const Sequelize = require('sequelize');
 const db = {};
 
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: './database.sqlite',
-});
+let config;
+if (process.env.NODE_ENV === 'production') {
+  throw new Error('production DB config not implemented yet!');
+} else {
+  config = {
+    dialect: 'sqlite',
+    storage: process.env.NODE_ENV === 'test' ? './database.test.sqlite' : './database.sqlite',
+  };
+}
+
+const sequelize = new Sequelize(config);
 
 consola.log('--------- models/index.js ---------');
 consola.info({
