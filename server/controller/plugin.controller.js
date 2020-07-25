@@ -1,12 +1,12 @@
-const httpErrors = require('httperrors');
+import httpErrors from 'httperrors';
 
-const db = require('../../models');
+import * as db from '../../models';
 
 const Op = db.Sequelize.Op;
 
 module.exports.name = 'Plugin';
 
-module.exports.create = async ({ name, type, config }) => {
+export async function create({ name, type, config }) {
   // validate data
   if (!name) {
     throw new httpErrors[400]('`name` can not be empty!');
@@ -23,9 +23,9 @@ module.exports.create = async ({ name, type, config }) => {
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
-};
+}
 
-module.exports.readAll = async ({ name }) => {
+export async function readAll({ name }) {
   // create filter
   var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
@@ -36,9 +36,9 @@ module.exports.readAll = async ({ name }) => {
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
-};
+}
 
-module.exports.read = async (uuid) => {
+export async function read(uuid) {
   // query database
   try {
     const plugin = await db.Plugin.findByPk(uuid);
@@ -46,9 +46,9 @@ module.exports.read = async (uuid) => {
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
-};
+}
 
-module.exports.update = async (uuid, { name, type, config }) => {
+export async function update(uuid, { name, type, config }) {
   // validate data
   if (!name) {
     throw new httpErrors[400]('`name` can not be empty!');
@@ -79,9 +79,9 @@ module.exports.update = async (uuid, { name, type, config }) => {
   }
 
   return { message: 'Plugin was updated successfully.' };
-};
+}
 
-module.exports.delete = async (uuid) => {
+export async function del(uuid) {
   // save to database
   let num;
   try {
@@ -97,4 +97,4 @@ module.exports.delete = async (uuid) => {
   }
 
   return { message: 'Plugin was deleted successfully.' };
-};
+}

@@ -1,12 +1,12 @@
-const httpErrors = require('httperrors');
+import httpErrors from 'httperrors';
 
-const db = require('../../models');
+import * as db from '../../models';
 
 const Op = db.Sequelize.Op;
 
 module.exports.name = 'Log';
 
-module.exports.create = async ({ user_id, savelocation }) => {
+export async function create({ user_id, savelocation }) {
   // validate data
   if (!user_id) {
     throw new httpErrors[400]('`user_id` can not be empty!');
@@ -23,9 +23,9 @@ module.exports.create = async ({ user_id, savelocation }) => {
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
-};
+}
 
-module.exports.readAll = async ({}) => {
+export async function readAll({}) {
   // create filter
   var condition = name ? {} : null;
 
@@ -36,9 +36,9 @@ module.exports.readAll = async ({}) => {
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
-};
+}
 
-module.exports.readByUserID = async ({ user_id }) => {
+export async function readByUserID({ user_id }) {
   // create filter
   var condition = user_id ? { user_id: { [Op.like]: `%${user_id}%` } } : null;
 
@@ -49,9 +49,9 @@ module.exports.readByUserID = async ({ user_id }) => {
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
-};
+}
 
-module.exports.read = async (id) => {
+export async function read(id) {
   // query database
   try {
     const index = await db.Index.findByPk(id);
@@ -59,9 +59,9 @@ module.exports.read = async (id) => {
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
-};
+}
 
-module.exports.update = async (id, { user_id, savelocation }) => {
+export async function update(id, { user_id, savelocation }) {
   // validate data
   if (!user_id) {
     throw new httpErrors[400]('`user_id` can not be empty!');
@@ -92,9 +92,9 @@ module.exports.update = async (id, { user_id, savelocation }) => {
   }
 
   return { message: 'Index was updated successfully.' };
-};
+}
 
-module.exports.delete = async (id) => {
+export async function del(id) {
   // save to database
   let num;
   try {
@@ -110,4 +110,4 @@ module.exports.delete = async (id) => {
   }
 
   return { message: 'Index was deleted successfully.' };
-};
+}

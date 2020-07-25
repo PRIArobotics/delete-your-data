@@ -1,7 +1,7 @@
-const consola = require('consola');
-const fs = require('fs');
-const path = require('path');
-const { json, Router } = require('express');
+import consola from 'consola';
+import fs from 'fs';
+import path from 'path';
+import { json, Router } from 'express';
 
 const router = Router();
 // parse JSON on a request's body
@@ -20,7 +20,7 @@ fs.readdirSync(__dirname)
     consola.info('Routes found: ' + route.name);
   });
 
-module.exports = router;
+export default router;
 
 consola.log('- - - - - - - - -');
 consola.success('server/routes/index.js');

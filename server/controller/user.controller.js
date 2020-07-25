@@ -1,12 +1,12 @@
-const httpErrors = require('httperrors');
+import httpErrors from 'httperrors';
 
-const db = require('../../models');
+import * as db from '../../models';
 
 const Op = db.Sequelize.Op;
 
 module.exports.name = 'User';
 
-module.exports.create = async ({ plugin_uuid, native_id }) => {
+export async function create({ plugin_uuid, native_id }) {
   // validate data
   if (!plugin_uuid) {
     throw new httpErrors[400]('`plugin_uuid` can not be empty!');
@@ -23,9 +23,9 @@ module.exports.create = async ({ plugin_uuid, native_id }) => {
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
-};
+}
 
-module.exports.readAll = async ({}) => {
+export async function readAll({}) {
   // create filter
   var condition = name ? {} : null;
 
@@ -36,9 +36,9 @@ module.exports.readAll = async ({}) => {
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
-};
+}
 
-module.exports.readByUuid = async ({ uuid }) => {
+export async function readByUuid({ uuid }) {
   // create filter
   var condition = uuid ? { uuid: { [Op.like]: `%${uuid}%` } } : null;
 
@@ -49,9 +49,9 @@ module.exports.readByUuid = async ({ uuid }) => {
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
-};
+}
 
-module.exports.read = async (id) => {
+export async function read(id) {
   // query database
   try {
     const user = await db.User.findByPk(id);
@@ -59,9 +59,9 @@ module.exports.read = async (id) => {
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
-};
+}
 
-module.exports.update = async (id, { plugin_id, native_id }) => {
+export async function update(id, { plugin_id, native_id }) {
   // validate data
   if (!plugin_id) {
     throw new httpErrors[400]('`plugin_id` can not be empty!');
@@ -92,9 +92,9 @@ module.exports.update = async (id, { plugin_id, native_id }) => {
   }
 
   return { message: 'User was updated successfully.' };
-};
+}
 
-module.exports.delete = async (uuid) => {
+export async function del(uuid) {
   // save to database
   let num;
   try {
@@ -110,4 +110,4 @@ module.exports.delete = async (uuid) => {
   }
 
   return { message: 'User was deleted successfully.' };
-};
+}

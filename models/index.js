@@ -1,8 +1,7 @@
-const consola = require('consola');
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
-const db = {};
+import consola from 'consola';
+import fs from 'fs';
+import path from 'path';
+import Sequelize from 'sequelize';
 
 let config;
 if (process.env.NODE_ENV === 'production') {
@@ -33,16 +32,11 @@ fs.readdirSync(__dirname)
   .forEach((file) => {
     const model = sequelize.import(path.join(__dirname, file));
     consola.info('Model loaded: ' + model.name);
-    db[model.name] = model;
+    module.exports[model.name] = model;
   });
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
-
-consola.debug('sequelize: ' + db.sequelize);
-consola.debug('db: ' + db);
+export { sequelize, Sequelize };
 
 consola.log('- - - - - - - - -');
 consola.success('models/index.js');
 consola.log('-----------------------------------');
-module.exports = db;

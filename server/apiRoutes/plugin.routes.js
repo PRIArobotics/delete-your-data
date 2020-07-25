@@ -1,6 +1,6 @@
-const { Router } = require('express');
+import { Router } from 'express';
 
-const { Plugin } = require('../controller');
+import { Plugin } from '../controller';
 
 // Converts an async function into an express-conformant request handler
 // If the function is successful (Promise resolves),
@@ -15,7 +15,7 @@ function expressify(asyncHandler) {
   };
 }
 
-module.exports.doRouting = (app) => {
+export function doRouting(app) {
   var router = Router();
 
   const create = expressify((req) => Plugin.create(req.body));
@@ -30,10 +30,10 @@ module.exports.doRouting = (app) => {
   const update = expressify((req) => Plugin.update(req.params.uuid, req.body));
   router.put('/:uuid', update);
 
-  const del = expressify((req) => Plugin.delete(req.params.uuid));
+  const del = expressify((req) => Plugin.del(req.params.uuid));
   router.delete('/:uuid', del);
 
   app.use('/plugin', router);
-};
+}
 
 module.exports.name = 'Plugin';

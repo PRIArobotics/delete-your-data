@@ -1,6 +1,6 @@
-const { Router } = require('express');
+import { Router } from 'express';
 
-const { Log } = require('../controller');
+import { Log } from '../controller';
 
 // Converts an async function into an express-conformant request handler
 // If the function is successful (Promise resolves),
@@ -15,7 +15,7 @@ function expressify(asyncHandler) {
   };
 }
 
-module.exports.doRouting = (app) => {
+export function doRouting(app) {
   var router = Router();
 
   const create = expressify((req) => Log.create(req.body));
@@ -33,10 +33,10 @@ module.exports.doRouting = (app) => {
   const update = expressify((req) => Log.update(req.params.id, req.body));
   router.put('/:id', update);
 
-  const del = expressify((req) => Log.delete(req.params.id));
+  const del = expressify((req) => Log.del(req.params.id));
   router.delete('/:id', del);
 
   app.use('/log', router);
-};
+}
 
 module.exports.name = 'Log';

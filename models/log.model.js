@@ -1,4 +1,4 @@
-module.exports = (sequelize, Sequelize) => {
+export default (sequelize, Sequelize) => {
   const User = sequelize.import('./user.model.js');
 
   const Log = sequelize.define('Log', {

@@ -1,4 +1,4 @@
-module.exports = (sequelize, Sequelize) => {
+export default (sequelize, Sequelize) => {
   const Plugin = sequelize.define('Plugin', {
     uuid: {
       type: Sequelize.UUID,
