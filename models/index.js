@@ -35,7 +35,7 @@ fs.readdirSync(__dirname)
     module.exports[model.name] = model;
   });
 
-export { sequelize, Sequelize };
+export default sequelize;
 
 consola.log('- - - - - - - - -');
 consola.success('models/index.js');

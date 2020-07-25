@@ -1,8 +1,7 @@
 import httpErrors from 'httperrors';
+import { Op } from 'sequelize';
 
-import * as db from '../../models';
-
-const Op = db.Sequelize.Op;
+import { Log } from '../../models';
 
 module.exports.name = 'Log';
 
@@ -18,7 +17,7 @@ export async function create({ user_id, savelocation }) {
 
   // save to database
   try {
-    const log = await db.Log.create({ user_id, savelocation });
+    const log = await Log.create({ user_id, savelocation });
     return log;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
@@ -31,7 +30,7 @@ export async function readAll({}) {
 
   // query database
   try {
-    const log = await db.Log.findAll({ where: condition });
+    const log = await Log.findAll({ where: condition });
     return log;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
@@ -44,7 +43,7 @@ export async function readByUserID({ user_id }) {
 
   // query database
   try {
-    const log = await db.Log.findAll({ where: condition });
+    const log = await Log.findAll({ where: condition });
     return log;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
@@ -54,7 +53,7 @@ export async function readByUserID({ user_id }) {
 export async function read(id) {
   // query database
   try {
-    const log = await db.Log.findByPk(id);
+    const log = await Log.findByPk(id);
     return log;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
@@ -77,7 +76,7 @@ export async function update(id, { user_id, savelocation }) {
     // update returns one or two numbers (usually one, except for special circumstances:
     // https://sequelize.org/v5/class/lib/model.js~Model.html#static-method-update)
     // we want the first of those numbers, i.e. do an array destructuring assignment here:
-    [num] = await db.Log.update(
+    [num] = await Log.update(
       { user_id, savelocation },
       {
         where: { id },
@@ -98,7 +97,7 @@ export async function del(id) {
   // save to database
   let num;
   try {
-    num = await db.Log.destroy({
+    num = await Log.destroy({
       where: { id },
     });
   } catch (err) {

@@ -1,7 +1,7 @@
 import express from 'express';
 import consola from 'consola';
 import { Nuxt, Builder } from 'nuxt';
-import { sequelize } from '../models';
+import sequelize from '../models';
 import apiRoutes from './apiRoutes';
 
 // Import and Set Nuxt.js options
