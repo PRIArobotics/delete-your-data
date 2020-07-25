@@ -18,8 +18,8 @@ export async function create({ user_id, savelocation }) {
 
   // save to database
   try {
-    const index = await db.Index.create({ user_id, savelocation });
-    return index;
+    const log = await db.Log.create({ user_id, savelocation });
+    return log;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
@@ -31,8 +31,8 @@ export async function readAll({}) {
 
   // query database
   try {
-    const index = await db.Index.findAll({ where: condition });
-    return index;
+    const log = await db.Log.findAll({ where: condition });
+    return log;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
@@ -44,8 +44,8 @@ export async function readByUserID({ user_id }) {
 
   // query database
   try {
-    const index = await db.Index.findAll({ where: condition });
-    return index;
+    const log = await db.Log.findAll({ where: condition });
+    return log;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
@@ -54,8 +54,8 @@ export async function readByUserID({ user_id }) {
 export async function read(id) {
   // query database
   try {
-    const index = await db.Index.findByPk(id);
-    return index;
+    const log = await db.Log.findByPk(id);
+    return log;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
@@ -77,7 +77,7 @@ export async function update(id, { user_id, savelocation }) {
     // update returns one or two numbers (usually one, except for special circumstances:
     // https://sequelize.org/v5/class/lib/model.js~Model.html#static-method-update)
     // we want the first of those numbers, i.e. do an array destructuring assignment here:
-    [num] = await db.Index.update(
+    [num] = await db.Log.update(
       { user_id, savelocation },
       {
         where: { id },
@@ -88,17 +88,17 @@ export async function update(id, { user_id, savelocation }) {
   }
 
   if (num !== 1) {
-    throw new httpErrors[400](`Updating Index with ID=${id} failed`);
+    throw new httpErrors[400](`Updating Log with ID=${id} failed`);
   }
 
-  return { message: 'Index was updated successfully.' };
+  return { message: 'Log was updated successfully.' };
 }
 
 export async function del(id) {
   // save to database
   let num;
   try {
-    num = await db.Index.destroy({
+    num = await db.Log.destroy({
       where: { id },
     });
   } catch (err) {
@@ -106,8 +106,8 @@ export async function del(id) {
   }
 
   if (num !== 1) {
-    throw new httpErrors[400](`Deleting Index with ID=${id} failed`);
+    throw new httpErrors[400](`Deleting Log with ID=${id} failed`);
   }
 
-  return { message: 'Index was deleted successfully.' };
+  return { message: 'Log was deleted successfully.' };
 }

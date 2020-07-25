@@ -23,5 +23,5 @@ fs.readdirSync(__dirname)
 export default router;
 
 consola.log('- - - - - - - - -');
-consola.success('server/routes/index.js');
+consola.success('server/apiRoutes/index.js');
 consola.log('-----------------------------------');
