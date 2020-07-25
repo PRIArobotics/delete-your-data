@@ -35,6 +35,14 @@ fs.readdirSync(__dirname)
     module.exports[model.name] = model;
   });
 
+export async function initSequelize() {
+  await sequelize.authenticate();
+  consola.success('sequelize.authenticate successful');
+
+  await sequelize.sync();
+  consola.success('sequelize.sync successful');
+}
+
 export default sequelize;
 
 consola.log('- - - - - - - - -');

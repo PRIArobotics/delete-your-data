@@ -1,7 +1,6 @@
 import express from 'express';
-import consola from 'consola';
 import { Nuxt, Builder } from 'nuxt';
-import sequelize from '../models';
+import { initSequelize } from '../models';
 import apiRoutes from './apiRoutes';
 
 // Import and Set Nuxt.js options
@@ -28,27 +27,8 @@ async function createApp() {
   // Give nuxt middleware to express
   app.use(nuxt.render);
 
-  consola.log('-----------------------------------');
-  // Listen the server
-  try {
-    await sequelize.authenticate();
-    consola.success('sequelize.authenticate working');
-  } catch (err) {
-    consola.error({
-      message: 'sequelize.authenticate: ' + err,
-      badge: true,
-    });
-  }
-
-  try {
-    await sequelize.sync();
-    consola.success('sequelize.sync working');
-  } catch (err) {
-    consola.error({
-      message: 'sequelize.sync: ' + err,
-      badge: true,
-    });
-  }
+  // check DB connection & synchronize models
+  await initSequelize();
 
   return app;
 }
