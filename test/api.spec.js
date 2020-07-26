@@ -6,106 +6,118 @@ import { Plugin } from '~/server/controller';
 jest.mock('~/server/controller/plugin.controller');
 
 describe('REST API', () => {
-  test('Plugin endpoints work', async () => {
+  test('POST /api/plugin', async () => {
     let plugin;
 
-    // create
-    {
-      Plugin.create.mockImplementationOnce(async ({ name, type, config }) => {
-        const createdAt = new Date();
-        plugin = {
-          uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
-          createdAt,
-          updatedAt: createdAt,
-          name,
-          type,
-          config,
-        };
-        return plugin;
-      });
+    Plugin.create.mockImplementationOnce(async ({ name, type, config }) => {
+      const createdAt = new Date();
+      plugin = {
+        uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+        createdAt,
+        updatedAt: createdAt,
+        name,
+        type,
+        config,
+      };
+      return plugin;
+    });
 
-      const res = await request(await appPromise)
-        .post('/api/plugin')
-        .send({
-          name: 'dummy',
-          type: 'dummy',
-          config: { foo: 0 },
-        });
+    const body = {
+      name: 'dummy',
+      type: 'dummy',
+      config: { foo: 0 },
+    };
+    const res = await request(await appPromise)
+      .post('/api/plugin')
+      .send(body);
 
-      expect(Plugin.create).toHaveBeenCalled();
-      expect(res.statusCode).toEqual(200);
-      expect(res.body).toEqual({
-        ...plugin,
-        createdAt: plugin.createdAt.toISOString(),
-        updatedAt: plugin.updatedAt.toISOString(),
-      });
-    }
+    expect(Plugin.create).toHaveBeenCalledWith(body);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      ...plugin,
+      createdAt: plugin.createdAt.toISOString(),
+      updatedAt: plugin.updatedAt.toISOString(),
+    });
+  });
 
-    // read all
-    {
-      Plugin.readAll.mockImplementationOnce(async () => [plugin]);
+  test('GET /api/plugin', async () => {
+    const createdAt = new Date();
+    const plugin = {
+      uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      createdAt,
+      updatedAt: createdAt,
+      name: 'dummy',
+      type: 'dummy',
+      config: { foo: 0 },
+    };
 
-      const res = await request(await appPromise)
-        .get(`/api/plugin`)
-        .send();
+    Plugin.readAll.mockImplementationOnce(async () => [plugin]);
 
-      expect(Plugin.readAll).toHaveBeenCalled();
-      expect(res.statusCode).toEqual(200);
-      expect(res.body).toEqual([{
-        ...plugin,
-        createdAt: plugin.createdAt.toISOString(),
-        updatedAt: plugin.updatedAt.toISOString(),
-      }]);
-    }
+    const res = await request(await appPromise)
+      .get(`/api/plugin`)
+      .send();
 
-    // update
-    {
-      Plugin.update.mockImplementationOnce(async (uuid, { name, type, config }) => {
-        plugin.updatedAt = new Date();
-        plugin.name = name;
-        plugin.type = type;
-        plugin.config = config;
-      });
+    expect(Plugin.readAll).toHaveBeenCalledWith({});
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual([{
+      ...plugin,
+      createdAt: plugin.createdAt.toISOString(),
+      updatedAt: plugin.updatedAt.toISOString(),
+    }]);
+  });
 
-      const res = await request(await appPromise)
-        .put(`/api/plugin/${plugin.uuid}`)
-        .send({
-          name: 'dummy',
-          type: 'dummy',
-          config: { bar: 0 },
-        });
+  test('GET /api/plugin/:uuid', async () => {
+    const createdAt = new Date();
+    const plugin = {
+      uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      createdAt,
+      updatedAt: createdAt,
+      name: 'dummy',
+      type: 'dummy',
+      config: { foo: 0 },
+    };
 
-      expect(Plugin.update).toHaveBeenCalled();
-      expect(res.statusCode).toEqual(200);
-    }
+    Plugin.read.mockImplementationOnce(async () => plugin);
 
-    // read update
-    {
-      Plugin.read.mockImplementationOnce(async () => plugin);
+    const res = await request(await appPromise)
+      .get(`/api/plugin/${plugin.uuid}`)
+      .send();
 
-      const res = await request(await appPromise)
-        .get(`/api/plugin/${plugin.uuid}`)
-        .send();
+    expect(Plugin.read).toHaveBeenCalledWith(plugin.uuid);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      ...plugin,
+      createdAt: plugin.createdAt.toISOString(),
+      updatedAt: plugin.updatedAt.toISOString(),
+    });
+  });
 
-      expect(Plugin.read).toHaveBeenCalled();
-      expect(res.statusCode).toEqual(200);
-      expect(res.body).toEqual({
-        ...plugin,
-        createdAt: plugin.createdAt.toISOString(),
-        updatedAt: plugin.updatedAt.toISOString(),
-      });
-    }
+  test('PUT /api/plugin/:uuid', async () => {
+    Plugin.update.mockImplementationOnce(async () => {});
 
-    // delete
-    {
-      Plugin.del.mockImplementationOnce(async (uuid) => {});
+    const uuid = '7224835f-a10b-44d3-94b2-959580a327cf';
+    const body = {
+      name: 'dummy',
+      type: 'dummy',
+      config: { bar: 0 },
+    };
+    const res = await request(await appPromise)
+      .put(`/api/plugin/${uuid}`)
+      .send(body);
 
-      const res = await request(await appPromise)
-        .delete(`/api/plugin/${plugin.uuid}`)
-        .send();
+    expect(Plugin.update).toHaveBeenCalledWith(uuid, body);
+    expect(res.statusCode).toEqual(200);
+  });
 
-      expect(Plugin.del).toHaveBeenCalled();
-      expect(res.statusCode).toEqual(200);
-    }
+  test('DELETE /api/plugin/:uuid', async () => {
+    Plugin.del.mockImplementationOnce(async (uuid) => {});
+
+    const uuid = '7224835f-a10b-44d3-94b2-959580a327cf';
+    const res = await request(await appPromise)
+      .delete(`/api/plugin/${uuid}`)
+      .send();
+
+    expect(Plugin.del).toHaveBeenCalledWith(uuid);
+    expect(res.statusCode).toEqual(200);
   });
 });
