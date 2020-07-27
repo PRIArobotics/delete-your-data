@@ -11,7 +11,7 @@
     "build": "nuxt build",
     "start": "cross-env NODE_ENV=production babel-node server/index.js",
     "generate": "nuxt generate",
-    "test": "jest"
+    "test": "jest --silent"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.12.0",
