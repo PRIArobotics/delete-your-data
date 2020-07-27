@@ -1,3 +1,5 @@
+import consola from 'consola';
+
 import appPromise, { host, port } from './app';
 
 appPromise.then((app) => {
