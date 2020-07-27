@@ -33,14 +33,16 @@ describe('Plugin Controller', () => {
     {
       const plugins = await Plugin.readAll({});
       // toMatchObject because sequelize model instances are not plain objects
-      expect(plugins).toMatchObject([{
-        uuid: expect.any(String),
-        createdAt: expect.any(Date),
-        updatedAt: expect.any(Date),
-        name: 'dummy',
-        type: 'dummy',
-        config: { foo: 0 },
-      }]);
+      expect(plugins).toMatchObject([
+        {
+          uuid: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          name: 'dummy',
+          type: 'dummy',
+          config: { foo: 0 },
+        },
+      ]);
     }
 
     // update

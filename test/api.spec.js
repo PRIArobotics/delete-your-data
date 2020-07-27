@@ -59,11 +59,13 @@ describe('REST API', () => {
 
     expect(Plugin.readAll).toHaveBeenCalledWith({});
     expect(res.statusCode).toEqual(200);
-    expect(res.body).toEqual([{
-      ...plugin,
-      createdAt: plugin.createdAt.toISOString(),
-      updatedAt: plugin.updatedAt.toISOString(),
-    }]);
+    expect(res.body).toEqual([
+      {
+        ...plugin,
+        createdAt: plugin.createdAt.toISOString(),
+        updatedAt: plugin.updatedAt.toISOString(),
+      },
+    ]);
   });
 
   test('GET /api/plugin/:uuid', async () => {
