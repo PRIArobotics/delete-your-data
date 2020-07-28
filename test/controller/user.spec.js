@@ -79,6 +79,21 @@ describe('User Controller', () => {
       ]);
     }
 
+    // read all accounts for one user UUID
+    {
+      const users = await User.readAllByUuid(uuid2);
+      // toMatchObject because sequelize model instances are not plain objects
+      expect(users).toMatchObject([
+        {
+          uuid: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          plugin_uuid,
+          native_id: 'other_user',
+        },
+      ]);
+    }
+
     // update
     {
       await User.update(id1, {

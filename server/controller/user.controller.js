@@ -56,6 +56,18 @@ export async function readByUuid(uuid, plugin_uuid) {
   }
 }
 
+export async function readAllByUuid(uuid) {
+  // query database
+  try {
+    const users = await User.findAll({
+      where: { uuid },
+    });
+    return users;
+  } catch (err) {
+    throw new httpErrors[500](err.message || 'An error occurred...');
+  }
+}
+
 export async function update(id, { native_id }) {
   // validate data
   if (!native_id) {

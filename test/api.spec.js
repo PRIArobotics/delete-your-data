@@ -211,6 +211,34 @@ describe('REST API', () => {
     });
   });
 
+  test('GET /api/user/:uuid', async () => {
+    const createdAt = new Date();
+    const user = {
+      id: 1,
+      uuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
+      plugin_uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      createdAt,
+      updatedAt: createdAt,
+      native_id: 'user',
+    };
+
+    User.readAllByUuid.mockImplementationOnce(async () => [user]);
+
+    const res = await request(await appPromise)
+      .get(`/api/user/${user.uuid}`)
+      .send();
+
+    expect(User.readAllByUuid).toHaveBeenCalledWith(user.uuid);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual([
+      {
+        ...user,
+        createdAt: user.createdAt.toISOString(),
+        updatedAt: user.updatedAt.toISOString(),
+      },
+    ]);
+  });
+
   test('GET /api/user/:uuid/:plugin_uuid', async () => {
     const createdAt = new Date();
     const user = {

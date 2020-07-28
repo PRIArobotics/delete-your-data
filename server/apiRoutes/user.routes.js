@@ -27,6 +27,9 @@ export function doRouting(app) {
   const read = expressify((req) => User.read(+req.params.id));
   router.get('/:id(\\d+)', read);
 
+  const readAllByUuid = expressify((req) => User.readAllByUuid(req.params.uuid));
+  router.get('/:uuid', readAllByUuid);
+
   const readByUuid = expressify((req) => User.readByUuid(req.params.uuid, req.params.plugin_uuid));
   router.get('/:uuid/:plugin_uuid', readByUuid);
 
