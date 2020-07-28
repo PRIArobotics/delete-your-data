@@ -27,8 +27,8 @@ export async function create({ plugin_uuid, native_id }) {
 export async function readAll() {
   // query database
   try {
-    const user = await User.findAll();
-    return user;
+    const users = await User.findAll();
+    return users;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
