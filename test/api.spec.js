@@ -1,10 +1,11 @@
 import request from 'supertest';
 
 import appPromise from '@/server/app';
-import { Plugin, User } from '~/server/controller';
+import { Plugin, User, Log } from '~/server/controller';
 
 jest.mock('~/server/controller/plugin.controller');
 jest.mock('~/server/controller/user.controller');
+jest.mock('~/server/controller/log.controller');
 
 describe('REST API', () => {
   test('POST /api/plugin', async () => {
@@ -318,6 +319,117 @@ describe('REST API', () => {
       .send();
 
     expect(User.delByUuid).toHaveBeenCalledWith(uuid, plugin_uuid);
+    expect(res.statusCode).toEqual(200);
+  });
+
+  test('POST /api/log', async () => {
+    let log;
+
+    Log.create.mockImplementationOnce(async ({ user_id, savelocation }) => {
+      const createdAt = new Date();
+      log = {
+        id: 1,
+        user_id,
+        createdAt,
+        updatedAt: createdAt,
+        savelocation,
+      };
+      return log;
+    });
+
+    const body = {
+      user_id: 1,
+      savelocation: 'foo',
+    };
+    const res = await request(await appPromise)
+      .post('/api/log')
+      .send(body);
+
+    expect(Log.create).toHaveBeenCalledWith(body);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      ...log,
+      createdAt: log.createdAt.toISOString(),
+      updatedAt: log.updatedAt.toISOString(),
+    });
+  });
+
+  test('GET /api/log', async () => {
+    const createdAt = new Date();
+    const log = {
+      id: 1,
+      user_id: 1,
+      createdAt,
+      updatedAt: createdAt,
+      savelocation: 'foo',
+    };
+
+    Log.readAll.mockImplementationOnce(async () => [log]);
+
+    const res = await request(await appPromise)
+      .get(`/api/log`)
+      .send();
+
+    expect(Log.readAll).toHaveBeenCalledWith();
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual([
+      {
+        ...log,
+        createdAt: log.createdAt.toISOString(),
+        updatedAt: log.updatedAt.toISOString(),
+      },
+    ]);
+  });
+
+  test('GET /api/log/:id', async () => {
+    const createdAt = new Date();
+    const log = {
+      id: 1,
+      user_id: 1,
+      createdAt,
+      updatedAt: createdAt,
+      savelocation: 'foo',
+    };
+
+    Log.read.mockImplementationOnce(async () => log);
+
+    const res = await request(await appPromise)
+      .get(`/api/log/${log.id}`)
+      .send();
+
+    expect(Log.read).toHaveBeenCalledWith(log.id);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      ...log,
+      createdAt: log.createdAt.toISOString(),
+      updatedAt: log.updatedAt.toISOString(),
+    });
+  });
+
+  test('PUT /api/log/:id', async () => {
+    Log.update.mockImplementationOnce(async () => {});
+
+    const id = 1;
+    const body = {
+      savelocation: 'bar',
+    };
+    const res = await request(await appPromise)
+      .put(`/api/log/${id}`)
+      .send(body);
+
+    expect(Log.update).toHaveBeenCalledWith(id, body);
+    expect(res.statusCode).toEqual(200);
+  });
+
+  test('DELETE /api/log/:id', async () => {
+    Log.del.mockImplementationOnce(async () => {});
+
+    const id = 1;
+    const res = await request(await appPromise)
+      .delete(`/api/log/${id}`)
+      .send();
+
+    expect(Log.del).toHaveBeenCalledWith(id);
     expect(res.statusCode).toEqual(200);
   });
 });
