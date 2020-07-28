@@ -31,6 +31,7 @@ describe('User Controller', () => {
       });
       // toMatchObject because sequelize model instances are not plain objects
       expect(user).toMatchObject({
+        id: expect.any(Number),
         uuid: expect.any(String),
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
@@ -47,6 +48,7 @@ describe('User Controller', () => {
       });
       // toMatchObject because sequelize model instances are not plain objects
       expect(user).toMatchObject({
+        id: expect.any(Number),
         uuid: expect.any(String),
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
@@ -63,6 +65,7 @@ describe('User Controller', () => {
       // toMatchObject because sequelize model instances are not plain objects
       expect(users).toMatchObject([
         {
+          id: expect.any(Number),
           uuid: expect.any(String),
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
@@ -70,6 +73,7 @@ describe('User Controller', () => {
           native_id: 'user',
         },
         {
+          id: expect.any(Number),
           uuid: expect.any(String),
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
@@ -85,6 +89,7 @@ describe('User Controller', () => {
       // toMatchObject because sequelize model instances are not plain objects
       expect(users).toMatchObject([
         {
+          id: expect.any(Number),
           uuid: expect.any(String),
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
@@ -107,6 +112,7 @@ describe('User Controller', () => {
       const user = await User.read(id1);
       // toMatchObject because sequelize model instances are not plain objects
       expect(user).toMatchObject({
+        id: expect.any(Number),
         uuid: expect.any(String),
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
@@ -128,6 +134,7 @@ describe('User Controller', () => {
       const user = await User.readByUuid(uuid2, plugin_uuid);
       // toMatchObject because sequelize model instances are not plain objects
       expect(user).toMatchObject({
+        id: expect.any(Number),
         uuid: expect.any(String),
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
