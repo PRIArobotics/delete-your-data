@@ -21,20 +21,17 @@ export function doRouting(app) {
   const create = expressify((req) => Log.create(req.body));
   router.post('/', create);
 
-  const readAll = expressify((req) => Log.readAll(req.query));
+  const readAll = expressify((req) => Log.readAll());
   router.get('/', readAll);
 
-  const read = expressify((req) => Log.read(req.params.id));
-  router.get('/:id', read);
+  const read = expressify((req) => Log.read(+req.params.id));
+  router.get('/:id(\\d+)', read);
 
-  const readByUserID = expressify((req) => Log.readByUserID(req.params.user_id));
-  router.get('/:user_id', readByUserID);
+  const update = expressify((req) => Log.update(+req.params.id, req.body));
+  router.put('/:id(\\d+)', update);
 
-  const update = expressify((req) => Log.update(req.params.id, req.body));
-  router.put('/:id', update);
-
-  const del = expressify((req) => Log.del(req.params.id));
-  router.delete('/:id', del);
+  const del = expressify((req) => Log.del(+req.params.id));
+  router.delete('/:id(\\d+)', del);
 
   app.use('/log', router);
 }
