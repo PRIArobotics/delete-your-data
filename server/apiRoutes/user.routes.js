@@ -21,23 +21,28 @@ export function doRouting(app) {
   const create = expressify((req) => User.create(req.body));
   router.post('/', create);
 
-  const readAll = expressify((req) => User.readAll(req.query));
+  const readAll = expressify((req) => User.readAll());
   router.get('/', readAll);
 
-  const read = expressify((req) => User.read(req.params.id));
+  const read = expressify((req) => User.read(+req.params.id));
   router.get('/:id', read);
 
-  const readByUuid = expressify((req) => User.readByUuid(req.params.uuid));
-  router.get('/:uuid', readByUuid);
+  const readByUuid = expressify((req) => User.readByUuid(req.params.uuid, req.params.plugin_uuid));
+  router.get('/:uuid/:plugin_uuid', readByUuid);
 
-  const readByUuid2 = expressify((req) => User.readByUuid(req.params.uuid));
-  router.get('/:uuid/:plugin_uuid', readByUuid2);
-
-  const update = expressify((req) => User.update(req.params.id, req.body));
+  const update = expressify((req) => User.update(+req.params.id, req.body));
   router.put('/:id', update);
 
-  const del = expressify((req) => User.del(req.params.uuid));
-  router.delete('/:uuid', del);
+  const updateByUuid = expressify((req) =>
+    User.updateByUuid(req.params.uuid, req.params.plugin_uuid, req.body),
+  );
+  router.put('/:uuid/:plugin_uuid', updateByUuid);
+
+  const del = expressify((req) => User.del(+req.params.id));
+  router.delete('/:id', del);
+
+  const delByUuid = expressify((req) => User.delByUuid(req.params.uuid, req.params.plugin_uuid));
+  router.delete('/:uuid/:plugin_uuid', delByUuid);
 
   app.use('/user', router);
 }
