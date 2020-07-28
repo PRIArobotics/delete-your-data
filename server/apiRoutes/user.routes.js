@@ -25,13 +25,13 @@ export function doRouting(app) {
   router.get('/', readAll);
 
   const read = expressify((req) => User.read(+req.params.id));
-  router.get('/:id', read);
+  router.get('/:id(\\d+)', read);
 
   const readByUuid = expressify((req) => User.readByUuid(req.params.uuid, req.params.plugin_uuid));
   router.get('/:uuid/:plugin_uuid', readByUuid);
 
   const update = expressify((req) => User.update(+req.params.id, req.body));
-  router.put('/:id', update);
+  router.put('/:id(\\d+)', update);
 
   const updateByUuid = expressify((req) =>
     User.updateByUuid(req.params.uuid, req.params.plugin_uuid, req.body),
@@ -39,7 +39,7 @@ export function doRouting(app) {
   router.put('/:uuid/:plugin_uuid', updateByUuid);
 
   const del = expressify((req) => User.del(+req.params.id));
-  router.delete('/:id', del);
+  router.delete('/:id(\\d+)', del);
 
   const delByUuid = expressify((req) => User.delByUuid(req.params.uuid, req.params.plugin_uuid));
   router.delete('/:uuid/:plugin_uuid', delByUuid);
