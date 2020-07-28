@@ -24,27 +24,23 @@ export async function create({ user_id, savelocation }) {
   }
 }
 
-export async function readAll({}) {
-  // create filter
-  var condition = name ? {} : null;
-
+export async function readAll() {
   // query database
   try {
-    const log = await Log.findAll({ where: condition });
+    const log = await Log.findAll();
     return log;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 }
 
-export async function readByUserID({ user_id }) {
-  // create filter
-  var condition = user_id ? { user_id: { [Op.like]: `%${user_id}%` } } : null;
-
+export async function readAllByUserId(user_id) {
   // query database
   try {
-    const log = await Log.findAll({ where: condition });
-    return log;
+    const logs = await Log.findAll({
+      where: { user_id },
+    });
+    return logs;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }

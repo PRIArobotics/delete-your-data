@@ -148,7 +148,9 @@ describe('User Controller', () => {
       await User.del(id1);
       await User.delByUuid(uuid2, plugin_uuid);
 
-      expect(await User.readAll()).toHaveLength(0);
+      const users = await User.readAll();
+      // manually filter for only those using the test plugin
+      expect(users.filter(user => user.plugin_uuid === plugin_uuid)).toHaveLength(0);
     }
   });
 });
