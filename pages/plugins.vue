@@ -62,14 +62,12 @@ export default {
     editedItem: {
       name: '',
       type: '',
-      // uuid: '',
-      // config: {},
+      config: '{}',
     },
     defaultItem: {
       name: '',
       type: '',
-      // uuid: '',
-      // config: {},
+      config: '{}',
     },
   }),
 
@@ -94,16 +92,19 @@ export default {
 
   methods: {
     editItem(item) {
+      const { uuid, name, type } = item;
+      const config = JSON.stringify(item.config);
+
       this.editedIndex = this.items.indexOf(item);
-      this.editedItem = { ...item, config: JSON.stringify(item.config) };
+      this.editedItem = { uuid, name, type, config };
       this.dialog = true;
     },
 
-    deleteItem(item) {
+    async deleteItem(item) {
       const index = this.items.indexOf(item);
       const confirmed = confirm('Are you sure you want to delete this plugin?');
       if (confirmed) {
-        // TODO do real delete
+        await this.$axios.$delete(`/api/plugin/${item.uuid}`);
         this.items.splice(index, 1);
       }
     },
@@ -116,26 +117,19 @@ export default {
       });
     },
 
-    save() {
-      const editedItem = { ...this.editedItem, config: JSON.parse(this.editedItem.config) };
+    async save() {
+      const { uuid, name, type } = this.editedItem;
+      const config = JSON.parse(this.editedItem.config);
+
       if (this.editedIndex > -1) {
-        // TODO do real update
-        Object.assign(this.items[this.editedIndex], editedItem);
+        await this.$axios.$put(`/api/plugin/${uuid}`, { name, type, config });
+        Object.assign(this.items[this.editedIndex], { name, type, config });
       } else {
-        // TODO do real insert
-        this.items.push(editedItem);
+        const plugin = await this.$axios.$post('/api/plugin/', { name, type, config });
+        this.items.push(plugin);
       }
       this.close();
     },
-
-    // async createPlugin() {
-    //   const plugin = await this.$axios.$post('/api/plugin/', {
-    //     name: 'dummy',
-    //     type: 'dummy',
-    //     config: { foo: 0 },
-    //   });
-    //   console.log('created', plugin);
-    // },
   },
 };
 </script>
