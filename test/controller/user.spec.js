@@ -150,7 +150,7 @@ describe('User Controller', () => {
 
       const users = await User.readAll();
       // manually filter for only those using the test plugin
-      expect(users.filter(user => user.plugin_uuid === plugin_uuid)).toHaveLength(0);
+      expect(users.filter((user) => user.plugin_uuid === plugin_uuid)).toHaveLength(0);
     }
   });
 });
