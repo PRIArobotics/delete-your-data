@@ -1,5 +1,12 @@
 <template>
-  <v-data-table :headers="headers" :items="items" sort-by="name" class="elevation-1">
+  <v-data-table
+    :headers="headers"
+    :items="items"
+    sort-by="name"
+    item-key="uuid"
+    show-expand
+    class="elevation-1"
+  >
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Plugins</v-toolbar-title>
@@ -42,6 +49,18 @@
       <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
       <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
     </template>
+    <template v-slot:expanded-item="{ headers, item }">
+      <td :colspan="headers.length">
+        <dl>
+          <dt>UUID</dt>
+          <dd>{{ item.uuid }}</dd>
+          <dt>Config JSON</dt>
+          <dd>
+            <pre>{{ item.config }}</pre>
+          </dd>
+        </dl>
+      </td>
+    </template>
   </v-data-table>
 </template>
 
@@ -56,6 +75,7 @@ export default {
       // { text: 'ID', value: 'uuid' },
       // { text: 'Config JSON', value: 'config' },
       { text: 'Actions', value: 'actions', sortable: false, width: '7em' },
+      { text: '', value: 'data-table-expand' },
     ],
     items: [],
     editedIndex: -1,
@@ -133,3 +153,24 @@ export default {
   },
 };
 </script>
+
+<style>
+dl {
+  margin: 6px 0 6px 6px;
+}
+
+@media (min-width: 599px) {
+  dl {
+    display: grid;
+    grid-template-columns: 160px auto;
+  }
+}
+
+dt {
+  font-weight: bold;
+}
+
+dt, dd {
+  margin: 6px 0;
+}
+</style>
