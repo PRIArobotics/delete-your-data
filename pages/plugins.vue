@@ -55,7 +55,7 @@ export default {
       { text: 'Type', value: 'type' },
       // { text: 'ID', value: 'uuid' },
       // { text: 'Config JSON', value: 'config' },
-      { text: 'Actions', value: 'actions', sortable: false },
+      { text: 'Actions', value: 'actions', sortable: false, width: '7em' },
     ],
     items: [],
     editedIndex: -1,
