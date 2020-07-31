@@ -16,12 +16,12 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await Plugin.del(plugin_uuid);
+  // await Plugin.del(plugin_uuid);
 });
 
 describe('Account Controller', () => {
   test('it works', async () => {
-    let id1, person_uuid2;
+    let uuid1, person_uuid2;
 
     // create
     {
@@ -31,7 +31,7 @@ describe('Account Controller', () => {
       });
       // toMatchObject because sequelize model instances are not plain objects
       expect(account).toMatchObject({
-        id: expect.any(Number),
+        uuid: expect.any(String),
         person_uuid: expect.any(String),
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
@@ -39,7 +39,7 @@ describe('Account Controller', () => {
         native_id: 'account',
       });
 
-      id1 = account.id;
+      uuid1 = account.uuid;
     }
     {
       const account = await Account.create({
@@ -48,7 +48,7 @@ describe('Account Controller', () => {
       });
       // toMatchObject because sequelize model instances are not plain objects
       expect(account).toMatchObject({
-        id: expect.any(Number),
+        uuid: expect.any(String),
         person_uuid: expect.any(String),
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
@@ -65,7 +65,7 @@ describe('Account Controller', () => {
       // toMatchObject because sequelize model instances are not plain objects
       expect(accounts.filter((account) => account.plugin_uuid === plugin_uuid)).toMatchObject([
         {
-          id: expect.any(Number),
+          uuid: expect.any(String),
           person_uuid: expect.any(String),
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
@@ -73,7 +73,7 @@ describe('Account Controller', () => {
           native_id: 'account',
         },
         {
-          id: expect.any(Number),
+          uuid: expect.any(String),
           person_uuid: expect.any(String),
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
@@ -89,7 +89,7 @@ describe('Account Controller', () => {
       // toMatchObject because sequelize model instances are not plain objects
       expect(accounts).toMatchObject([
         {
-          id: expect.any(Number),
+          uuid: expect.any(String),
           person_uuid: expect.any(String),
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
@@ -101,7 +101,7 @@ describe('Account Controller', () => {
 
     // update
     {
-      await Account.update(id1, {
+      await Account.update(uuid1, {
         plugin_uuid,
         native_id: 'account2',
       });
@@ -109,10 +109,10 @@ describe('Account Controller', () => {
 
     // read update
     {
-      const account = await Account.read(id1);
+      const account = await Account.read(uuid1);
       // toMatchObject because sequelize model instances are not plain objects
       expect(account).toMatchObject({
-        id: expect.any(Number),
+        uuid: expect.any(String),
         person_uuid: expect.any(String),
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
@@ -134,7 +134,7 @@ describe('Account Controller', () => {
       const account = await Account.readByUuid(person_uuid2, plugin_uuid);
       // toMatchObject because sequelize model instances are not plain objects
       expect(account).toMatchObject({
-        id: expect.any(Number),
+        uuid: expect.any(String),
         person_uuid: expect.any(String),
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
@@ -145,7 +145,7 @@ describe('Account Controller', () => {
 
     // delete
     {
-      await Account.del(id1);
+      await Account.del(uuid1);
       await Account.delByUuid(person_uuid2, plugin_uuid);
 
       const accounts = await Account.readAll();

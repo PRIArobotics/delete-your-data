@@ -2,9 +2,9 @@ export default (sequelize, Sequelize) => {
   const Plugin = sequelize.import('./plugin.model.js');
 
   const Account = sequelize.define('Account', {
-    id: {
-      type: Sequelize.INTEGER,
-      autoIncrement: true,
+    uuid: {
+      type: Sequelize.UUID,
+      defaultValue: Sequelize.UUIDV4,
       primaryKey: true,
     },
     person_uuid: {

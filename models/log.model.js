@@ -7,12 +7,12 @@ export default (sequelize, Sequelize) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    account_id: {
-      type: Sequelize.INTEGER,
+    account_uuid: {
+      type: Sequelize.UUID,
 
       references: {
         model: Account,
-        key: 'id',
+        key: 'uuid',
 
         // This declares when to check the foreign key constraint. PostgreSQL only.
         //deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,

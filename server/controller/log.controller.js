@@ -5,10 +5,10 @@ import { Log } from '../../models';
 
 module.exports.name = 'Log';
 
-export async function create({ account_id, native_location }) {
+export async function create({ account_uuid, native_location }) {
   // validate data
-  if (!account_id) {
-    throw new httpErrors[400]('`account_id` can not be empty!');
+  if (!account_uuid) {
+    throw new httpErrors[400]('`account_uuid` can not be empty!');
   }
 
   if (!native_location) {
@@ -17,7 +17,7 @@ export async function create({ account_id, native_location }) {
 
   // save to database
   try {
-    const log = await Log.create({ account_id, native_location });
+    const log = await Log.create({ account_uuid, native_location });
     return log;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
@@ -34,11 +34,11 @@ export async function readAll() {
   }
 }
 
-export async function readAllByAccountId(account_id) {
+export async function readAllByAccount(account_uuid) {
   // query database
   try {
     const logs = await Log.findAll({
-      where: { account_id },
+      where: { account_uuid },
     });
     return logs;
   } catch (err) {
@@ -56,10 +56,10 @@ export async function read(id) {
   }
 }
 
-export async function update(id, { account_id, native_location }) {
+export async function update(id, { account_uuid, native_location }) {
   // validate data
-  if (!account_id) {
-    throw new httpErrors[400]('`account_id` can not be empty!');
+  if (!account_uuid) {
+    throw new httpErrors[400]('`account_uuid` can not be empty!');
   }
 
   if (!native_location) {
@@ -73,7 +73,7 @@ export async function update(id, { account_id, native_location }) {
     // https://sequelize.org/v5/class/lib/model.js~Model.html#static-method-update)
     // we want the first of those numbers, i.e. do an array destructuring assignment here:
     [num] = await Log.update(
-      { account_id, native_location },
+      { account_uuid, native_location },
       {
         where: { id },
       },

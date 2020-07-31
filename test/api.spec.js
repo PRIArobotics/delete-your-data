@@ -131,7 +131,7 @@ describe('REST API', () => {
     Account.create.mockImplementationOnce(async ({ plugin_uuid, native_id }) => {
       const createdAt = new Date();
       account = {
-        id: 1,
+        uuid: '1d47affb-74b9-42cc-920b-c97908064a79',
         person_uuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
         plugin_uuid,
         createdAt,
@@ -161,7 +161,7 @@ describe('REST API', () => {
   test('GET /api/account', async () => {
     const createdAt = new Date();
     const account = {
-      id: 1,
+      uuid: '1d47affb-74b9-42cc-920b-c97908064a79',
       person_uuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
       plugin_uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
       createdAt,
@@ -186,10 +186,10 @@ describe('REST API', () => {
     ]);
   });
 
-  test('GET /api/account/:id', async () => {
+  test('GET /api/account/:uuid', async () => {
     const createdAt = new Date();
     const account = {
-      id: 1,
+      uuid: '1d47affb-74b9-42cc-920b-c97908064a79',
       person_uuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
       plugin_uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
       createdAt,
@@ -200,10 +200,10 @@ describe('REST API', () => {
     Account.read.mockImplementationOnce(async () => account);
 
     const res = await request(await appPromise)
-      .get(`/api/account/${account.id}`)
+      .get(`/api/account/${account.uuid}`)
       .send();
 
-    expect(Account.read).toHaveBeenCalledWith(account.id);
+    expect(Account.read).toHaveBeenCalledWith(account.uuid);
     expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual({
       ...account,
@@ -212,124 +212,124 @@ describe('REST API', () => {
     });
   });
 
-  test('GET /api/account/:person_uuid', async () => {
-    const createdAt = new Date();
-    const account = {
-      id: 1,
-      person_uuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
-      plugin_uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
-      createdAt,
-      updatedAt: createdAt,
-      native_id: 'account',
-    };
+  // test('GET /api/account/:person_uuid', async () => {
+  //   const createdAt = new Date();
+  //   const account = {
+  //     id: 1,
+  //     person_uuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
+  //     plugin_uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+  //     createdAt,
+  //     updatedAt: createdAt,
+  //     native_id: 'account',
+  //   };
 
-    Account.readAllByUuid.mockImplementationOnce(async () => [account]);
+  //   Account.readAllByUuid.mockImplementationOnce(async () => [account]);
 
-    const res = await request(await appPromise)
-      .get(`/api/account/${account.person_uuid}`)
-      .send();
+  //   const res = await request(await appPromise)
+  //     .get(`/api/account/${account.person_uuid}`)
+  //     .send();
 
-    expect(Account.readAllByUuid).toHaveBeenCalledWith(account.person_uuid);
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toEqual([
-      {
-        ...account,
-        createdAt: account.createdAt.toISOString(),
-        updatedAt: account.updatedAt.toISOString(),
-      },
-    ]);
-  });
+  //   expect(Account.readAllByUuid).toHaveBeenCalledWith(account.person_uuid);
+  //   expect(res.statusCode).toEqual(200);
+  //   expect(res.body).toEqual([
+  //     {
+  //       ...account,
+  //       createdAt: account.createdAt.toISOString(),
+  //       updatedAt: account.updatedAt.toISOString(),
+  //     },
+  //   ]);
+  // });
 
-  test('GET /api/account/:person_uuid/:plugin_uuid', async () => {
-    const createdAt = new Date();
-    const account = {
-      id: 1,
-      person_uuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
-      plugin_uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
-      createdAt,
-      updatedAt: createdAt,
-      native_id: 'account',
-    };
+  // test('GET /api/account/:person_uuid/:plugin_uuid', async () => {
+  //   const createdAt = new Date();
+  //   const account = {
+  //     id: 1,
+  //     person_uuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
+  //     plugin_uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+  //     createdAt,
+  //     updatedAt: createdAt,
+  //     native_id: 'account',
+  //   };
 
-    Account.readByUuid.mockImplementationOnce(async () => account);
+  //   Account.readByUuid.mockImplementationOnce(async () => account);
 
-    const res = await request(await appPromise)
-      .get(`/api/account/${account.person_uuid}/${account.plugin_uuid}`)
-      .send();
+  //   const res = await request(await appPromise)
+  //     .get(`/api/account/${account.person_uuid}/${account.plugin_uuid}`)
+  //     .send();
 
-    expect(Account.readByUuid).toHaveBeenCalledWith(account.person_uuid, account.plugin_uuid);
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toEqual({
-      ...account,
-      createdAt: account.createdAt.toISOString(),
-      updatedAt: account.updatedAt.toISOString(),
-    });
-  });
+  //   expect(Account.readByUuid).toHaveBeenCalledWith(account.person_uuid, account.plugin_uuid);
+  //   expect(res.statusCode).toEqual(200);
+  //   expect(res.body).toEqual({
+  //     ...account,
+  //     createdAt: account.createdAt.toISOString(),
+  //     updatedAt: account.updatedAt.toISOString(),
+  //   });
+  // });
 
-  test('PUT /api/account/:id', async () => {
+  test('PUT /api/account/:uuid', async () => {
     Account.update.mockImplementationOnce(async () => {});
 
-    const id = 1;
+    const uuid = '1d47affb-74b9-42cc-920b-c97908064a79';
     const body = {
       native_id: 'account2',
     };
     const res = await request(await appPromise)
-      .put(`/api/account/${id}`)
+      .put(`/api/account/${uuid}`)
       .send(body);
 
-    expect(Account.update).toHaveBeenCalledWith(id, body);
+    expect(Account.update).toHaveBeenCalledWith(uuid, body);
     expect(res.statusCode).toEqual(200);
   });
 
-  test('PUT /api/account/:person_uuid/:plugin_uuid', async () => {
-    Account.updateByUuid.mockImplementationOnce(async () => {});
+  // test('PUT /api/account/:person_uuid/:plugin_uuid', async () => {
+  //   Account.updateByUuid.mockImplementationOnce(async () => {});
 
-    const person_uuid = '3e54b9d2-e852-4bdb-97e0-6c25a405b776';
-    const plugin_uuid = '7224835f-a10b-44d3-94b2-959580a327cf';
-    const body = {
-      native_id: 'account2',
-    };
-    const res = await request(await appPromise)
-      .put(`/api/account/${person_uuid}/${plugin_uuid}`)
-      .send(body);
+  //   const person_uuid = '3e54b9d2-e852-4bdb-97e0-6c25a405b776';
+  //   const plugin_uuid = '7224835f-a10b-44d3-94b2-959580a327cf';
+  //   const body = {
+  //     native_id: 'account2',
+  //   };
+  //   const res = await request(await appPromise)
+  //     .put(`/api/account/${person_uuid}/${plugin_uuid}`)
+  //     .send(body);
 
-    expect(Account.updateByUuid).toHaveBeenCalledWith(person_uuid, plugin_uuid, body);
-    expect(res.statusCode).toEqual(200);
-  });
+  //   expect(Account.updateByUuid).toHaveBeenCalledWith(person_uuid, plugin_uuid, body);
+  //   expect(res.statusCode).toEqual(200);
+  // });
 
-  test('DELETE /api/account/:id', async () => {
+  test('DELETE /api/account/:uuid', async () => {
     Account.del.mockImplementationOnce(async () => {});
 
-    const id = 1;
+    const uuid = '1d47affb-74b9-42cc-920b-c97908064a79';
     const res = await request(await appPromise)
-      .delete(`/api/account/${id}`)
+      .delete(`/api/account/${uuid}`)
       .send();
 
-    expect(Account.del).toHaveBeenCalledWith(id);
+    expect(Account.del).toHaveBeenCalledWith(uuid);
     expect(res.statusCode).toEqual(200);
   });
 
-  test('DELETE /api/account/:person_uuid/:plugin_uuid', async () => {
-    Account.delByUuid.mockImplementationOnce(async () => {});
+  // test('DELETE /api/account/:person_uuid/:plugin_uuid', async () => {
+  //   Account.delByUuid.mockImplementationOnce(async () => {});
 
-    const person_uuid = '3e54b9d2-e852-4bdb-97e0-6c25a405b776';
-    const plugin_uuid = '7224835f-a10b-44d3-94b2-959580a327cf';
-    const res = await request(await appPromise)
-      .delete(`/api/account/${person_uuid}/${plugin_uuid}`)
-      .send();
+  //   const person_uuid = '3e54b9d2-e852-4bdb-97e0-6c25a405b776';
+  //   const plugin_uuid = '7224835f-a10b-44d3-94b2-959580a327cf';
+  //   const res = await request(await appPromise)
+  //     .delete(`/api/account/${person_uuid}/${plugin_uuid}`)
+  //     .send();
 
-    expect(Account.delByUuid).toHaveBeenCalledWith(person_uuid, plugin_uuid);
-    expect(res.statusCode).toEqual(200);
-  });
+  //   expect(Account.delByUuid).toHaveBeenCalledWith(person_uuid, plugin_uuid);
+  //   expect(res.statusCode).toEqual(200);
+  // });
 
   test('POST /api/log', async () => {
     let log;
 
-    Log.create.mockImplementationOnce(async ({ account_id, native_location }) => {
+    Log.create.mockImplementationOnce(async ({ account_uuid, native_location }) => {
       const createdAt = new Date();
       log = {
         id: 1,
-        account_id,
+        account_uuid,
         createdAt,
         updatedAt: createdAt,
         native_location,
@@ -338,7 +338,7 @@ describe('REST API', () => {
     });
 
     const body = {
-      account_id: 1,
+      account_uuid: '1d47affb-74b9-42cc-920b-c97908064a79',
       native_location: 'foo',
     };
     const res = await request(await appPromise)
@@ -358,7 +358,7 @@ describe('REST API', () => {
     const createdAt = new Date();
     const log = {
       id: 1,
-      account_id: 1,
+      account_uuid: '1d47affb-74b9-42cc-920b-c97908064a79',
       createdAt,
       updatedAt: createdAt,
       native_location: 'foo',
@@ -385,7 +385,7 @@ describe('REST API', () => {
     const createdAt = new Date();
     const log = {
       id: 1,
-      account_id: 1,
+      account_uuid: '1d47affb-74b9-42cc-920b-c97908064a79',
       createdAt,
       updatedAt: createdAt,
       native_location: 'foo',

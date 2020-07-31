@@ -34,10 +34,10 @@ export async function readAll() {
   }
 }
 
-export async function read(id) {
+export async function read(uuid) {
   // query database
   try {
-    const account = await Account.findByPk(id);
+    const account = await Account.findByPk(uuid);
     return account;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
@@ -68,7 +68,7 @@ export async function readAllByUuid(person_uuid) {
   }
 }
 
-export async function update(id, { native_id }) {
+export async function update(uuid, { native_id }) {
   // validate data
   if (!native_id) {
     throw new httpErrors[400]('`native_id` can not be empty!');
@@ -83,7 +83,7 @@ export async function update(id, { native_id }) {
     [num] = await Account.update(
       { native_id },
       {
-        where: { id },
+        where: { uuid },
       },
     );
   } catch (err) {
@@ -91,7 +91,7 @@ export async function update(id, { native_id }) {
   }
 
   if (num !== 1) {
-    throw new httpErrors[400](`Updating Account with ID=${id} failed`);
+    throw new httpErrors[400](`Updating Account with UUID=${uuid} failed`);
   }
 
   return { message: 'Account was updated successfully.' };
@@ -120,18 +120,18 @@ export async function updateByUuid(person_uuid, plugin_uuid, { native_id }) {
   }
 
   if (num !== 1) {
-    throw new httpErrors[400](`Updating Account with ID=${id} failed`);
+    throw new httpErrors[400](`Updating Account with person UUID=${person_uuid}, plugin UUID=${plugin_uuid} failed`);
   }
 
   return { message: 'Account was updated successfully.' };
 }
 
-export async function del(id) {
+export async function del(uuid) {
   // save to database
   let num;
   try {
     num = await Account.destroy({
-      where: { id },
+      where: { uuid },
     });
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
