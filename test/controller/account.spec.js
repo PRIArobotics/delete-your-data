@@ -44,7 +44,7 @@ describe('Account Controller', () => {
     {
       const account = await Account.create({
         plugin_uuid,
-        native_id: 'other_account',
+        native_id: { username: 'other_account' },
       });
       // toMatchObject because sequelize model instances are not plain objects
       expect(account).toMatchObject({
@@ -53,7 +53,7 @@ describe('Account Controller', () => {
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
         plugin_uuid,
-        native_id: 'other_account',
+        native_id: { username: 'other_account' },
       });
 
       uuid2 = account.uuid;
@@ -78,7 +78,7 @@ describe('Account Controller', () => {
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
           plugin_uuid,
-          native_id: 'other_account',
+          native_id: { username: 'other_account' },
         },
       ]);
     }
@@ -94,7 +94,7 @@ describe('Account Controller', () => {
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
           plugin_uuid,
-          native_id: 'other_account',
+          native_id: { username: 'other_account' },
         },
       ]);
     }
@@ -125,7 +125,7 @@ describe('Account Controller', () => {
     {
       await Account.updateByUuid(uuid2, plugin_uuid, {
         plugin_uuid,
-        native_id: 'other_account2',
+        native_id: { username: 'other_account2' },
       });
     }
 
@@ -139,7 +139,7 @@ describe('Account Controller', () => {
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
         plugin_uuid,
-        native_id: 'other_account2',
+        native_id: { username: 'other_account2' },
       });
     }
 

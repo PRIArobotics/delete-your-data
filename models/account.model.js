@@ -23,7 +23,7 @@ export default (sequelize, Sequelize) => {
       },
     },
     native_id: {
-      type: Sequelize.STRING(256),
+      type: Sequelize.JSON,
     },
   });
 
