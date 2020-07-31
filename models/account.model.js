@@ -7,7 +7,7 @@ export default (sequelize, Sequelize) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    uuid: {
+    person_uuid: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
     },

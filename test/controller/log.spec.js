@@ -1,7 +1,7 @@
 import { initSequelize } from '~/models';
 import { Plugin, Account, Log } from '~/server/controller';
 
-let plugin_uuid, account_id, user_uuid;
+let plugin_uuid, account_id, person_uuid;
 
 beforeAll(async () => {
   await initSequelize();
@@ -20,7 +20,7 @@ beforeAll(async () => {
   });
 
   account_id = account.id;
-  user_uuid = account.uuid;
+  person_uuid = account.person_uuid;
 });
 
 afterAll(async () => {

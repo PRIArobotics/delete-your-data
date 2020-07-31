@@ -27,25 +27,25 @@ export function doRouting(app) {
   const read = expressify((req) => Account.read(+req.params.id));
   router.get('/:id(\\d+)', read);
 
-  const readAllByUuid = expressify((req) => Account.readAllByUuid(req.params.uuid));
-  router.get('/:uuid', readAllByUuid);
+  const readAllByUuid = expressify((req) => Account.readAllByUuid(req.params.person_uuid));
+  router.get('/:person_uuid', readAllByUuid);
 
-  const readByUuid = expressify((req) => Account.readByUuid(req.params.uuid, req.params.plugin_uuid));
-  router.get('/:uuid/:plugin_uuid', readByUuid);
+  const readByUuid = expressify((req) => Account.readByUuid(req.params.person_uuid, req.params.plugin_uuid));
+  router.get('/:person_uuid/:plugin_uuid', readByUuid);
 
   const update = expressify((req) => Account.update(+req.params.id, req.body));
   router.put('/:id(\\d+)', update);
 
   const updateByUuid = expressify((req) =>
-    Account.updateByUuid(req.params.uuid, req.params.plugin_uuid, req.body),
+    Account.updateByUuid(req.params.person_uuid, req.params.plugin_uuid, req.body),
   );
-  router.put('/:uuid/:plugin_uuid', updateByUuid);
+  router.put('/:person_uuid/:plugin_uuid', updateByUuid);
 
   const del = expressify((req) => Account.del(+req.params.id));
   router.delete('/:id(\\d+)', del);
 
-  const delByUuid = expressify((req) => Account.delByUuid(req.params.uuid, req.params.plugin_uuid));
-  router.delete('/:uuid/:plugin_uuid', delByUuid);
+  const delByUuid = expressify((req) => Account.delByUuid(req.params.person_uuid, req.params.plugin_uuid));
+  router.delete('/:person_uuid/:plugin_uuid', delByUuid);
 
   app.use('/account', router);
 }

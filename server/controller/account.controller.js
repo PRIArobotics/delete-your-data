@@ -44,11 +44,11 @@ export async function read(id) {
   }
 }
 
-export async function readByUuid(uuid, plugin_uuid) {
+export async function readByUuid(person_uuid, plugin_uuid) {
   // query database
   try {
     const account = await Account.findOne({
-      where: { uuid, plugin_uuid },
+      where: { person_uuid, plugin_uuid },
     });
     return account;
   } catch (err) {
@@ -56,11 +56,11 @@ export async function readByUuid(uuid, plugin_uuid) {
   }
 }
 
-export async function readAllByUuid(uuid) {
+export async function readAllByUuid(person_uuid) {
   // query database
   try {
     const accounts = await Account.findAll({
-      where: { uuid },
+      where: { person_uuid },
     });
     return accounts;
   } catch (err) {
@@ -97,7 +97,7 @@ export async function update(id, { native_id }) {
   return { message: 'Account was updated successfully.' };
 }
 
-export async function updateByUuid(uuid, plugin_uuid, { native_id }) {
+export async function updateByUuid(person_uuid, plugin_uuid, { native_id }) {
   // validate data
   if (!native_id) {
     throw new httpErrors[400]('`native_id` can not be empty!');
@@ -112,7 +112,7 @@ export async function updateByUuid(uuid, plugin_uuid, { native_id }) {
     [num] = await Account.update(
       { native_id },
       {
-        where: { uuid, plugin_uuid },
+        where: { person_uuid, plugin_uuid },
       },
     );
   } catch (err) {
@@ -144,19 +144,19 @@ export async function del(id) {
   return { message: 'Account was deleted successfully.' };
 }
 
-export async function delByUuid(uuid, plugin_uuid) {
+export async function delByUuid(person_uuid, plugin_uuid) {
   // save to database
   let num;
   try {
     num = await Account.destroy({
-      where: { uuid, plugin_uuid },
+      where: { person_uuid, plugin_uuid },
     });
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
   if (num !== 1) {
-    throw new httpErrors[400](`Deleting Account with UUID=${uuid}, plugin UUID=${plugin_uuid} failed`);
+    throw new httpErrors[400](`Deleting Account with person UUID=${person_uuid}, plugin UUID=${plugin_uuid} failed`);
   }
 
   return { message: 'Account was deleted successfully.' };
