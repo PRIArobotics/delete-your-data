@@ -325,21 +325,21 @@ describe('REST API', () => {
   test('POST /api/log', async () => {
     let log;
 
-    Log.create.mockImplementationOnce(async ({ account_id, savelocation }) => {
+    Log.create.mockImplementationOnce(async ({ account_id, native_location }) => {
       const createdAt = new Date();
       log = {
         id: 1,
         account_id,
         createdAt,
         updatedAt: createdAt,
-        savelocation,
+        native_location,
       };
       return log;
     });
 
     const body = {
       account_id: 1,
-      savelocation: 'foo',
+      native_location: 'foo',
     };
     const res = await request(await appPromise)
       .post('/api/log')
@@ -361,7 +361,7 @@ describe('REST API', () => {
       account_id: 1,
       createdAt,
       updatedAt: createdAt,
-      savelocation: 'foo',
+      native_location: 'foo',
     };
 
     Log.readAll.mockImplementationOnce(async () => [log]);
@@ -388,7 +388,7 @@ describe('REST API', () => {
       account_id: 1,
       createdAt,
       updatedAt: createdAt,
-      savelocation: 'foo',
+      native_location: 'foo',
     };
 
     Log.read.mockImplementationOnce(async () => log);
@@ -411,7 +411,7 @@ describe('REST API', () => {
 
     const id = 1;
     const body = {
-      savelocation: 'bar',
+      native_location: 'bar',
     };
     const res = await request(await appPromise)
       .put(`/api/log/${id}`)

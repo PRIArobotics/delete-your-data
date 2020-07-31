@@ -18,7 +18,7 @@ export default (sequelize, Sequelize) => {
         //deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
       },
     },
-    savelocation: {
+    native_location: {
       type: Sequelize.JSON,
     },
   });

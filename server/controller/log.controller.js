@@ -5,19 +5,19 @@ import { Log } from '../../models';
 
 module.exports.name = 'Log';
 
-export async function create({ account_id, savelocation }) {
+export async function create({ account_id, native_location }) {
   // validate data
   if (!account_id) {
     throw new httpErrors[400]('`account_id` can not be empty!');
   }
 
-  if (!savelocation) {
-    throw new httpErrors[400]('`savelocation` can not be empty!');
+  if (!native_location) {
+    throw new httpErrors[400]('`native_location` can not be empty!');
   }
 
   // save to database
   try {
-    const log = await Log.create({ account_id, savelocation });
+    const log = await Log.create({ account_id, native_location });
     return log;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
@@ -56,14 +56,14 @@ export async function read(id) {
   }
 }
 
-export async function update(id, { account_id, savelocation }) {
+export async function update(id, { account_id, native_location }) {
   // validate data
   if (!account_id) {
     throw new httpErrors[400]('`account_id` can not be empty!');
   }
 
-  if (!savelocation) {
-    throw new httpErrors[400]('`savelocation` can not be empty!');
+  if (!native_location) {
+    throw new httpErrors[400]('`native_location` can not be empty!');
   }
 
   // save to database
@@ -73,7 +73,7 @@ export async function update(id, { account_id, savelocation }) {
     // https://sequelize.org/v5/class/lib/model.js~Model.html#static-method-update)
     // we want the first of those numbers, i.e. do an array destructuring assignment here:
     [num] = await Log.update(
-      { account_id, savelocation },
+      { account_id, native_location },
       {
         where: { id },
       },

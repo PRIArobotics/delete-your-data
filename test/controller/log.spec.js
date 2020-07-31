@@ -36,7 +36,7 @@ describe('Log Controller', () => {
     {
       const log = await Log.create({
         account_id,
-        savelocation: 'foo',
+        native_location: 'foo',
       });
       // toMatchObject because sequelize model instances are not plain objects
       expect(log).toMatchObject({
@@ -44,7 +44,7 @@ describe('Log Controller', () => {
         account_id,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
-        savelocation: 'foo',
+        native_location: 'foo',
       });
 
       id = log.id;
@@ -60,7 +60,7 @@ describe('Log Controller', () => {
           account_id,
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
-          savelocation: 'foo',
+          native_location: 'foo',
         },
       ]);
     }
@@ -75,7 +75,7 @@ describe('Log Controller', () => {
           account_id,
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
-          savelocation: 'foo',
+          native_location: 'foo',
         },
       ]);
     }
@@ -84,7 +84,7 @@ describe('Log Controller', () => {
     {
       await Log.update(id, {
         account_id,
-        savelocation: 'bar',
+        native_location: 'bar',
       });
     }
 
@@ -97,7 +97,7 @@ describe('Log Controller', () => {
         account_id,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
-        savelocation: 'bar',
+        native_location: 'bar',
       });
     }
 
