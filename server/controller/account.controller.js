@@ -120,7 +120,9 @@ export async function updateByUuid(person_uuid, plugin_uuid, { native_id }) {
   }
 
   if (num !== 1) {
-    throw new httpErrors[400](`Updating Account with person UUID=${person_uuid}, plugin UUID=${plugin_uuid} failed`);
+    throw new httpErrors[400](
+      `Updating Account with person UUID=${person_uuid}, plugin UUID=${plugin_uuid} failed`,
+    );
   }
 
   return { message: 'Account was updated successfully.' };
@@ -156,7 +158,9 @@ export async function delByUuid(person_uuid, plugin_uuid) {
   }
 
   if (num !== 1) {
-    throw new httpErrors[400](`Deleting Account with person UUID=${person_uuid}, plugin UUID=${plugin_uuid} failed`);
+    throw new httpErrors[400](
+      `Deleting Account with person UUID=${person_uuid}, plugin UUID=${plugin_uuid} failed`,
+    );
   }
 
   return { message: 'Account was deleted successfully.' };

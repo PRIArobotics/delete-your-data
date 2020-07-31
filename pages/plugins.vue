@@ -170,7 +170,8 @@ dt {
   font-weight: bold;
 }
 
-dt, dd {
+dt,
+dd {
   margin: 6px 0;
 }
 </style>
