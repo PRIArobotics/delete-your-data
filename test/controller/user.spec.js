@@ -63,7 +63,7 @@ describe('User Controller', () => {
     {
       const users = await User.readAll();
       // toMatchObject because sequelize model instances are not plain objects
-      expect(users).toMatchObject([
+      expect(users.filter((user) => user.plugin_uuid === plugin_uuid)).toMatchObject([
         {
           id: expect.any(Number),
           uuid: expect.any(String),
