@@ -1,10 +1,10 @@
 import request from 'supertest';
 
 import appPromise from '@/server/app';
-import { Plugin, User, Log } from '~/server/controller';
+import { Plugin, Account, Log } from '~/server/controller';
 
 jest.mock('~/server/controller/plugin.controller');
-jest.mock('~/server/controller/user.controller');
+jest.mock('~/server/controller/account.controller');
 jest.mock('~/server/controller/log.controller');
 
 describe('REST API', () => {
@@ -125,12 +125,12 @@ describe('REST API', () => {
     expect(res.statusCode).toEqual(200);
   });
 
-  test('POST /api/user', async () => {
-    let user;
+  test('POST /api/account', async () => {
+    let account;
 
-    User.create.mockImplementationOnce(async ({ plugin_uuid, native_id }) => {
+    Account.create.mockImplementationOnce(async ({ plugin_uuid, native_id }) => {
       const createdAt = new Date();
-      user = {
+      account = {
         id: 1,
         uuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
         plugin_uuid,
@@ -138,198 +138,198 @@ describe('REST API', () => {
         updatedAt: createdAt,
         native_id,
       };
-      return user;
+      return account;
     });
 
     const body = {
       plugin_uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
-      native_id: 'user',
+      native_id: 'account',
     };
     const res = await request(await appPromise)
-      .post('/api/user')
+      .post('/api/account')
       .send(body);
 
-    expect(User.create).toHaveBeenCalledWith(body);
+    expect(Account.create).toHaveBeenCalledWith(body);
     expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual({
-      ...user,
-      createdAt: user.createdAt.toISOString(),
-      updatedAt: user.updatedAt.toISOString(),
+      ...account,
+      createdAt: account.createdAt.toISOString(),
+      updatedAt: account.updatedAt.toISOString(),
     });
   });
 
-  test('GET /api/user', async () => {
+  test('GET /api/account', async () => {
     const createdAt = new Date();
-    const user = {
+    const account = {
       id: 1,
       uuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
       plugin_uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
       createdAt,
       updatedAt: createdAt,
-      native_id: 'user',
+      native_id: 'account',
     };
 
-    User.readAll.mockImplementationOnce(async () => [user]);
+    Account.readAll.mockImplementationOnce(async () => [account]);
 
     const res = await request(await appPromise)
-      .get(`/api/user`)
+      .get(`/api/account`)
       .send();
 
-    expect(User.readAll).toHaveBeenCalledWith();
+    expect(Account.readAll).toHaveBeenCalledWith();
     expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual([
       {
-        ...user,
-        createdAt: user.createdAt.toISOString(),
-        updatedAt: user.updatedAt.toISOString(),
+        ...account,
+        createdAt: account.createdAt.toISOString(),
+        updatedAt: account.updatedAt.toISOString(),
       },
     ]);
   });
 
-  test('GET /api/user/:id', async () => {
+  test('GET /api/account/:id', async () => {
     const createdAt = new Date();
-    const user = {
+    const account = {
       id: 1,
       uuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
       plugin_uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
       createdAt,
       updatedAt: createdAt,
-      native_id: 'user',
+      native_id: 'account',
     };
 
-    User.read.mockImplementationOnce(async () => user);
+    Account.read.mockImplementationOnce(async () => account);
 
     const res = await request(await appPromise)
-      .get(`/api/user/${user.id}`)
+      .get(`/api/account/${account.id}`)
       .send();
 
-    expect(User.read).toHaveBeenCalledWith(user.id);
+    expect(Account.read).toHaveBeenCalledWith(account.id);
     expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual({
-      ...user,
-      createdAt: user.createdAt.toISOString(),
-      updatedAt: user.updatedAt.toISOString(),
+      ...account,
+      createdAt: account.createdAt.toISOString(),
+      updatedAt: account.updatedAt.toISOString(),
     });
   });
 
-  test('GET /api/user/:uuid', async () => {
+  test('GET /api/account/:uuid', async () => {
     const createdAt = new Date();
-    const user = {
+    const account = {
       id: 1,
       uuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
       plugin_uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
       createdAt,
       updatedAt: createdAt,
-      native_id: 'user',
+      native_id: 'account',
     };
 
-    User.readAllByUuid.mockImplementationOnce(async () => [user]);
+    Account.readAllByUuid.mockImplementationOnce(async () => [account]);
 
     const res = await request(await appPromise)
-      .get(`/api/user/${user.uuid}`)
+      .get(`/api/account/${account.uuid}`)
       .send();
 
-    expect(User.readAllByUuid).toHaveBeenCalledWith(user.uuid);
+    expect(Account.readAllByUuid).toHaveBeenCalledWith(account.uuid);
     expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual([
       {
-        ...user,
-        createdAt: user.createdAt.toISOString(),
-        updatedAt: user.updatedAt.toISOString(),
+        ...account,
+        createdAt: account.createdAt.toISOString(),
+        updatedAt: account.updatedAt.toISOString(),
       },
     ]);
   });
 
-  test('GET /api/user/:uuid/:plugin_uuid', async () => {
+  test('GET /api/account/:uuid/:plugin_uuid', async () => {
     const createdAt = new Date();
-    const user = {
+    const account = {
       id: 1,
       uuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
       plugin_uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
       createdAt,
       updatedAt: createdAt,
-      native_id: 'user',
+      native_id: 'account',
     };
 
-    User.readByUuid.mockImplementationOnce(async () => user);
+    Account.readByUuid.mockImplementationOnce(async () => account);
 
     const res = await request(await appPromise)
-      .get(`/api/user/${user.uuid}/${user.plugin_uuid}`)
+      .get(`/api/account/${account.uuid}/${account.plugin_uuid}`)
       .send();
 
-    expect(User.readByUuid).toHaveBeenCalledWith(user.uuid, user.plugin_uuid);
+    expect(Account.readByUuid).toHaveBeenCalledWith(account.uuid, account.plugin_uuid);
     expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual({
-      ...user,
-      createdAt: user.createdAt.toISOString(),
-      updatedAt: user.updatedAt.toISOString(),
+      ...account,
+      createdAt: account.createdAt.toISOString(),
+      updatedAt: account.updatedAt.toISOString(),
     });
   });
 
-  test('PUT /api/user/:id', async () => {
-    User.update.mockImplementationOnce(async () => {});
+  test('PUT /api/account/:id', async () => {
+    Account.update.mockImplementationOnce(async () => {});
 
     const id = 1;
     const body = {
-      native_id: 'user2',
+      native_id: 'account2',
     };
     const res = await request(await appPromise)
-      .put(`/api/user/${id}`)
+      .put(`/api/account/${id}`)
       .send(body);
 
-    expect(User.update).toHaveBeenCalledWith(id, body);
+    expect(Account.update).toHaveBeenCalledWith(id, body);
     expect(res.statusCode).toEqual(200);
   });
 
-  test('PUT /api/user/:uuid/:plugin_uuid', async () => {
-    User.updateByUuid.mockImplementationOnce(async () => {});
+  test('PUT /api/account/:uuid/:plugin_uuid', async () => {
+    Account.updateByUuid.mockImplementationOnce(async () => {});
 
     const uuid = '3e54b9d2-e852-4bdb-97e0-6c25a405b776';
     const plugin_uuid = '7224835f-a10b-44d3-94b2-959580a327cf';
     const body = {
-      native_id: 'user2',
+      native_id: 'account2',
     };
     const res = await request(await appPromise)
-      .put(`/api/user/${uuid}/${plugin_uuid}`)
+      .put(`/api/account/${uuid}/${plugin_uuid}`)
       .send(body);
 
-    expect(User.updateByUuid).toHaveBeenCalledWith(uuid, plugin_uuid, body);
+    expect(Account.updateByUuid).toHaveBeenCalledWith(uuid, plugin_uuid, body);
     expect(res.statusCode).toEqual(200);
   });
 
-  test('DELETE /api/user/:id', async () => {
-    User.del.mockImplementationOnce(async () => {});
+  test('DELETE /api/account/:id', async () => {
+    Account.del.mockImplementationOnce(async () => {});
 
     const id = 1;
     const res = await request(await appPromise)
-      .delete(`/api/user/${id}`)
+      .delete(`/api/account/${id}`)
       .send();
 
-    expect(User.del).toHaveBeenCalledWith(id);
+    expect(Account.del).toHaveBeenCalledWith(id);
     expect(res.statusCode).toEqual(200);
   });
 
-  test('DELETE /api/user/:uuid/:plugin_uuid', async () => {
-    User.delByUuid.mockImplementationOnce(async () => {});
+  test('DELETE /api/account/:uuid/:plugin_uuid', async () => {
+    Account.delByUuid.mockImplementationOnce(async () => {});
 
     const uuid = '3e54b9d2-e852-4bdb-97e0-6c25a405b776';
     const plugin_uuid = '7224835f-a10b-44d3-94b2-959580a327cf';
     const res = await request(await appPromise)
-      .delete(`/api/user/${uuid}/${plugin_uuid}`)
+      .delete(`/api/account/${uuid}/${plugin_uuid}`)
       .send();
 
-    expect(User.delByUuid).toHaveBeenCalledWith(uuid, plugin_uuid);
+    expect(Account.delByUuid).toHaveBeenCalledWith(uuid, plugin_uuid);
     expect(res.statusCode).toEqual(200);
   });
 
   test('POST /api/log', async () => {
     let log;
 
-    Log.create.mockImplementationOnce(async ({ user_id, savelocation }) => {
+    Log.create.mockImplementationOnce(async ({ account_id, savelocation }) => {
       const createdAt = new Date();
       log = {
         id: 1,
-        user_id,
+        account_id,
         createdAt,
         updatedAt: createdAt,
         savelocation,
@@ -338,7 +338,7 @@ describe('REST API', () => {
     });
 
     const body = {
-      user_id: 1,
+      account_id: 1,
       savelocation: 'foo',
     };
     const res = await request(await appPromise)
@@ -358,7 +358,7 @@ describe('REST API', () => {
     const createdAt = new Date();
     const log = {
       id: 1,
-      user_id: 1,
+      account_id: 1,
       createdAt,
       updatedAt: createdAt,
       savelocation: 'foo',
@@ -385,7 +385,7 @@ describe('REST API', () => {
     const createdAt = new Date();
     const log = {
       id: 1,
-      user_id: 1,
+      account_id: 1,
       createdAt,
       updatedAt: createdAt,
       savelocation: 'foo',

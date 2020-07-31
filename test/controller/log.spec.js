@@ -1,7 +1,7 @@
 import { initSequelize } from '~/models';
-import { Plugin, User, Log } from '~/server/controller';
+import { Plugin, Account, Log } from '~/server/controller';
 
-let plugin_uuid, user_id, user_uuid;
+let plugin_uuid, account_id, user_uuid;
 
 beforeAll(async () => {
   await initSequelize();
@@ -14,17 +14,17 @@ beforeAll(async () => {
 
   plugin_uuid = plugin.uuid;
 
-  const user = await User.create({
+  const account = await Account.create({
     plugin_uuid,
-    native_id: 'log_test_user',
+    native_id: 'log_test_account',
   });
 
-  user_id = user.id;
-  user_uuid = user.uuid;
+  account_id = account.id;
+  user_uuid = account.uuid;
 });
 
 afterAll(async () => {
-  await User.del(user_id);
+  await Account.del(account_id);
   await Plugin.del(plugin_uuid);
 });
 
@@ -35,13 +35,13 @@ describe('Log Controller', () => {
     // create
     {
       const log = await Log.create({
-        user_id,
+        account_id,
         savelocation: 'foo',
       });
       // toMatchObject because sequelize model instances are not plain objects
       expect(log).toMatchObject({
         id: expect.any(Number),
-        user_id,
+        account_id,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
         savelocation: 'foo',
@@ -57,7 +57,7 @@ describe('Log Controller', () => {
       expect(logs).toMatchObject([
         {
           id: expect.any(Number),
-          user_id,
+          account_id,
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
           savelocation: 'foo',
@@ -65,14 +65,14 @@ describe('Log Controller', () => {
       ]);
     }
 
-    // read all logs for one user ID
+    // read all logs for one account ID
     {
-      const logs = await Log.readAllByUserId(user_id);
+      const logs = await Log.readAllByAccountId(account_id);
       // toMatchObject because sequelize model instances are not plain objects
       expect(logs).toMatchObject([
         {
           id: expect.any(Number),
-          user_id,
+          account_id,
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
           savelocation: 'foo',
@@ -83,7 +83,7 @@ describe('Log Controller', () => {
     // update
     {
       await Log.update(id, {
-        user_id,
+        account_id,
         savelocation: 'bar',
       });
     }
@@ -94,7 +94,7 @@ describe('Log Controller', () => {
       // toMatchObject because sequelize model instances are not plain objects
       expect(log).toMatchObject({
         id: expect.any(Number),
-        user_id,
+        account_id,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
         savelocation: 'bar',

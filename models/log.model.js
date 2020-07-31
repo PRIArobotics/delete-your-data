@@ -1,5 +1,5 @@
 export default (sequelize, Sequelize) => {
-  const User = sequelize.import('./user.model.js');
+  const Account = sequelize.import('./account.model.js');
 
   const Log = sequelize.define('Log', {
     id: {
@@ -7,11 +7,11 @@ export default (sequelize, Sequelize) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    user_id: {
+    account_id: {
       type: Sequelize.INTEGER,
 
       references: {
-        model: User,
+        model: Account,
         key: 'id',
 
         // This declares when to check the foreign key constraint. PostgreSQL only.

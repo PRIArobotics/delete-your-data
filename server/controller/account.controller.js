@@ -1,9 +1,9 @@
 import httpErrors from 'httperrors';
 import { Op } from 'sequelize';
 
-import { User } from '../../models';
+import { Account } from '../../models';
 
-module.exports.name = 'User';
+module.exports.name = 'Account';
 
 export async function create({ plugin_uuid, native_id }) {
   // validate data
@@ -17,8 +17,8 @@ export async function create({ plugin_uuid, native_id }) {
 
   // save to database
   try {
-    const user = await User.create({ plugin_uuid, native_id });
-    return user;
+    const account = await Account.create({ plugin_uuid, native_id });
+    return account;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
@@ -27,8 +27,8 @@ export async function create({ plugin_uuid, native_id }) {
 export async function readAll() {
   // query database
   try {
-    const users = await User.findAll();
-    return users;
+    const accounts = await Account.findAll();
+    return accounts;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
@@ -37,8 +37,8 @@ export async function readAll() {
 export async function read(id) {
   // query database
   try {
-    const user = await User.findByPk(id);
-    return user;
+    const account = await Account.findByPk(id);
+    return account;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
@@ -47,10 +47,10 @@ export async function read(id) {
 export async function readByUuid(uuid, plugin_uuid) {
   // query database
   try {
-    const user = await User.findOne({
+    const account = await Account.findOne({
       where: { uuid, plugin_uuid },
     });
-    return user;
+    return account;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
@@ -59,10 +59,10 @@ export async function readByUuid(uuid, plugin_uuid) {
 export async function readAllByUuid(uuid) {
   // query database
   try {
-    const users = await User.findAll({
+    const accounts = await Account.findAll({
       where: { uuid },
     });
-    return users;
+    return accounts;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
@@ -80,7 +80,7 @@ export async function update(id, { native_id }) {
     // update returns one or two numbers (usually one, except for special circumstances:
     // https://sequelize.org/v5/class/lib/model.js~Model.html#static-method-update)
     // we want the first of those numbers, i.e. do an array destructuring assignment here:
-    [num] = await User.update(
+    [num] = await Account.update(
       { native_id },
       {
         where: { id },
@@ -91,10 +91,10 @@ export async function update(id, { native_id }) {
   }
 
   if (num !== 1) {
-    throw new httpErrors[400](`Updating User with ID=${id} failed`);
+    throw new httpErrors[400](`Updating Account with ID=${id} failed`);
   }
 
-  return { message: 'User was updated successfully.' };
+  return { message: 'Account was updated successfully.' };
 }
 
 export async function updateByUuid(uuid, plugin_uuid, { native_id }) {
@@ -109,7 +109,7 @@ export async function updateByUuid(uuid, plugin_uuid, { native_id }) {
     // update returns one or two numbers (usually one, except for special circumstances:
     // https://sequelize.org/v5/class/lib/model.js~Model.html#static-method-update)
     // we want the first of those numbers, i.e. do an array destructuring assignment here:
-    [num] = await User.update(
+    [num] = await Account.update(
       { native_id },
       {
         where: { uuid, plugin_uuid },
@@ -120,17 +120,17 @@ export async function updateByUuid(uuid, plugin_uuid, { native_id }) {
   }
 
   if (num !== 1) {
-    throw new httpErrors[400](`Updating User with ID=${id} failed`);
+    throw new httpErrors[400](`Updating Account with ID=${id} failed`);
   }
 
-  return { message: 'User was updated successfully.' };
+  return { message: 'Account was updated successfully.' };
 }
 
 export async function del(id) {
   // save to database
   let num;
   try {
-    num = await User.destroy({
+    num = await Account.destroy({
       where: { id },
     });
   } catch (err) {
@@ -138,17 +138,17 @@ export async function del(id) {
   }
 
   if (num !== 1) {
-    throw new httpErrors[400](`Deleting User with UUID=${uuid} failed`);
+    throw new httpErrors[400](`Deleting Account with UUID=${uuid} failed`);
   }
 
-  return { message: 'User was deleted successfully.' };
+  return { message: 'Account was deleted successfully.' };
 }
 
 export async function delByUuid(uuid, plugin_uuid) {
   // save to database
   let num;
   try {
-    num = await User.destroy({
+    num = await Account.destroy({
       where: { uuid, plugin_uuid },
     });
   } catch (err) {
@@ -156,8 +156,8 @@ export async function delByUuid(uuid, plugin_uuid) {
   }
 
   if (num !== 1) {
-    throw new httpErrors[400](`Deleting User with UUID=${uuid}, plugin UUID=${plugin_uuid} failed`);
+    throw new httpErrors[400](`Deleting Account with UUID=${uuid}, plugin UUID=${plugin_uuid} failed`);
   }
 
-  return { message: 'User was deleted successfully.' };
+  return { message: 'Account was deleted successfully.' };
 }

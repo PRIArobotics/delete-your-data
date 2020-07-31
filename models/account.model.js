@@ -1,7 +1,7 @@
 export default (sequelize, Sequelize) => {
   const Plugin = sequelize.import('./plugin.model.js');
 
-  const User = sequelize.define('User', {
+  const Account = sequelize.define('Account', {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
@@ -27,5 +27,5 @@ export default (sequelize, Sequelize) => {
     },
   });
 
-  return User;
+  return Account;
 };

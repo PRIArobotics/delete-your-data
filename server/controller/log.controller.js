@@ -5,10 +5,10 @@ import { Log } from '../../models';
 
 module.exports.name = 'Log';
 
-export async function create({ user_id, savelocation }) {
+export async function create({ account_id, savelocation }) {
   // validate data
-  if (!user_id) {
-    throw new httpErrors[400]('`user_id` can not be empty!');
+  if (!account_id) {
+    throw new httpErrors[400]('`account_id` can not be empty!');
   }
 
   if (!savelocation) {
@@ -17,7 +17,7 @@ export async function create({ user_id, savelocation }) {
 
   // save to database
   try {
-    const log = await Log.create({ user_id, savelocation });
+    const log = await Log.create({ account_id, savelocation });
     return log;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
@@ -34,11 +34,11 @@ export async function readAll() {
   }
 }
 
-export async function readAllByUserId(user_id) {
+export async function readAllByAccountId(account_id) {
   // query database
   try {
     const logs = await Log.findAll({
-      where: { user_id },
+      where: { account_id },
     });
     return logs;
   } catch (err) {
@@ -56,10 +56,10 @@ export async function read(id) {
   }
 }
 
-export async function update(id, { user_id, savelocation }) {
+export async function update(id, { account_id, savelocation }) {
   // validate data
-  if (!user_id) {
-    throw new httpErrors[400]('`user_id` can not be empty!');
+  if (!account_id) {
+    throw new httpErrors[400]('`account_id` can not be empty!');
   }
 
   if (!savelocation) {
@@ -73,7 +73,7 @@ export async function update(id, { user_id, savelocation }) {
     // https://sequelize.org/v5/class/lib/model.js~Model.html#static-method-update)
     // we want the first of those numbers, i.e. do an array destructuring assignment here:
     [num] = await Log.update(
-      { user_id, savelocation },
+      { account_id, savelocation },
       {
         where: { id },
       },
