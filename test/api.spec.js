@@ -175,7 +175,7 @@ describe('REST API', () => {
       .get(`/api/account`)
       .send();
 
-    expect(Account.readAll).toHaveBeenCalledWith();
+    expect(Account.readAll).toHaveBeenCalledWith({});
     expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual([
       {
@@ -370,7 +370,7 @@ describe('REST API', () => {
       .get(`/api/log`)
       .send();
 
-    expect(Log.readAll).toHaveBeenCalledWith();
+    expect(Log.readAll).toHaveBeenCalledWith({});
     expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual([
       {

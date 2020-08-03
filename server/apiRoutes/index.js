@@ -57,14 +57,14 @@ router.deleteAsync('/plugin/:uuid', (req) => Plugin.del(req.params.uuid));
 
 // account routes
 router.postAsync('/account/', (req) => Account.create(req.body));
-router.getAsync('/account/', (req) => Account.readAll());
+router.getAsync('/account/', (req) => Account.readAll(req.query));
 router.getAsync('/account/:uuid', (req) => Account.read(req.params.uuid));
 router.putAsync('/account/:uuid', (req) => Account.update(req.params.uuid, req.body));
 router.deleteAsync('/account/:uuid', (req) => Account.del(req.params.uuid));
 
 // log routes
 router.postAsync('/log/', (req) => Log.create(req.body));
-router.getAsync('/log/', (req) => Log.readAll());
+router.getAsync('/log/', (req) => Log.readAll(req.query));
 router.getAsync('/log/:id(\\d+)', (req) => Log.read(+req.params.id));
 router.putAsync('/log/:id(\\d+)', (req) => Log.update(+req.params.id, req.body));
 router.deleteAsync('/log/:id(\\d+)', (req) => Log.del(+req.params.id));

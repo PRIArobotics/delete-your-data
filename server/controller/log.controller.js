@@ -22,23 +22,15 @@ export async function create({ accountUuid, nativeLocation }) {
   }
 }
 
-export async function readAll() {
-  // query database
-  try {
-    const log = await Log.findAll();
-    return log;
-  } catch (err) {
-    throw new httpErrors[500](err.message || 'An error occurred...');
-  }
-}
+export async function readAll({ accountUuid }) {
+  // create filter
+  const condition = {};
+  if (accountUuid) condition.accountUuid = accountUuid;
 
-export async function readAllByAccount(accountUuid) {
   // query database
   try {
-    const logs = await Log.findAll({
-      where: { accountUuid },
-    });
-    return logs;
+    const log = await Log.findAll({ where: condition });
+    return log;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }

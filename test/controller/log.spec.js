@@ -52,22 +52,7 @@ describe('Log Controller', () => {
 
     // read all
     {
-      const logs = await Log.readAll();
-      // toMatchObject because sequelize model instances are not plain objects
-      expect(logs).toMatchObject([
-        {
-          id: expect.any(Number),
-          accountUuid,
-          createdAt: expect.any(Date),
-          updatedAt: expect.any(Date),
-          nativeLocation: 'foo',
-        },
-      ]);
-    }
-
-    // read all logs for one account
-    {
-      const logs = await Log.readAllByAccount(accountUuid);
+      const logs = await Log.readAll({ accountUuid });
       // toMatchObject because sequelize model instances are not plain objects
       expect(logs).toMatchObject([
         {
@@ -105,7 +90,7 @@ describe('Log Controller', () => {
     {
       await Log.del(id);
 
-      expect(await Log.readAll()).toHaveLength(0);
+      expect(await Log.readAll({ accountUuid })).toHaveLength(0);
     }
   });
 });

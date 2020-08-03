@@ -61,9 +61,9 @@ describe('Account Controller', () => {
 
     // read all
     {
-      const accounts = await Account.readAll();
+      const accounts = await Account.readAll({ pluginUuid });
       // toMatchObject because sequelize model instances are not plain objects
-      expect(accounts.filter((account) => account.pluginUuid === pluginUuid)).toMatchObject([
+      expect(accounts).toMatchObject([
         {
           uuid: expect.any(String),
           personUuid: expect.any(String),
@@ -82,10 +82,8 @@ describe('Account Controller', () => {
         },
       ]);
     }
-
-    // read all accounts for one account UUID
     {
-      const accounts = await Account.readAllByUuid(personUuid2);
+      const accounts = await Account.readAll({ personUuid: personUuid2 });
       // toMatchObject because sequelize model instances are not plain objects
       expect(accounts).toMatchObject([
         {
@@ -148,9 +146,8 @@ describe('Account Controller', () => {
       await Account.del(uuid1);
       await Account.delByUuid(personUuid2, pluginUuid);
 
-      const accounts = await Account.readAll();
-      // manually filter for only those using the test plugin
-      expect(accounts.filter((account) => account.pluginUuid === pluginUuid)).toHaveLength(0);
+      const accounts = await Account.readAll({ pluginUuid });
+      expect(accounts).toHaveLength(0);
     }
   });
 });

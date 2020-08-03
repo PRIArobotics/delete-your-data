@@ -22,10 +22,15 @@ export async function create({ pluginUuid, nativeId }) {
   }
 }
 
-export async function readAll() {
+export async function readAll({ personUuid, pluginUuid }) {
+  // create filter
+  const condition = {};
+  if (personUuid) condition.personUuid = personUuid;
+  if (pluginUuid) condition.pluginUuid = pluginUuid;
+
   // query database
   try {
-    const accounts = await Account.findAll();
+    const accounts = await Account.findAll({ where: condition });
     return accounts;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
@@ -49,18 +54,6 @@ export async function readByUuid(personUuid, pluginUuid) {
       where: { personUuid, pluginUuid },
     });
     return account;
-  } catch (err) {
-    throw new httpErrors[500](err.message || 'An error occurred...');
-  }
-}
-
-export async function readAllByUuid(personUuid) {
-  // query database
-  try {
-    const accounts = await Account.findAll({
-      where: { personUuid },
-    });
-    return accounts;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
