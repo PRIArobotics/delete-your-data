@@ -1,7 +1,7 @@
 import httpErrors from 'httperrors';
 import { Op } from 'sequelize';
 
-import { Log } from '../../models';
+import { Account, Log } from '../../models';
 
 export async function create({ accountUuid, nativeLocation }) {
   // validate data
@@ -22,14 +22,23 @@ export async function create({ accountUuid, nativeLocation }) {
   }
 }
 
-export async function readAll({ accountUuid }) {
+export async function readAll({ accountUuid, personUuid }) {
   // create filter
   const condition = {};
+  const include = [];
   if (accountUuid) condition.accountUuid = accountUuid;
+  if (personUuid) {
+    // TODO this adds the account to the fetched data,
+    // even though we want the account only for filtering
+    include.push({
+      model: Account,
+      where: { personUuid },
+    });
+  }
 
   // query database
   try {
-    const log = await Log.findAll({ where: condition });
+    const log = await Log.findAll({ where: condition, include });
     return log;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');

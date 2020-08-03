@@ -65,6 +65,21 @@ describe('Log Controller', () => {
       ]);
     }
 
+    // read all by person
+    {
+      const logs = await Log.readAll({ personUuid });
+      // toMatchObject because sequelize model instances are not plain objects
+      expect(logs).toMatchObject([
+        {
+          id: expect.any(Number),
+          accountUuid,
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          nativeLocation: 'foo',
+        },
+      ]);
+    }
+
     // update
     {
       await Log.update(id, {
