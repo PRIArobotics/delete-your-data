@@ -24,18 +24,15 @@ export async function create({ name, type, config }) {
 
 export async function readAll({ search, name, type }) {
   // create filter
-  let condition = null;
-  if (search || name || type) {
-    condition = {};
-    if (name) condition.name = { [Op.like]: `%${name}%` };
-    if (type) condition.type = { [Op.like]: `%${type}%` };
+  const condition = {};
+  if (name) condition.name = { [Op.like]: `%${name}%` };
+  if (type) condition.type = { [Op.like]: `%${type}%` };
 
-    if (search) {
-      condition[Op.or] = {
-        name: { [Op.like]: `%${search}%` },
-        type: { [Op.like]: `%${search}%` },
-      };
-    }
+  if (search) {
+    condition[Op.or] = {
+      name: { [Op.like]: `%${search}%` },
+      type: { [Op.like]: `%${search}%` },
+    };
   }
 
   // query database
