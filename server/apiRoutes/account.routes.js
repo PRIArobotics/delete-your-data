@@ -15,7 +15,7 @@ function expressify(asyncHandler) {
   };
 }
 
-export function doRouting(app) {
+export default (app) => {
   var router = Router();
 
   const create = expressify((req) => Account.create(req.body));
@@ -48,6 +48,4 @@ export function doRouting(app) {
   // router.delete('/:personUuid/:pluginUuid', delByUuid);
 
   app.use('/account', router);
-}
-
-module.exports.name = 'Account';
+};
