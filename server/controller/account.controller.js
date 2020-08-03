@@ -5,19 +5,19 @@ import { Account } from '../../models';
 
 module.exports.name = 'Account';
 
-export async function create({ plugin_uuid, native_id }) {
+export async function create({ pluginUuid, nativeId }) {
   // validate data
-  if (!plugin_uuid) {
-    throw new httpErrors[400]('`plugin_uuid` can not be empty!');
+  if (!pluginUuid) {
+    throw new httpErrors[400]('`pluginUuid` can not be empty!');
   }
 
-  if (!native_id) {
-    throw new httpErrors[400]('`native_id` can not be empty!');
+  if (!nativeId) {
+    throw new httpErrors[400]('`nativeId` can not be empty!');
   }
 
   // save to database
   try {
-    const account = await Account.create({ plugin_uuid, native_id });
+    const account = await Account.create({ pluginUuid, nativeId });
     return account;
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
@@ -44,11 +44,11 @@ export async function read(uuid) {
   }
 }
 
-export async function readByUuid(person_uuid, plugin_uuid) {
+export async function readByUuid(personUuid, pluginUuid) {
   // query database
   try {
     const account = await Account.findOne({
-      where: { person_uuid, plugin_uuid },
+      where: { personUuid, pluginUuid },
     });
     return account;
   } catch (err) {
@@ -56,11 +56,11 @@ export async function readByUuid(person_uuid, plugin_uuid) {
   }
 }
 
-export async function readAllByUuid(person_uuid) {
+export async function readAllByUuid(personUuid) {
   // query database
   try {
     const accounts = await Account.findAll({
-      where: { person_uuid },
+      where: { personUuid },
     });
     return accounts;
   } catch (err) {
@@ -68,10 +68,10 @@ export async function readAllByUuid(person_uuid) {
   }
 }
 
-export async function update(uuid, { native_id }) {
+export async function update(uuid, { nativeId }) {
   // validate data
-  if (!native_id) {
-    throw new httpErrors[400]('`native_id` can not be empty!');
+  if (!nativeId) {
+    throw new httpErrors[400]('`nativeId` can not be empty!');
   }
 
   // save to database
@@ -81,7 +81,7 @@ export async function update(uuid, { native_id }) {
     // https://sequelize.org/v5/class/lib/model.js~Model.html#static-method-update)
     // we want the first of those numbers, i.e. do an array destructuring assignment here:
     [num] = await Account.update(
-      { native_id },
+      { nativeId },
       {
         where: { uuid },
       },
@@ -97,10 +97,10 @@ export async function update(uuid, { native_id }) {
   return { message: 'Account was updated successfully.' };
 }
 
-export async function updateByUuid(person_uuid, plugin_uuid, { native_id }) {
+export async function updateByUuid(personUuid, pluginUuid, { nativeId }) {
   // validate data
-  if (!native_id) {
-    throw new httpErrors[400]('`native_id` can not be empty!');
+  if (!nativeId) {
+    throw new httpErrors[400]('`nativeId` can not be empty!');
   }
 
   // save to database
@@ -110,9 +110,9 @@ export async function updateByUuid(person_uuid, plugin_uuid, { native_id }) {
     // https://sequelize.org/v5/class/lib/model.js~Model.html#static-method-update)
     // we want the first of those numbers, i.e. do an array destructuring assignment here:
     [num] = await Account.update(
-      { native_id },
+      { nativeId },
       {
-        where: { person_uuid, plugin_uuid },
+        where: { personUuid, pluginUuid },
       },
     );
   } catch (err) {
@@ -121,7 +121,7 @@ export async function updateByUuid(person_uuid, plugin_uuid, { native_id }) {
 
   if (num !== 1) {
     throw new httpErrors[400](
-      `Updating Account with person UUID=${person_uuid}, plugin UUID=${plugin_uuid} failed`,
+      `Updating Account with person UUID=${personUuid}, plugin UUID=${pluginUuid} failed`,
     );
   }
 
@@ -146,12 +146,12 @@ export async function del(uuid) {
   return { message: 'Account was deleted successfully.' };
 }
 
-export async function delByUuid(person_uuid, plugin_uuid) {
+export async function delByUuid(personUuid, pluginUuid) {
   // save to database
   let num;
   try {
     num = await Account.destroy({
-      where: { person_uuid, plugin_uuid },
+      where: { personUuid, pluginUuid },
     });
   } catch (err) {
     throw new httpErrors[500](err.message || 'An error occurred...');
@@ -159,7 +159,7 @@ export async function delByUuid(person_uuid, plugin_uuid) {
 
   if (num !== 1) {
     throw new httpErrors[400](
-      `Deleting Account with person UUID=${person_uuid}, plugin UUID=${plugin_uuid} failed`,
+      `Deleting Account with person UUID=${personUuid}, plugin UUID=${pluginUuid} failed`,
     );
   }
 

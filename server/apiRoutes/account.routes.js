@@ -27,25 +27,25 @@ export function doRouting(app) {
   const read = expressify((req) => Account.read(req.params.uuid));
   router.get('/:uuid', read);
 
-  // const readAllByUuid = expressify((req) => Account.readAllByUuid(req.params.person_uuid));
-  // router.get('/:person_uuid', readAllByUuid);
+  // const readAllByUuid = expressify((req) => Account.readAllByUuid(req.params.personUuid));
+  // router.get('/:personUuid', readAllByUuid);
 
-  // const readByUuid = expressify((req) => Account.readByUuid(req.params.person_uuid, req.params.plugin_uuid));
-  // router.get('/:person_uuid/:plugin_uuid', readByUuid);
+  // const readByUuid = expressify((req) => Account.readByUuid(req.params.personUuid, req.params.pluginUuid));
+  // router.get('/:personUuid/:pluginUuid', readByUuid);
 
   const update = expressify((req) => Account.update(req.params.uuid, req.body));
   router.put('/:uuid', update);
 
   // const updateByUuid = expressify((req) =>
-  //   Account.updateByUuid(req.params.person_uuid, req.params.plugin_uuid, req.body),
+  //   Account.updateByUuid(req.params.personUuid, req.params.pluginUuid, req.body),
   // );
-  // router.put('/:person_uuid/:plugin_uuid', updateByUuid);
+  // router.put('/:personUuid/:pluginUuid', updateByUuid);
 
   const del = expressify((req) => Account.del(req.params.uuid));
   router.delete('/:uuid', del);
 
-  // const delByUuid = expressify((req) => Account.delByUuid(req.params.person_uuid, req.params.plugin_uuid));
-  // router.delete('/:person_uuid/:plugin_uuid', delByUuid);
+  // const delByUuid = expressify((req) => Account.delByUuid(req.params.personUuid, req.params.pluginUuid));
+  // router.delete('/:personUuid/:pluginUuid', delByUuid);
 
   app.use('/account', router);
 }

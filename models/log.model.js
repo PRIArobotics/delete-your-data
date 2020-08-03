@@ -7,7 +7,7 @@ export default (sequelize, Sequelize) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    account_uuid: {
+    accountUuid: {
       type: Sequelize.UUID,
 
       references: {
@@ -18,7 +18,7 @@ export default (sequelize, Sequelize) => {
         //deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
       },
     },
-    native_location: {
+    nativeLocation: {
       type: Sequelize.JSON,
     },
   });

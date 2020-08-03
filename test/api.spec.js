@@ -128,22 +128,22 @@ describe('REST API', () => {
   test('POST /api/account', async () => {
     let account;
 
-    Account.create.mockImplementationOnce(async ({ plugin_uuid, native_id }) => {
+    Account.create.mockImplementationOnce(async ({ pluginUuid, nativeId }) => {
       const createdAt = new Date();
       account = {
         uuid: '1d47affb-74b9-42cc-920b-c97908064a79',
-        person_uuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
-        plugin_uuid,
+        personUuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
+        pluginUuid,
         createdAt,
         updatedAt: createdAt,
-        native_id,
+        nativeId,
       };
       return account;
     });
 
     const body = {
-      plugin_uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
-      native_id: 'account',
+      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      nativeId: 'account',
     };
     const res = await request(await appPromise)
       .post('/api/account')
@@ -162,11 +162,11 @@ describe('REST API', () => {
     const createdAt = new Date();
     const account = {
       uuid: '1d47affb-74b9-42cc-920b-c97908064a79',
-      person_uuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
-      plugin_uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      personUuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
+      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
       createdAt,
       updatedAt: createdAt,
-      native_id: 'account',
+      nativeId: 'account',
     };
 
     Account.readAll.mockImplementationOnce(async () => [account]);
@@ -190,11 +190,11 @@ describe('REST API', () => {
     const createdAt = new Date();
     const account = {
       uuid: '1d47affb-74b9-42cc-920b-c97908064a79',
-      person_uuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
-      plugin_uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      personUuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
+      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
       createdAt,
       updatedAt: createdAt,
-      native_id: 'account',
+      nativeId: 'account',
     };
 
     Account.read.mockImplementationOnce(async () => account);
@@ -212,24 +212,24 @@ describe('REST API', () => {
     });
   });
 
-  // test('GET /api/account/:person_uuid', async () => {
+  // test('GET /api/account/:personUuid', async () => {
   //   const createdAt = new Date();
   //   const account = {
   //     id: 1,
-  //     person_uuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
-  //     plugin_uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+  //     personUuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
+  //     pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
   //     createdAt,
   //     updatedAt: createdAt,
-  //     native_id: 'account',
+  //     nativeId: 'account',
   //   };
 
   //   Account.readAllByUuid.mockImplementationOnce(async () => [account]);
 
   //   const res = await request(await appPromise)
-  //     .get(`/api/account/${account.person_uuid}`)
+  //     .get(`/api/account/${account.personUuid}`)
   //     .send();
 
-  //   expect(Account.readAllByUuid).toHaveBeenCalledWith(account.person_uuid);
+  //   expect(Account.readAllByUuid).toHaveBeenCalledWith(account.personUuid);
   //   expect(res.statusCode).toEqual(200);
   //   expect(res.body).toEqual([
   //     {
@@ -240,24 +240,24 @@ describe('REST API', () => {
   //   ]);
   // });
 
-  // test('GET /api/account/:person_uuid/:plugin_uuid', async () => {
+  // test('GET /api/account/:personUuid/:pluginUuid', async () => {
   //   const createdAt = new Date();
   //   const account = {
   //     id: 1,
-  //     person_uuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
-  //     plugin_uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+  //     personUuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
+  //     pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
   //     createdAt,
   //     updatedAt: createdAt,
-  //     native_id: 'account',
+  //     nativeId: 'account',
   //   };
 
   //   Account.readByUuid.mockImplementationOnce(async () => account);
 
   //   const res = await request(await appPromise)
-  //     .get(`/api/account/${account.person_uuid}/${account.plugin_uuid}`)
+  //     .get(`/api/account/${account.personUuid}/${account.pluginUuid}`)
   //     .send();
 
-  //   expect(Account.readByUuid).toHaveBeenCalledWith(account.person_uuid, account.plugin_uuid);
+  //   expect(Account.readByUuid).toHaveBeenCalledWith(account.personUuid, account.pluginUuid);
   //   expect(res.statusCode).toEqual(200);
   //   expect(res.body).toEqual({
   //     ...account,
@@ -271,7 +271,7 @@ describe('REST API', () => {
 
     const uuid = '1d47affb-74b9-42cc-920b-c97908064a79';
     const body = {
-      native_id: 'account2',
+      nativeId: 'account2',
     };
     const res = await request(await appPromise)
       .put(`/api/account/${uuid}`)
@@ -281,19 +281,19 @@ describe('REST API', () => {
     expect(res.statusCode).toEqual(200);
   });
 
-  // test('PUT /api/account/:person_uuid/:plugin_uuid', async () => {
+  // test('PUT /api/account/:personUuid/:pluginUuid', async () => {
   //   Account.updateByUuid.mockImplementationOnce(async () => {});
 
-  //   const person_uuid = '3e54b9d2-e852-4bdb-97e0-6c25a405b776';
-  //   const plugin_uuid = '7224835f-a10b-44d3-94b2-959580a327cf';
+  //   const personUuid = '3e54b9d2-e852-4bdb-97e0-6c25a405b776';
+  //   const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
   //   const body = {
-  //     native_id: 'account2',
+  //     nativeId: 'account2',
   //   };
   //   const res = await request(await appPromise)
-  //     .put(`/api/account/${person_uuid}/${plugin_uuid}`)
+  //     .put(`/api/account/${personUuid}/${pluginUuid}`)
   //     .send(body);
 
-  //   expect(Account.updateByUuid).toHaveBeenCalledWith(person_uuid, plugin_uuid, body);
+  //   expect(Account.updateByUuid).toHaveBeenCalledWith(personUuid, pluginUuid, body);
   //   expect(res.statusCode).toEqual(200);
   // });
 
@@ -309,37 +309,37 @@ describe('REST API', () => {
     expect(res.statusCode).toEqual(200);
   });
 
-  // test('DELETE /api/account/:person_uuid/:plugin_uuid', async () => {
+  // test('DELETE /api/account/:personUuid/:pluginUuid', async () => {
   //   Account.delByUuid.mockImplementationOnce(async () => {});
 
-  //   const person_uuid = '3e54b9d2-e852-4bdb-97e0-6c25a405b776';
-  //   const plugin_uuid = '7224835f-a10b-44d3-94b2-959580a327cf';
+  //   const personUuid = '3e54b9d2-e852-4bdb-97e0-6c25a405b776';
+  //   const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
   //   const res = await request(await appPromise)
-  //     .delete(`/api/account/${person_uuid}/${plugin_uuid}`)
+  //     .delete(`/api/account/${personUuid}/${pluginUuid}`)
   //     .send();
 
-  //   expect(Account.delByUuid).toHaveBeenCalledWith(person_uuid, plugin_uuid);
+  //   expect(Account.delByUuid).toHaveBeenCalledWith(personUuid, pluginUuid);
   //   expect(res.statusCode).toEqual(200);
   // });
 
   test('POST /api/log', async () => {
     let log;
 
-    Log.create.mockImplementationOnce(async ({ account_uuid, native_location }) => {
+    Log.create.mockImplementationOnce(async ({ accountUuid, nativeLocation }) => {
       const createdAt = new Date();
       log = {
         id: 1,
-        account_uuid,
+        accountUuid,
         createdAt,
         updatedAt: createdAt,
-        native_location,
+        nativeLocation,
       };
       return log;
     });
 
     const body = {
-      account_uuid: '1d47affb-74b9-42cc-920b-c97908064a79',
-      native_location: 'foo',
+      accountUuid: '1d47affb-74b9-42cc-920b-c97908064a79',
+      nativeLocation: 'foo',
     };
     const res = await request(await appPromise)
       .post('/api/log')
@@ -358,10 +358,10 @@ describe('REST API', () => {
     const createdAt = new Date();
     const log = {
       id: 1,
-      account_uuid: '1d47affb-74b9-42cc-920b-c97908064a79',
+      accountUuid: '1d47affb-74b9-42cc-920b-c97908064a79',
       createdAt,
       updatedAt: createdAt,
-      native_location: 'foo',
+      nativeLocation: 'foo',
     };
 
     Log.readAll.mockImplementationOnce(async () => [log]);
@@ -385,10 +385,10 @@ describe('REST API', () => {
     const createdAt = new Date();
     const log = {
       id: 1,
-      account_uuid: '1d47affb-74b9-42cc-920b-c97908064a79',
+      accountUuid: '1d47affb-74b9-42cc-920b-c97908064a79',
       createdAt,
       updatedAt: createdAt,
-      native_location: 'foo',
+      nativeLocation: 'foo',
     };
 
     Log.read.mockImplementationOnce(async () => log);
@@ -411,7 +411,7 @@ describe('REST API', () => {
 
     const id = 1;
     const body = {
-      native_location: 'bar',
+      nativeLocation: 'bar',
     };
     const res = await request(await appPromise)
       .put(`/api/log/${id}`)

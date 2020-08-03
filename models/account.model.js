@@ -7,11 +7,11 @@ export default (sequelize, Sequelize) => {
       defaultValue: Sequelize.UUIDV4,
       primaryKey: true,
     },
-    person_uuid: {
+    personUuid: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
     },
-    plugin_uuid: {
+    pluginUuid: {
       type: Sequelize.UUID,
 
       references: {
@@ -22,7 +22,7 @@ export default (sequelize, Sequelize) => {
         //deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
       },
     },
-    native_id: {
+    nativeId: {
       type: Sequelize.JSON,
     },
   });
