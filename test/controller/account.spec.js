@@ -16,7 +16,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  // await Plugin.del(pluginUuid);
+  await Plugin.del(pluginUuid);
 });
 
 describe('Account Controller', () => {
