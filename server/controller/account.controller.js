@@ -3,8 +3,6 @@ import { Op } from 'sequelize';
 
 import { Account } from '../../models';
 
-module.exports.name = 'Account';
-
 export async function create({ pluginUuid, nativeId }) {
   // validate data
   if (!pluginUuid) {

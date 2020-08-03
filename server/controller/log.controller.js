@@ -3,8 +3,6 @@ import { Op } from 'sequelize';
 
 import { Log } from '../../models';
 
-module.exports.name = 'Log';
-
 export async function create({ accountUuid, nativeLocation }) {
   // validate data
   if (!accountUuid) {

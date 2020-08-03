@@ -3,8 +3,6 @@ import { Op } from 'sequelize';
 
 import { Plugin } from '../../models';
 
-module.exports.name = 'Plugin';
-
 export async function create({ name, type, config }) {
   // validate data
   if (!name) {
