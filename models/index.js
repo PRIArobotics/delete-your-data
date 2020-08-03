@@ -1,6 +1,4 @@
 import consola from 'consola';
-import fs from 'fs';
-import path from 'path';
 import Sequelize from 'sequelize';
 
 let config;
@@ -22,18 +20,11 @@ if (process.env.NODE_ENV === 'production') {
 
 const sequelize = new Sequelize(config);
 
-consola.log('--------- models/index.js ---------');
-consola.info({
-  message: 'Finding all Models:',
-  badge: true,
-});
-fs.readdirSync(__dirname)
-  .filter((file) => file.endsWith('.model.js'))
-  .forEach((file) => {
-    const model = sequelize.import(path.join(__dirname, file));
-    consola.info('Model loaded: ' + model.name);
-    module.exports[model.name] = model;
-  });
+const Account = sequelize.import('./account.model');
+const Log = sequelize.import('./log.model');
+const Plugin = sequelize.import('./plugin.model');
+
+export { Account, Log, Plugin };
 
 export async function initSequelize() {
   await sequelize.authenticate();
@@ -44,7 +35,3 @@ export async function initSequelize() {
 }
 
 export default sequelize;
-
-consola.log('- - - - - - - - -');
-consola.success('models/index.js');
-consola.log('-----------------------------------');
