@@ -1,8 +1,6 @@
 import Sequelize, { Model } from 'sequelize';
 
 export default (sequelize) => {
-  const Plugin = sequelize.import('./plugin.model.js');
-
   class Account extends Model {}
   Account.init(
     {
@@ -15,17 +13,7 @@ export default (sequelize) => {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
       },
-      pluginUuid: {
-        type: Sequelize.UUID,
-
-        references: {
-          model: Plugin,
-          key: 'uuid',
-
-          // This declares when to check the foreign key constraint. PostgreSQL only.
-          //deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
-        },
-      },
+      // pluginUuid defined as an association
       nativeId: {
         type: Sequelize.JSON,
       },

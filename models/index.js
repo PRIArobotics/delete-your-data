@@ -24,6 +24,9 @@ const Account = sequelize.import('./account.model');
 const Log = sequelize.import('./log.model');
 const Plugin = sequelize.import('./plugin.model');
 
+Account.belongsTo(Plugin);
+Account.hasMany(Log);
+
 export { Account, Log, Plugin };
 
 export async function initSequelize() {
