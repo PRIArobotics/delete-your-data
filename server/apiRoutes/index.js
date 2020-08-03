@@ -69,4 +69,15 @@ router.getAsync('/log/:id(\\d+)', (req) => Log.read(+req.params.id));
 router.putAsync('/log/:id(\\d+)', (req) => Log.update(+req.params.id, req.body));
 router.deleteAsync('/log/:id(\\d+)', (req) => Log.del(+req.params.id));
 
+// additional routes
+router.getAsync('/account/:uuid/log', (req) =>
+  Log.readAll({ ...req.query, accountUuid: req.params.uuid }),
+);
+router.getAsync('/person/:uuid/account', (req) =>
+  Account.readAll({ ...req.query, personUuid: req.params.uuid }),
+);
+router.getAsync('/person/:uuid/log', (req) =>
+  Log.readAll({ ...req.query, personUuid: req.params.uuid }),
+);
+
 export default router;

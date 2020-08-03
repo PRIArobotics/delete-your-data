@@ -349,4 +349,89 @@ describe('REST API', () => {
     expect(Log.del).toHaveBeenCalledWith(id);
     expect(res.statusCode).toEqual(200);
   });
+
+  test('GET /api/account/:uuid/log', async () => {
+    const createdAt = new Date();
+    const log = {
+      id: 1,
+      accountUuid: '1d47affb-74b9-42cc-920b-c97908064a79',
+      createdAt,
+      updatedAt: createdAt,
+      nativeLocation: 'foo',
+    };
+
+    Log.readAll.mockImplementationOnce(async () => [log]);
+
+    const accountUuid = log.accountUuid;
+    const res = await request(await appPromise)
+      .get(`/api/account/${accountUuid}/log`)
+      .send();
+
+    expect(Log.readAll).toHaveBeenCalledWith({ accountUuid });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual([
+      {
+        ...log,
+        createdAt: log.createdAt.toISOString(),
+        updatedAt: log.updatedAt.toISOString(),
+      },
+    ]);
+  });
+
+  test('GET /api/person/:uuid/account', async () => {
+    const createdAt = new Date();
+    const account = {
+      uuid: '1d47affb-74b9-42cc-920b-c97908064a79',
+      personUuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
+      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      createdAt,
+      updatedAt: createdAt,
+      nativeId: 'account',
+    };
+
+    Account.readAll.mockImplementationOnce(async () => [account]);
+
+    const personUuid = account.personUuid;
+    const res = await request(await appPromise)
+      .get(`/api/person/${personUuid}/account`)
+      .send();
+
+    expect(Account.readAll).toHaveBeenCalledWith({ personUuid });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual([
+      {
+        ...account,
+        createdAt: account.createdAt.toISOString(),
+        updatedAt: account.updatedAt.toISOString(),
+      },
+    ]);
+  });
+
+  test('GET /api/person/:uuid/log', async () => {
+    const createdAt = new Date();
+    const log = {
+      id: 1,
+      accountUuid: '1d47affb-74b9-42cc-920b-c97908064a79',
+      createdAt,
+      updatedAt: createdAt,
+      nativeLocation: 'foo',
+    };
+
+    Log.readAll.mockImplementationOnce(async () => [log]);
+
+    const personUuid = '3e54b9d2-e852-4bdb-97e0-6c25a405b776';
+    const res = await request(await appPromise)
+      .get(`/api/person/${personUuid}/log`)
+      .send();
+
+    expect(Log.readAll).toHaveBeenCalledWith({ personUuid });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual([
+      {
+        ...log,
+        createdAt: log.createdAt.toISOString(),
+        updatedAt: log.updatedAt.toISOString(),
+      },
+    ]);
+  });
 });
