@@ -21,6 +21,7 @@ export default (sequelize) => {
     {
       sequelize,
       modelName: 'account',
+      indexes: [{ fields: ['personUuid'] }],
     },
   );
 

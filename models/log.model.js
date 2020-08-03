@@ -17,6 +17,12 @@ export default (sequelize) => {
     {
       sequelize,
       modelName: 'log',
+      indexes: [
+        { fields: ['accountUuid'] },
+        {
+          fields: [{ attribute: 'createdAt', order: 'ASC' }],
+        },
+      ],
     },
   );
 
