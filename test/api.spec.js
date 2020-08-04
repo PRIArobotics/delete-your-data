@@ -97,7 +97,7 @@ describe('REST API', () => {
   });
 
   test('PUT /api/plugin/:uuid', async () => {
-    Plugin.update.mockImplementationOnce(async () => {});
+    Plugin.update.mockImplementationOnce(async () => ({}));
 
     const uuid = '7224835f-a10b-44d3-94b2-959580a327cf';
     const body = {
@@ -114,7 +114,7 @@ describe('REST API', () => {
   });
 
   test('DELETE /api/plugin/:uuid', async () => {
-    Plugin.del.mockImplementationOnce(async () => {});
+    Plugin.del.mockImplementationOnce(async () => ({}));
 
     const uuid = '7224835f-a10b-44d3-94b2-959580a327cf';
     const res = await request(await appPromise)
@@ -213,7 +213,7 @@ describe('REST API', () => {
   });
 
   test('PUT /api/account/:uuid', async () => {
-    Account.update.mockImplementationOnce(async () => {});
+    Account.update.mockImplementationOnce(async () => ({}));
 
     const uuid = '1d47affb-74b9-42cc-920b-c97908064a79';
     const body = {
@@ -228,7 +228,7 @@ describe('REST API', () => {
   });
 
   test('DELETE /api/account/:uuid', async () => {
-    Account.del.mockImplementationOnce(async () => {});
+    Account.del.mockImplementationOnce(async () => ({}));
 
     const uuid = '1d47affb-74b9-42cc-920b-c97908064a79';
     const res = await request(await appPromise)
@@ -324,7 +324,7 @@ describe('REST API', () => {
   });
 
   test('PUT /api/log/:id', async () => {
-    Log.update.mockImplementationOnce(async () => {});
+    Log.update.mockImplementationOnce(async () => ({}));
 
     const id = 1;
     const body = {
@@ -339,7 +339,7 @@ describe('REST API', () => {
   });
 
   test('DELETE /api/log/:id', async () => {
-    Log.del.mockImplementationOnce(async () => {});
+    Log.del.mockImplementationOnce(async () => ({}));
 
     const id = 1;
     const res = await request(await appPromise)

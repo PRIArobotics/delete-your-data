@@ -4,15 +4,24 @@ import { Plugin, Account, Log } from '../controller';
 
 /**
  * Converts an async function into an express-conformant request handler.
- * If the function is successful (Promise resolves),
- * the function's return value is sent as an http response.
- * If the function is unsuccessful (exception thrown/Promise rejected),
- * that error is passed to express' `next`, triggering any error handling middleware.
+ * This function responds in the following way to the handler's result:
+ * - Handler returns normally/promise resolves:
+ *   - The return value is `undefined`:
+ *     the next middleware is invoked.
+ *   - The return value is `null`:
+ *     no more middleware is invoked. It's the handler's responsibility to finish the request.
+ *   - Anything else is returned:
+ *     that value is sent as the response.
+ * - Handler throws an exception/promise rejects:
+ *   the error is passed to express' `next`, triggering any error handling middleware.
  */
 function expressify(asyncHandler) {
   return (req, res, next) => {
-    asyncHandler(req)
-      .then((data) => res.send(data))
+    asyncHandler(req, res)
+      .then((data) => {
+        if (data === undefined) next();
+        else if (data !== null) res.send(data);
+      })
       .catch(next);
   };
 }
