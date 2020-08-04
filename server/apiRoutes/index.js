@@ -48,6 +48,12 @@ router.getAsync = wrapAsync(Router.get);
 router.postAsync = wrapAsync(Router.post);
 router.putAsync = wrapAsync(Router.put);
 
+// convert all `:id` params to integers
+router.param('id', (req, res, next) => {
+  req.params.id = +req.params.id;
+  next();
+});
+
 // plugin routes
 router.postAsync('/plugin/', (req) => Plugin.create(req.body));
 router.getAsync('/plugin/', (req) => Plugin.readAll(req.query));
@@ -65,9 +71,9 @@ router.deleteAsync('/account/:uuid', (req) => Account.del(req.params.uuid));
 // log routes
 router.postAsync('/log/', (req) => Log.create(req.body));
 router.getAsync('/log/', (req) => Log.readAll(req.query));
-router.getAsync('/log/:id(\\d+)', (req) => Log.read(+req.params.id));
-router.putAsync('/log/:id(\\d+)', (req) => Log.update(+req.params.id, req.body));
-router.deleteAsync('/log/:id(\\d+)', (req) => Log.del(+req.params.id));
+router.getAsync('/log/:id(\\d+)', (req) => Log.read(req.params.id));
+router.putAsync('/log/:id(\\d+)', (req) => Log.update(req.params.id, req.body));
+router.deleteAsync('/log/:id(\\d+)', (req) => Log.del(req.params.id));
 
 // additional routes
 router.getAsync('/account/:uuid/log', (req) =>
