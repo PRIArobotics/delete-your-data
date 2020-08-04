@@ -1,7 +1,7 @@
 import express from 'express';
 import { Nuxt, Builder } from 'nuxt';
 import { initSequelize } from '../models';
-import apiRoutes from './apiRoutes';
+import createApi from './api';
 
 // Import and Set Nuxt.js options
 import config from '../nuxt.config.js';
@@ -9,6 +9,9 @@ config.dev = process.env.NODE_ENV === 'development';
 
 // Init Nuxt.js
 const nuxt = new Nuxt(config);
+
+// specify DYD plugins to use
+const dydPlugins = {};
 
 async function createApp() {
   const app = express();
@@ -22,7 +25,7 @@ async function createApp() {
   }
 
   // register API routes before nuxt middleware
-  app.use('/api', apiRoutes);
+  app.use('/api', createApi(dydPlugins));
 
   // Give nuxt middleware to express
   app.use(nuxt.render);
