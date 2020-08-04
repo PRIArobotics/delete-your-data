@@ -22,7 +22,7 @@ export async function create({ accountUuid, nativeLocation }) {
   }
 }
 
-export async function readAll({ accountUuid, personUuid }) {
+export async function readAll({ accountUuid, personUuid, earliest, latest }) {
   // create filter
   const condition = {};
   const include = [];
@@ -34,6 +34,12 @@ export async function readAll({ accountUuid, personUuid }) {
       model: Account,
       where: { personUuid },
     });
+  }
+  if (earliest || latest) {
+    const createdAt = {};
+    if (earliest) createdAt[Op.gte] = earliest;
+    if (latest) createdAt[Op.lte] = latest;
+    condition.createdAt = createdAt;
   }
 
   // query database

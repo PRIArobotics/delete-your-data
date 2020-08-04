@@ -78,20 +78,25 @@ router.putAsync('/account/:uuid', (req) => Account.update(req.params.uuid, req.b
 router.deleteAsync('/account/:uuid', (req) => Account.del(req.params.uuid));
 
 // log routes
+async function convertDatesInQuery(req) {
+  if ('earliest' in req.query) req.query.earliest = new Date(+req.query.earliest);
+  if ('latest' in req.query) req.query.latest = new Date(+req.query.latest);
+}
+
 router.postAsync('/log/', (req) => Log.create(req.body));
-router.getAsync('/log/', (req) => Log.readAll(req.query));
+router.getAsync('/log/', convertDatesInQuery, (req) => Log.readAll(req.query));
 router.getAsync('/log/:id(\\d+)', (req) => Log.read(req.params.id));
 router.putAsync('/log/:id(\\d+)', (req) => Log.update(req.params.id, req.body));
 router.deleteAsync('/log/:id(\\d+)', (req) => Log.del(req.params.id));
 
 // additional routes
-router.getAsync('/account/:uuid/log', (req) =>
+router.getAsync('/account/:uuid/log', convertDatesInQuery, (req) =>
   Log.readAll({ ...req.query, accountUuid: req.params.uuid }),
 );
 router.getAsync('/person/:uuid/account', (req) =>
   Account.readAll({ ...req.query, personUuid: req.params.uuid }),
 );
-router.getAsync('/person/:uuid/log', (req) =>
+router.getAsync('/person/:uuid/log', convertDatesInQuery, (req) =>
   Log.readAll({ ...req.query, personUuid: req.params.uuid }),
 );
 
