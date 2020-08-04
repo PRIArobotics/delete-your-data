@@ -298,6 +298,33 @@ describe('REST API', () => {
     ]);
   });
 
+  test('GET /api/log with time range', async () => {
+    const createdAt = new Date();
+    const log = {
+      id: 1,
+      accountUuid: '1d47affb-74b9-42cc-920b-c97908064a79',
+      createdAt,
+      updatedAt: createdAt,
+      nativeLocation: 'foo',
+    };
+
+    Log.readAll.mockImplementationOnce(async () => [log]);
+
+    const res = await request(await appPromise)
+      .get(`/api/log?earliest=${+createdAt}&latest=${+createdAt}`)
+      .send();
+
+    expect(Log.readAll).toHaveBeenCalledWith({ earliest: createdAt, latest: createdAt });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual([
+      {
+        ...log,
+        createdAt: log.createdAt.toISOString(),
+        updatedAt: log.updatedAt.toISOString(),
+      },
+    ]);
+  });
+
   test('GET /api/log/:id', async () => {
     const createdAt = new Date();
     const log = {
