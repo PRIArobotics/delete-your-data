@@ -2,6 +2,7 @@ import express from 'express';
 import { Nuxt, Builder } from 'nuxt';
 import { initSequelize } from '../models';
 import createApi from './api';
+import DummyPlugin from '../dydPlugins/dummy';
 
 // Import and Set Nuxt.js options
 import config from '../nuxt.config.js';
@@ -11,7 +12,9 @@ config.dev = process.env.NODE_ENV === 'development';
 const nuxt = new Nuxt(config);
 
 // specify DYD plugins to use
-const dydPlugins = {};
+const dydPlugins = {
+  [DummyPlugin.TYPE_NAME]: DummyPlugin,
+};
 
 async function createApp() {
   const app = express();
