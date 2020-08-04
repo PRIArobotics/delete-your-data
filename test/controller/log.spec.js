@@ -1,3 +1,5 @@
+import httpErrors from 'httperrors';
+
 import { initSequelize } from '~/models';
 import { Plugin, Account, Log } from '~/server/controller';
 
@@ -30,7 +32,7 @@ afterAll(async () => {
 
 describe('Log Controller', () => {
   test('it works', async () => {
-    let id;
+    let id, timestamp;
 
     // create
     {
@@ -48,7 +50,21 @@ describe('Log Controller', () => {
       });
 
       id = log.id;
+      timestamp = +log.createdAt;
     }
+
+    // create errors
+    await expect(
+      Log.create({
+        nativeLocation: 'foo',
+      }),
+    ).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Log.create({
+        accountUuid,
+      }),
+    ).rejects.toThrow(httpErrors[400]);
 
     // read all
     {
@@ -64,10 +80,34 @@ describe('Log Controller', () => {
         },
       ]);
     }
-
-    // read all by person
     {
       const logs = await Log.readAll({ personUuid });
+      // toMatchObject because sequelize model instances are not plain objects
+      expect(logs).toMatchObject([
+        {
+          id: expect.any(Number),
+          accountUuid,
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          nativeLocation: 'foo',
+        },
+      ]);
+    }
+    {
+      const logs = await Log.readAll({ earliest: new Date(timestamp) });
+      // toMatchObject because sequelize model instances are not plain objects
+      expect(logs).toMatchObject([
+        {
+          id: expect.any(Number),
+          accountUuid,
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          nativeLocation: 'foo',
+        },
+      ]);
+    }
+    {
+      const logs = await Log.readAll({ latest: new Date(timestamp) });
       // toMatchObject because sequelize model instances are not plain objects
       expect(logs).toMatchObject([
         {
@@ -87,6 +127,19 @@ describe('Log Controller', () => {
         nativeLocation: 'bar',
       });
     }
+
+    // update errors
+    await expect(
+      Log.update(id, {
+        nativeLocation: 'foo',
+      }),
+    ).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Log.update(id, {
+        accountUuid,
+      }),
+    ).rejects.toThrow(httpErrors[400]);
 
     // read update
     {

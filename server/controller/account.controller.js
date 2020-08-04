@@ -47,8 +47,12 @@ export async function read(uuid) {
   }
 }
 
-export async function update(uuid, { nativeId }) {
+export async function update(uuid, { pluginUuid, nativeId }) {
   // validate data
+  if (!pluginUuid) {
+    throw new httpErrors[400]('`pluginUuid` can not be empty!');
+  }
+
   if (!nativeId) {
     throw new httpErrors[400]('`nativeId` can not be empty!');
   }
@@ -60,7 +64,7 @@ export async function update(uuid, { nativeId }) {
     // https://sequelize.org/v5/class/lib/model.js~Model.html#static-method-update)
     // we want the first of those numbers, i.e. do an array destructuring assignment here:
     [num] = await Account.update(
-      { nativeId },
+      { pluginUuid, nativeId },
       {
         where: { uuid },
       },

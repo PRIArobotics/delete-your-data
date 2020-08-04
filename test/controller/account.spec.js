@@ -1,3 +1,5 @@
+import httpErrors from 'httperrors';
+
 import { initSequelize } from '~/models';
 import { Plugin, Account } from '~/server/controller';
 
@@ -21,7 +23,7 @@ afterAll(async () => {
 
 describe('Account Controller', () => {
   test('it works', async () => {
-    let uuid;
+    let uuid, personUuid;
 
     // create
     {
@@ -40,11 +42,39 @@ describe('Account Controller', () => {
       });
 
       uuid = account.uuid;
+      personUuid = account.personUuid;
     }
+
+    // create errors
+    await expect(
+      Account.create({
+        nativeId: 'account',
+      }),
+    ).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Account.create({
+        pluginUuid,
+      }),
+    ).rejects.toThrow(httpErrors[400]);
 
     // read all
     {
       const accounts = await Account.readAll({ pluginUuid });
+      // toMatchObject because sequelize model instances are not plain objects
+      expect(accounts).toMatchObject([
+        {
+          uuid: expect.any(String),
+          personUuid: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          pluginUuid,
+          nativeId: 'account',
+        },
+      ]);
+    }
+    {
+      const accounts = await Account.readAll({ personUuid });
       // toMatchObject because sequelize model instances are not plain objects
       expect(accounts).toMatchObject([
         {
@@ -65,6 +95,19 @@ describe('Account Controller', () => {
         nativeId: { username: 'account2' },
       });
     }
+
+    // update errors
+    await expect(
+      Account.update(uuid, {
+        nativeId: 'account',
+      }),
+    ).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Account.update(uuid, {
+        pluginUuid,
+      }),
+    ).rejects.toThrow(httpErrors[400]);
 
     // read update
     {

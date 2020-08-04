@@ -1,3 +1,5 @@
+import httpErrors from 'httperrors';
+
 import { initSequelize } from '~/models';
 import { Plugin } from '~/server/controller';
 
@@ -29,9 +31,50 @@ describe('Plugin Controller', () => {
       uuid = plugin.uuid;
     }
 
+    // create errors
+    await expect(
+      Plugin.create({
+        type: 'plugin_test',
+      }),
+    ).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Plugin.create({
+        name: 'plugin_test',
+      }),
+    ).rejects.toThrow(httpErrors[400]);
+
     // read all
     {
       const plugins = await Plugin.readAll({ name: 'plugin_test' });
+      // toMatchObject because sequelize model instances are not plain objects
+      expect(plugins).toMatchObject([
+        {
+          uuid: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          name: 'plugin_test',
+          type: 'plugin_test',
+          config: { foo: 0 },
+        },
+      ]);
+    }
+    {
+      const plugins = await Plugin.readAll({ type: 'plugin_test' });
+      // toMatchObject because sequelize model instances are not plain objects
+      expect(plugins).toMatchObject([
+        {
+          uuid: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          name: 'plugin_test',
+          type: 'plugin_test',
+          config: { foo: 0 },
+        },
+      ]);
+    }
+    {
+      const plugins = await Plugin.readAll({ search: 'plugin_test' });
       // toMatchObject because sequelize model instances are not plain objects
       expect(plugins).toMatchObject([
         {
@@ -53,6 +96,20 @@ describe('Plugin Controller', () => {
         config: { bar: 0 },
       });
     }
+
+    // update errors
+
+    await expect(
+      Plugin.update(uuid, {
+        type: 'plugin_test',
+      }),
+    ).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Plugin.update(uuid, {
+        name: 'plugin_test',
+      }),
+    ).rejects.toThrow(httpErrors[400]);
 
     // read update
     {
