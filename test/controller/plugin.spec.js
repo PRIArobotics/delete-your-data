@@ -111,6 +111,14 @@ describe('Plugin Controller', () => {
       }),
     ).rejects.toThrow(httpErrors[400]);
 
+    await expect(
+      Plugin.update('7224835f-a10b-44d3-94b2-959580a327cf', {
+        name: 'plugin_test',
+        type: 'plugin_test',
+        config: { bar: 0 },
+      }),
+    ).rejects.toThrow(httpErrors[404]);
+
     // read update
     {
       const plugin = await Plugin.read(uuid);
@@ -125,11 +133,23 @@ describe('Plugin Controller', () => {
       });
     }
 
+    // read errors
+
+    await expect(
+      Plugin.read('7224835f-a10b-44d3-94b2-959580a327cf'),
+    ).rejects.toThrow(httpErrors[404]);
+
     // delete
     {
       await Plugin.del(uuid);
 
       expect(await Plugin.readAll({ name: 'plugin_test' })).toHaveLength(0);
     }
+
+    // delete errors
+
+    await expect(
+      Plugin.del('7224835f-a10b-44d3-94b2-959580a327cf'),
+    ).rejects.toThrow(httpErrors[404]);
   });
 });

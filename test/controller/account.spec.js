@@ -109,6 +109,13 @@ describe('Account Controller', () => {
       }),
     ).rejects.toThrow(httpErrors[400]);
 
+    await expect(
+      Account.update('1d47affb-74b9-42cc-920b-c97908064a79', {
+        pluginUuid,
+        nativeId: { username: 'account2' },
+      }),
+    ).rejects.toThrow(httpErrors[404]);
+
     // read update
     {
       const account = await Account.read(uuid);
@@ -123,6 +130,12 @@ describe('Account Controller', () => {
       });
     }
 
+    // read errors
+
+    await expect(
+      Account.read('1d47affb-74b9-42cc-920b-c97908064a79'),
+    ).rejects.toThrow(httpErrors[404]);
+
     // delete
     {
       await Account.del(uuid);
@@ -130,5 +143,11 @@ describe('Account Controller', () => {
       const accounts = await Account.readAll({ pluginUuid });
       expect(accounts).toHaveLength(0);
     }
+
+    // delete errors
+
+    await expect(
+      Account.del('1d47affb-74b9-42cc-920b-c97908064a79'),
+    ).rejects.toThrow(httpErrors[404]);
   });
 });

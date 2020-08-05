@@ -17,7 +17,7 @@ export async function create({ pluginUuid, nativeId }) {
   try {
     const account = await Account.create({ pluginUuid, nativeId });
     return account;
-  } catch (err) {
+  } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 }
@@ -32,19 +32,25 @@ export async function readAll({ personUuid, pluginUuid }) {
   try {
     const accounts = await Account.findAll({ where: condition });
     return accounts;
-  } catch (err) {
+  } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 }
 
 export async function read(uuid) {
   // query database
+  let account;
   try {
-    const account = await Account.findByPk(uuid);
-    return account;
-  } catch (err) {
+    account = await Account.findByPk(uuid);
+  } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
+
+  if (account === null) {
+    throw new httpErrors[404](`Account with UUID=${uuid} not found`);
+  }
+
+  return account;
 }
 
 export async function update(uuid, { pluginUuid, nativeId }) {
@@ -69,12 +75,17 @@ export async function update(uuid, { pluginUuid, nativeId }) {
         where: { uuid },
       },
     );
-  } catch (err) {
+  } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
-  if (num !== 1) {
-    throw new httpErrors[400](`Updating Account with UUID=${uuid} failed`);
+  if (num === 0) {
+    throw new httpErrors[404](`Account with UUID=${uuid} not found`);
+  }
+
+  // istanbul ignore if
+  if (num > 1) {
+    throw new httpErrors[500]('unreachable: multiple accounts with same UUID updated');
   }
 
   return { message: 'Account was updated successfully.' };
@@ -87,12 +98,17 @@ export async function del(uuid) {
     num = await Account.destroy({
       where: { uuid },
     });
-  } catch (err) {
+  } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
-  if (num !== 1) {
-    throw new httpErrors[400](`Deleting Account with UUID=${uuid} failed`);
+  if (num === 0) {
+    throw new httpErrors[404](`Account with UUID=${uuid} not found`);
+  }
+
+  // istanbul ignore if
+  if (num > 1) {
+    throw new httpErrors[500]('unreachable: multiple accounts with same UUID deleted');
   }
 
   return { message: 'Account was deleted successfully.' };

@@ -17,7 +17,7 @@ export async function create({ name, type, config }) {
   try {
     const plugin = await Plugin.create({ name, type, config });
     return plugin;
-  } catch (err) {
+  } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 }
@@ -39,19 +39,25 @@ export async function readAll({ search, name, type }) {
   try {
     const plugins = await Plugin.findAll({ where: condition });
     return plugins;
-  } catch (err) {
+  } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 }
 
 export async function read(uuid) {
   // query database
+  let plugin;
   try {
-    const plugin = await Plugin.findByPk(uuid);
-    return plugin;
-  } catch (err) {
+    plugin = await Plugin.findByPk(uuid);
+  } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
+
+  if (plugin === null) {
+    throw new httpErrors[404](`Plugin with UUID=${uuid} not found`);
+  }
+
+  return plugin;
 }
 
 export async function update(uuid, { name, type, config }) {
@@ -76,12 +82,17 @@ export async function update(uuid, { name, type, config }) {
         where: { uuid },
       },
     );
-  } catch (err) {
+  } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
-  if (num !== 1) {
-    throw new httpErrors[400](`Updating Plugin with UUID=${uuid} failed`);
+  if (num === 0) {
+    throw new httpErrors[404](`Plugin with UUID=${uuid} not found`);
+  }
+
+  // istanbul ignore if
+  if (num > 1) {
+    throw new httpErrors[500]('unreachable: multiple plugins with same UUID updated');
   }
 
   return { message: 'Plugin was updated successfully.' };
@@ -94,12 +105,17 @@ export async function del(uuid) {
     num = await Plugin.destroy({
       where: { uuid },
     });
-  } catch (err) {
+  } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
-  if (num !== 1) {
-    throw new httpErrors[400](`Deleting Plugin with UUID=${uuid} failed`);
+  if (num === 0) {
+    throw new httpErrors[404](`Plugin with UUID=${uuid} not found`);
+  }
+
+  // istanbul ignore if
+  if (num > 1) {
+    throw new httpErrors[500]('unreachable: multiple plugins with same UUID deleted');
   }
 
   return { message: 'Plugin was deleted successfully.' };

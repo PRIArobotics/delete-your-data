@@ -141,6 +141,13 @@ describe('Log Controller', () => {
       }),
     ).rejects.toThrow(httpErrors[400]);
 
+    await expect(
+      Log.update(1234567, {
+        accountUuid,
+        nativeLocation: 'bar',
+      }),
+    ).rejects.toThrow(httpErrors[404]);
+
     // read update
     {
       const log = await Log.read(id);
@@ -154,11 +161,23 @@ describe('Log Controller', () => {
       });
     }
 
+    // read errors
+
+    await expect(
+      Log.read(1234567),
+    ).rejects.toThrow(httpErrors[404]);
+
     // delete
     {
       await Log.del(id);
 
       expect(await Log.readAll({ accountUuid })).toHaveLength(0);
     }
+
+    // delete errors
+
+    await expect(
+      Log.del(1234567),
+    ).rejects.toThrow(httpErrors[404]);
   });
 });

@@ -17,7 +17,7 @@ export async function create({ accountUuid, nativeLocation }) {
   try {
     const log = await Log.create({ accountUuid, nativeLocation });
     return log;
-  } catch (err) {
+  } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 }
@@ -46,19 +46,25 @@ export async function readAll({ accountUuid, personUuid, earliest, latest }) {
   try {
     const log = await Log.findAll({ where: condition, include });
     return log;
-  } catch (err) {
+  } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 }
 
 export async function read(id) {
   // query database
+  let log;
   try {
-    const log = await Log.findByPk(id);
-    return log;
-  } catch (err) {
+    log = await Log.findByPk(id);
+  } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
+
+  if (log === null) {
+    throw new httpErrors[404](`Log entry with ID=${id} not found`);
+  }
+
+  return log;
 }
 
 export async function update(id, { accountUuid, nativeLocation }) {
@@ -83,12 +89,17 @@ export async function update(id, { accountUuid, nativeLocation }) {
         where: { id },
       },
     );
-  } catch (err) {
+  } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
-  if (num !== 1) {
-    throw new httpErrors[400](`Updating Log with ID=${id} failed`);
+  if (num === 0) {
+    throw new httpErrors[404](`Log entry with ID=${id} not found`);
+  }
+
+  // istanbul ignore if
+  if (num > 1) {
+    throw new httpErrors[500]('unreachable: multiple log entries with same ID updated');
   }
 
   return { message: 'Log was updated successfully.' };
@@ -101,12 +112,17 @@ export async function del(id) {
     num = await Log.destroy({
       where: { id },
     });
-  } catch (err) {
+  } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
-  if (num !== 1) {
-    throw new httpErrors[400](`Deleting Log with ID=${id} failed`);
+  if (num === 0) {
+    throw new httpErrors[404](`Log entry with ID=${id} not found`);
+  }
+
+  // istanbul ignore if
+  if (num > 1) {
+    throw new httpErrors[500]('unreachable: multiple log entries with same ID deleted');
   }
 
   return { message: 'Log was deleted successfully.' };
