@@ -163,9 +163,7 @@ describe('Log Controller', () => {
 
     // read errors
 
-    await expect(
-      Log.read(1234567),
-    ).rejects.toThrow(httpErrors[404]);
+    await expect(Log.read(1234567)).rejects.toThrow(httpErrors[404]);
 
     // delete
     {
@@ -176,8 +174,6 @@ describe('Log Controller', () => {
 
     // delete errors
 
-    await expect(
-      Log.del(1234567),
-    ).rejects.toThrow(httpErrors[404]);
+    await expect(Log.del(1234567)).rejects.toThrow(httpErrors[404]);
   });
 });

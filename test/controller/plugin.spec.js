@@ -135,9 +135,9 @@ describe('Plugin Controller', () => {
 
     // read errors
 
-    await expect(
-      Plugin.read('7224835f-a10b-44d3-94b2-959580a327cf'),
-    ).rejects.toThrow(httpErrors[404]);
+    await expect(Plugin.read('7224835f-a10b-44d3-94b2-959580a327cf')).rejects.toThrow(
+      httpErrors[404],
+    );
 
     // delete
     {
@@ -148,8 +148,8 @@ describe('Plugin Controller', () => {
 
     // delete errors
 
-    await expect(
-      Plugin.del('7224835f-a10b-44d3-94b2-959580a327cf'),
-    ).rejects.toThrow(httpErrors[404]);
+    await expect(Plugin.del('7224835f-a10b-44d3-94b2-959580a327cf')).rejects.toThrow(
+      httpErrors[404],
+    );
   });
 });

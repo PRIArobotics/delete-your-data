@@ -132,9 +132,9 @@ describe('Account Controller', () => {
 
     // read errors
 
-    await expect(
-      Account.read('1d47affb-74b9-42cc-920b-c97908064a79'),
-    ).rejects.toThrow(httpErrors[404]);
+    await expect(Account.read('1d47affb-74b9-42cc-920b-c97908064a79')).rejects.toThrow(
+      httpErrors[404],
+    );
 
     // delete
     {
@@ -146,8 +146,8 @@ describe('Account Controller', () => {
 
     // delete errors
 
-    await expect(
-      Account.del('1d47affb-74b9-42cc-920b-c97908064a79'),
-    ).rejects.toThrow(httpErrors[404]);
+    await expect(Account.del('1d47affb-74b9-42cc-920b-c97908064a79')).rejects.toThrow(
+      httpErrors[404],
+    );
   });
 });
