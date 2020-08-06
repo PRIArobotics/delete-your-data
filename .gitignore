@@ -92,3 +92,4 @@ sw.*
 #SQLDB
 database.sqlite
 database.test.sqlite
+dummy_database.sqlite
