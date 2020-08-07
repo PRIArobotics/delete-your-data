@@ -1,3 +1,11 @@
+import { isWebUri } from 'valid-url';
+
+/**
+ * The dummy plugin connects to DYD dummy service, which in turn manages a number of accounts
+ * identified by a username, and a number of entries for each account with text content.
+ *
+ * The service makes its capabilities available via a Rest API.
+ */
 export default class DummyPlugin {
   static TYPE_NAME = 'Dummy';
 
@@ -5,7 +13,7 @@ export default class DummyPlugin {
    * Check that the passed value is a valid DummyPlugin config.
    */
   static validateConfig(config) {
-    const { usernameField, ...rest } = config;
+    const { apiUrl, ...rest } = config;
 
     const restEntries = Object.entries(rest);
     if (restEntries.length !== 0) {
@@ -13,13 +21,13 @@ export default class DummyPlugin {
       throw new Error(`config has unexpected entries: ${msg}`);
     }
 
-    if (usernameField !== undefined && !usernameField.match(/^[a-zA-Z_][a-zA-Z0-9_]+$/)) {
-      throw new Error(`if given, usernameField must be a legal identifier`);
+    if (isWebUri(apiUrl)) {
+      throw new Error(`apiUrl must be a legal http or https URL`);
     }
   }
 
-  constructor({ usernameField }) {
-    this.usernameField = usernameField ?? 'username';
+  constructor({ apiUrl }) {
+    this.apiUrl = apiUrl;
   }
 
   /**

@@ -38,6 +38,7 @@
     "nodemon": "^1.18.9",
     "prettier": "^1.19.1",
     "supertest": "^4.0.2",
+    "valid-url": "^1.0.9",
     "vue-jest": "^4.0.0-0"
   }
 }
