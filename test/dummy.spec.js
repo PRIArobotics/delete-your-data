@@ -44,11 +44,42 @@ afterAll(async () => {
 
 describe('Using the Dummy service', () => {
   test('it works', async () => {
-    const res = await request(dummyServer)
-      .get('/api/account')
-      .send();
+    let accountUuid;
 
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toEqual([]);
+    // create a user in the dummy service...
+    {
+      const res = await request(dummyServer)
+        .post('/api/account')
+        .send({
+          username: 'dummy_test_user',
+        });
+      expect(res.statusCode).toEqual(200);
+    }
+    // ...and register it in DYD
+    {
+      const res = await request(appServer)
+        .post('/api/account')
+        .send({
+          pluginUuid,
+          nativeId: 'dummy_test_user',
+        });
+      expect(res.statusCode).toEqual(200);
+      accountUuid = res.body.uuid;
+    }
+
+    // delete the user in the dummy service...
+    {
+      const res = await request(dummyServer)
+        .delete('/api/account/dummy_test_user')
+        .send();
+      expect(res.statusCode).toEqual(200);
+    }
+    // ...and delete it in DYD
+    {
+      const res = await request(appServer)
+        .delete(`/api/account/${accountUuid}`)
+        .send();
+      expect(res.statusCode).toEqual(200);
+    }
   });
 });
