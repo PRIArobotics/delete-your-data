@@ -48,7 +48,7 @@ function wrapAsync(method) {
   };
 }
 
-export default (plugins) => {
+export default (pluginRegistry) => {
   const router = Router();
   // parse JSON on a request's body
   router.use(json());
@@ -100,6 +100,9 @@ export default (plugins) => {
   router.getAsync('/person/:uuid/log', convertDatesInQuery, (req) =>
     Log.readAll({ ...req.query, personUuid: req.params.uuid }),
   );
+
+  // logic routes
+  router.postAsync('/account/redact', (req) => Account.redact(pluginRegistry, req.body));
 
   return router;
 };

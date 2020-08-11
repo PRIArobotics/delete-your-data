@@ -62,11 +62,13 @@ export default class DummyPlugin {
   // If there is account information that is not tracked in DYD log entries (not recommended),
   // the plugin needs to properly cascade through all that data, though.
 
-  redactAccounts(ids, mode) {
+  async redactAccounts(ids, mode) {
     // TODO
+    console.log(this, mode, 'accounts', ids);
   }
 
-  redactEntries(locations, mode) {
+  async redactEntries(locations, mode) {
     // TODO
+    console.log(this, mode, 'entries', locations);
   }
 }

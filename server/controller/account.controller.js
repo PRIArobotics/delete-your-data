@@ -1,7 +1,7 @@
 import httpErrors from 'httperrors';
 import { Op } from 'sequelize';
 
-import { Account } from '../../models';
+import { Plugin, Account } from '../../models';
 
 export async function create({ pluginUuid, nativeId }) {
   // validate data
@@ -112,4 +112,60 @@ export async function del(uuid) {
   }
 
   return { message: 'Account was deleted successfully.' };
+}
+
+export async function redact(pluginRegistry, { accounts: accountUuids, mode }) {
+  // validate data
+  if (!Array.isArray(accountUuids)) {
+    throw new httpErrors[400]('`accounts` must be a list of accout UUIDs!');
+  }
+
+  if (!['DELETE', 'ANONYMIZE'].includes(mode)) {
+    throw new httpErrors[400]('`mode` must be either DELETE or ANONYMIZE!');
+  }
+
+  // query database
+  let accounts;
+  try {
+    const condition = {
+      uuid: { [Op.in]: accountUuids },
+    };
+    const include = [{ model: Plugin }];
+
+    accounts = await Account.findAll({ where: condition, include });
+  } catch (err) /* istanbul ignore next */ {
+    throw new httpErrors[500](err.message || 'An error occurred...');
+  }
+
+  if (accounts.length !== accountUuids.length) {
+    const actualAccountUuids = new Set(accounts.map((account) => account.uuid));
+    const notFound = accountUuids.filter((uuid) => !actualAccountUuids.has(uuid));
+    throw new httpErrors[404](
+      `Accounts not found with UUIDs:\n${notFound.map((uuid) => `  ${uuid}`).join('\n')}`,
+    );
+  }
+
+  // for the redaction operations, we need to group all accounts by their plugin
+  const pluginMap = new Map();
+  for (const account of accounts) {
+    let accountIds;
+    if (!pluginMap.has(account.pluginUuid)) {
+      const { type, config } = account.plugin;
+      const plugin = new pluginRegistry[type](config);
+      accountIds = [];
+      pluginMap.set(account.pluginUuid, { plugin, accountIds });
+    } else {
+      accountIds = pluginMap.get(account.pluginUuid).accountIds;
+    }
+    accountIds.push(account.nativeId);
+  }
+
+  const plugins = Array.from(pluginMap.values());
+  // let all plugins run their redaction operations in parallel
+  // TODO error handling. what if one plugin fails early; what happens to others?
+  await Promise.all(
+    plugins.map(({ plugin, accountIds }) => plugin.redactAccounts(accountIds, mode)),
+  );
+
+  return { message: 'Accounts were redacted successfully.' };
 }

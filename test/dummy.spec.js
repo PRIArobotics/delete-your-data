@@ -67,7 +67,17 @@ describe('Using the Dummy service', () => {
       accountUuid = res.body.uuid;
     }
 
-    // delete the user in the dummy service...
+    // delete the user via DYD
+    {
+      const res = await request(appServer)
+        .post(`/api/account/redact`)
+        .send({
+          accounts: [accountUuid],
+          mode: 'DELETE',
+        });
+      expect(res.statusCode).toEqual(200);
+    }
+
     {
       const res = await request(dummyServer)
         .delete('/api/account/dummy_test_user')

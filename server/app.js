@@ -12,7 +12,7 @@ config.dev = process.env.NODE_ENV === 'development';
 const nuxt = new Nuxt(config);
 
 // specify DYD plugins to use
-const dydPlugins = {
+const pluginRegistry = {
   [DummyPlugin.TYPE_NAME]: DummyPlugin,
 };
 
@@ -28,7 +28,7 @@ async function createApp() {
   }
 
   // register API routes before nuxt middleware
-  app.use('/api', createApi(dydPlugins));
+  app.use('/api', createApi(pluginRegistry));
 
   // Give nuxt middleware to express
   app.use(nuxt.render);
