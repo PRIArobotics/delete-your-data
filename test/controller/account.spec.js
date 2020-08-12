@@ -144,8 +144,7 @@ describe('Account Controller', () => {
     {
       await Account.del(uuid);
 
-      const accounts = await Account.readAll({ pluginUuid });
-      expect(accounts).toHaveLength(0);
+      expect(await Account.readAll({ pluginUuid })).toHaveLength(0);
     }
 
     // delete errors
