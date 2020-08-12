@@ -84,12 +84,5 @@ describe('Using the Dummy service', () => {
         .send();
       expect(res.statusCode).toEqual(200);
     }
-    // ...and delete it in DYD
-    {
-      const res = await request(appServer)
-        .delete(`/api/account/${accountUuid}`)
-        .send();
-      expect(res.statusCode).toEqual(200);
-    }
   });
 });

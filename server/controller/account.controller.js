@@ -114,9 +114,9 @@ export async function del(uuid) {
   return { message: 'Account was deleted successfully.' };
 }
 
-export async function redact(pluginRegistry, { accounts: accountUuids, mode }) {
+export async function redact(pluginRegistry, { accounts: allAccountUuids, mode }) {
   // validate data
-  if (!Array.isArray(accountUuids)) {
+  if (!Array.isArray(allAccountUuids)) {
     throw new httpErrors[400]('`accounts` must be a list of accout UUIDs!');
   }
 
@@ -128,7 +128,7 @@ export async function redact(pluginRegistry, { accounts: accountUuids, mode }) {
   let accounts;
   try {
     const condition = {
-      uuid: { [Op.in]: accountUuids },
+      uuid: { [Op.in]: allAccountUuids },
     };
     const include = [{ model: Plugin }];
 
@@ -137,9 +137,9 @@ export async function redact(pluginRegistry, { accounts: accountUuids, mode }) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
-  if (accounts.length !== accountUuids.length) {
+  if (accounts.length !== allAccountUuids.length) {
     const actualAccountUuids = new Set(accounts.map((account) => account.uuid));
-    const notFound = accountUuids.filter((uuid) => !actualAccountUuids.has(uuid));
+    const notFound = allAccountUuids.filter((uuid) => !actualAccountUuids.has(uuid));
     throw new httpErrors[404](
       `Accounts not found with UUIDs:\n${notFound.map((uuid) => `  ${uuid}`).join('\n')}`,
     );
@@ -148,23 +148,40 @@ export async function redact(pluginRegistry, { accounts: accountUuids, mode }) {
   // for the redaction operations, we need to group all accounts by their plugin
   const pluginMap = new Map();
   for (const account of accounts) {
-    let accountIds;
+    let accountUuids;
+    let accountNativeIds;
     if (!pluginMap.has(account.pluginUuid)) {
       const { type, config } = account.plugin;
       const plugin = new pluginRegistry[type](config);
-      accountIds = [];
-      pluginMap.set(account.pluginUuid, { plugin, accountIds });
+      accountUuids = [];
+      accountNativeIds = [];
+      pluginMap.set(account.pluginUuid, { plugin, accountUuids, accountNativeIds });
     } else {
-      accountIds = pluginMap.get(account.pluginUuid).accountIds;
+      ({ accountUuids, accountNativeIds } = pluginMap.get(account.pluginUuid));
     }
-    accountIds.push(account.nativeId);
+    accountUuids.push(account.uuid);
+    accountNativeIds.push(account.nativeId);
   }
 
   const plugins = Array.from(pluginMap.values());
   // let all plugins run their redaction operations in parallel
   // TODO error handling. what if one plugin fails early; what happens to others?
   await Promise.all(
-    plugins.map(({ plugin, accountIds }) => plugin.redactAccounts(accountIds, mode)),
+    plugins.map(async ({ plugin, accountUuids, accountNativeIds }) => {
+      await plugin.redactAccounts(accountNativeIds, mode);
+
+      const condition = {
+        uuid: { [Op.in]: accountUuids },
+      };
+
+      const num = await Account.destroy({ where: condition });
+
+      if (num !== accountUuids.length) {
+        throw new httpErrors[500](
+          `Not all accounts have been deleted from DYD after successfully redacting them`,
+        );
+      }
+    }),
   );
 
   return { message: 'Accounts were redacted successfully.' };
