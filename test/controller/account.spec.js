@@ -62,6 +62,30 @@ describe('Account Controller', () => {
       }),
     ).rejects.toThrow(httpErrors[400]);
 
+    // read many
+    {
+      const accounts = await Account.readMany({ accounts: [uuid] });
+      // toMatchObject because sequelize model instances are not plain objects
+      expect(accounts).toMatchObject([
+        {
+          uuid: expect.any(String),
+          personUuid: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          pluginUuid,
+          nativeId: 'account',
+        },
+      ]);
+    }
+
+    // read many errors
+
+    await expect(Account.readMany({})).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Account.readMany({ accounts: [uuid, '1d47affb-74b9-42cc-920b-c97908064a79'] }),
+    ).rejects.toThrow(httpErrors[404]);
+
     // read all
     {
       const accounts = await Account.readAll({ pluginUuid });

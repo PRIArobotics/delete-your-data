@@ -22,6 +22,36 @@ export async function create({ pluginUuid, nativeId }) {
   }
 }
 
+export async function readMany({ accounts: allAccountUuids }) {
+  // validate data
+  if (!Array.isArray(allAccountUuids)) {
+    throw new httpErrors[400]('`accounts` must be a list of accout UUIDs!');
+  }
+
+  // query database
+  let accounts;
+  try {
+    const condition = {
+      uuid: { [Op.in]: allAccountUuids },
+    };
+    const include = [{ model: Plugin }];
+
+    accounts = await Account.findAll({ where: condition, include });
+  } catch (err) /* istanbul ignore next */ {
+    throw new httpErrors[500](err.message || 'An error occurred...');
+  }
+
+  if (accounts.length !== allAccountUuids.length) {
+    const actualAccountUuids = new Set(accounts.map((account) => account.uuid));
+    const notFound = allAccountUuids.filter((uuid) => !actualAccountUuids.has(uuid));
+    throw new httpErrors[404](
+      `Accounts not found with UUIDs:\n${notFound.map((uuid) => `  ${uuid}`).join('\n')}`,
+    );
+  }
+
+  return accounts;
+}
+
 export async function readAll({ personUuid, pluginUuid }) {
   // create filter
   const condition = {};
@@ -133,34 +163,11 @@ export async function delMany({ accounts }) {
 
 export async function redact(pluginRegistry, { accounts: allAccountUuids, mode }) {
   // validate data
-  if (!Array.isArray(allAccountUuids)) {
-    throw new httpErrors[400]('`accounts` must be a list of accout UUIDs!');
-  }
-
   if (!['DELETE', 'ANONYMIZE'].includes(mode)) {
     throw new httpErrors[400]('`mode` must be either DELETE or ANONYMIZE!');
   }
 
-  // query database
-  let accounts;
-  try {
-    const condition = {
-      uuid: { [Op.in]: allAccountUuids },
-    };
-    const include = [{ model: Plugin }];
-
-    accounts = await Account.findAll({ where: condition, include });
-  } catch (err) /* istanbul ignore next */ {
-    throw new httpErrors[500](err.message || 'An error occurred...');
-  }
-
-  if (accounts.length !== allAccountUuids.length) {
-    const actualAccountUuids = new Set(accounts.map((account) => account.uuid));
-    const notFound = allAccountUuids.filter((uuid) => !actualAccountUuids.has(uuid));
-    throw new httpErrors[404](
-      `Accounts not found with UUIDs:\n${notFound.map((uuid) => `  ${uuid}`).join('\n')}`,
-    );
-  }
+  const accounts = await readMany({ accounts: allAccountUuids });
 
   // for the redaction operations, we need to group all accounts by their plugin
   const pluginMap = new Map();
