@@ -55,13 +55,8 @@ export async function del(username) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
-  if (num === 0) {
+  if (num !== 1) {
     throw new httpErrors[404](`Account with username=${username} not found`);
-  }
-
-  // istanbul ignore if
-  if (num > 1) {
-    throw new httpErrors[500]('unreachable: multiple accounts with same username deleted');
   }
 
   return { message: 'Account was deleted successfully.' };

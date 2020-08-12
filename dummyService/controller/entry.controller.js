@@ -78,13 +78,8 @@ export async function update(id, { username, content }) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
-  if (num === 0) {
+  if (num !== 1) {
     throw new httpErrors[404](`Entry with ID=${id} not found`);
-  }
-
-  // istanbul ignore if
-  if (num > 1) {
-    throw new httpErrors[500]('unreachable: multiple entries with same ID updated');
   }
 
   return { message: 'Entry was updated successfully.' };
@@ -101,13 +96,8 @@ export async function del(id) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
-  if (num === 0) {
+  if (num !== 1) {
     throw new httpErrors[404](`Entry with ID=${id} not found`);
-  }
-
-  // istanbul ignore if
-  if (num > 1) {
-    throw new httpErrors[500]('unreachable: multiple entries with same ID deleted');
   }
 
   return { message: 'Entry was deleted successfully.' };

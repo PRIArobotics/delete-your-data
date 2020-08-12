@@ -86,13 +86,8 @@ export async function update(uuid, { name, type, config }) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
-  if (num === 0) {
+  if (num !== 1) {
     throw new httpErrors[404](`Plugin with UUID=${uuid} not found`);
-  }
-
-  // istanbul ignore if
-  if (num > 1) {
-    throw new httpErrors[500]('unreachable: multiple plugins with same UUID updated');
   }
 
   return { message: 'Plugin was updated successfully.' };
@@ -109,13 +104,8 @@ export async function del(uuid) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
-  if (num === 0) {
+  if (num !== 1) {
     throw new httpErrors[404](`Plugin with UUID=${uuid} not found`);
-  }
-
-  // istanbul ignore if
-  if (num > 1) {
-    throw new httpErrors[500]('unreachable: multiple plugins with same UUID deleted');
   }
 
   return { message: 'Plugin was deleted successfully.' };

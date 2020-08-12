@@ -93,13 +93,8 @@ export async function update(id, { accountUuid, nativeLocation }) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
-  if (num === 0) {
+  if (num !== 1) {
     throw new httpErrors[404](`Log entry with ID=${id} not found`);
-  }
-
-  // istanbul ignore if
-  if (num > 1) {
-    throw new httpErrors[500]('unreachable: multiple log entries with same ID updated');
   }
 
   return { message: 'Log was updated successfully.' };
@@ -116,13 +111,8 @@ export async function del(id) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
-  if (num === 0) {
+  if (num !== 1) {
     throw new httpErrors[404](`Log entry with ID=${id} not found`);
-  }
-
-  // istanbul ignore if
-  if (num > 1) {
-    throw new httpErrors[500]('unreachable: multiple log entries with same ID deleted');
   }
 
   return { message: 'Log was deleted successfully.' };

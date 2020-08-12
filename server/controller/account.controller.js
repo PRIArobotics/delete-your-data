@@ -79,13 +79,8 @@ export async function update(uuid, { pluginUuid, nativeId }) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
-  if (num === 0) {
+  if (num !== 1) {
     throw new httpErrors[404](`Account with UUID=${uuid} not found`);
-  }
-
-  // istanbul ignore if
-  if (num > 1) {
-    throw new httpErrors[500]('unreachable: multiple accounts with same UUID updated');
   }
 
   return { message: 'Account was updated successfully.' };
@@ -102,13 +97,8 @@ export async function del(uuid) {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
-  if (num === 0) {
+  if (num !== 1) {
     throw new httpErrors[404](`Account with UUID=${uuid} not found`);
-  }
-
-  // istanbul ignore if
-  if (num > 1) {
-    throw new httpErrors[500]('unreachable: multiple accounts with same UUID deleted');
   }
 
   return { message: 'Account was deleted successfully.' };
