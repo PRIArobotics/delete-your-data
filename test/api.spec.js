@@ -117,6 +117,18 @@ describe('REST API', () => {
     expect(res.statusCode).toEqual(200);
   });
 
+  test('DELETE /api/plugin', async () => {
+    Plugin.delMany.mockImplementationOnce(async () => ({}));
+
+    const body = { plugins: ['7224835f-a10b-44d3-94b2-959580a327cf'] };
+    const res = await request(await appPromise)
+      .delete(`/api/plugin`)
+      .send(body);
+
+    expect(Plugin.delMany).toHaveBeenCalledWith(body);
+    expect(res.statusCode).toEqual(200);
+  });
+
   test('DELETE /api/plugin/:uuid', async () => {
     Plugin.del.mockImplementationOnce(async () => ({}));
 
@@ -228,6 +240,18 @@ describe('REST API', () => {
       .send(body);
 
     expect(Account.update).toHaveBeenCalledWith(uuid, body);
+    expect(res.statusCode).toEqual(200);
+  });
+
+  test('DELETE /api/account', async () => {
+    Account.delMany.mockImplementationOnce(async () => ({}));
+
+    const body = { accounts: ['7224835f-a10b-44d3-94b2-959580a327cf'] };
+    const res = await request(await appPromise)
+      .delete(`/api/account`)
+      .send(body);
+
+    expect(Account.delMany).toHaveBeenCalledWith(body);
     expect(res.statusCode).toEqual(200);
   });
 
@@ -366,6 +390,18 @@ describe('REST API', () => {
       .send(body);
 
     expect(Log.update).toHaveBeenCalledWith(id, body);
+    expect(res.statusCode).toEqual(200);
+  });
+
+  test('DELETE /api/log', async () => {
+    Log.delMany.mockImplementationOnce(async () => ({}));
+
+    const body = { entries: ['7224835f-a10b-44d3-94b2-959580a327cf'] };
+    const res = await request(await appPromise)
+      .delete(`/api/log`)
+      .send(body);
+
+    expect(Log.delMany).toHaveBeenCalledWith(body);
     expect(res.statusCode).toEqual(200);
   });
 

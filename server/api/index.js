@@ -69,6 +69,7 @@ export default (pluginRegistry) => {
   router.getAsync('/plugin/', (req) => Plugin.readAll(req.query));
   router.getAsync('/plugin/:uuid', (req) => Plugin.read(req.params.uuid));
   router.putAsync('/plugin/:uuid', (req) => Plugin.update(req.params.uuid, req.body));
+  router.deleteAsync('/plugin/', (req) => Plugin.delMany(req.body));
   router.deleteAsync('/plugin/:uuid', (req) => Plugin.del(req.params.uuid));
 
   // account routes
@@ -76,6 +77,7 @@ export default (pluginRegistry) => {
   router.getAsync('/account/', (req) => Account.readAll(req.query));
   router.getAsync('/account/:uuid', (req) => Account.read(req.params.uuid));
   router.putAsync('/account/:uuid', (req) => Account.update(req.params.uuid, req.body));
+  router.deleteAsync('/account/', (req) => Account.delMany(req.body));
   router.deleteAsync('/account/:uuid', (req) => Account.del(req.params.uuid));
 
   // log routes
@@ -88,6 +90,7 @@ export default (pluginRegistry) => {
   router.getAsync('/log/', convertDatesInQuery, (req) => Log.readAll(req.query));
   router.getAsync('/log/:id(\\d+)', (req) => Log.read(req.params.id));
   router.putAsync('/log/:id(\\d+)', (req) => Log.update(req.params.id, req.body));
+  router.deleteAsync('/log/', (req) => Log.delMany(req.body));
   router.deleteAsync('/log/:id(\\d+)', (req) => Log.del(req.params.id));
 
   // additional routes

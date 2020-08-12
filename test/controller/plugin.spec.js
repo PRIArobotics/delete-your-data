@@ -155,5 +155,40 @@ describe('Plugin Controller', () => {
     await expect(Plugin.del('7224835f-a10b-44d3-94b2-959580a327cf')).rejects.toThrow(
       httpErrors[404],
     );
+
+    // create new test account
+    {
+      const plugin = await Plugin.create({
+        name: 'plugin_test',
+        type: 'plugin_test',
+        config: { foo: 0 },
+      });
+      // toMatchObject because sequelize model instances are not plain objects
+      expect(plugin).toMatchObject({
+        uuid: expect.any(String),
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+        name: 'plugin_test',
+        type: 'plugin_test',
+        config: { foo: 0 },
+      });
+
+      uuid = plugin.uuid;
+    }
+
+    // delete many
+    {
+      await Plugin.delMany({ plugins: [uuid] });
+
+      expect(await Plugin.readAll({ name: 'plugin_test' })).toHaveLength(0);
+    }
+
+    // delete many errors
+
+    await expect(Plugin.delMany({})).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Plugin.delMany({ plugins: ['1d47affb-74b9-42cc-920b-c97908064a79'] }),
+    ).rejects.toThrow(httpErrors[404]);
   });
 });

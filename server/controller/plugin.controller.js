@@ -110,3 +110,30 @@ export async function del(uuid) {
 
   return { message: 'Plugin was deleted successfully.' };
 }
+
+export async function delMany({ plugins }) {
+  // validate data
+  if (!Array.isArray(plugins)) {
+    throw new httpErrors[400]('`plugins` must be a list of plugin UUIDs!');
+  }
+
+  // save to database
+  let num;
+  try {
+    const condition = {
+      uuid: { [Op.in]: plugins },
+    };
+
+    num = await Plugin.destroy({ where: condition });
+  } catch (err) /* istanbul ignore next */ {
+    throw new httpErrors[500](err.message || 'An error occurred...');
+  }
+
+  if (num !== plugins.length) {
+    throw new httpErrors[404](
+      `Only ${num} of ${plugins.length} plugins have been found and deleted`,
+    );
+  }
+
+  return { message: 'Plugins were deleted successfully.' };
+}

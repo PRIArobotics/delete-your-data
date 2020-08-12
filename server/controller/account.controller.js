@@ -104,6 +104,33 @@ export async function del(uuid) {
   return { message: 'Account was deleted successfully.' };
 }
 
+export async function delMany({ accounts }) {
+  // validate data
+  if (!Array.isArray(accounts)) {
+    throw new httpErrors[400]('`accounts` must be a list of accout UUIDs!');
+  }
+
+  // save to database
+  let num;
+  try {
+    const condition = {
+      uuid: { [Op.in]: accounts },
+    };
+
+    num = await Account.destroy({ where: condition });
+  } catch (err) /* istanbul ignore next */ {
+    throw new httpErrors[500](err.message || 'An error occurred...');
+  }
+
+  if (num !== accounts.length) {
+    throw new httpErrors[404](
+      `Only ${num} of ${accounts.length} accounts have been found and deleted`,
+    );
+  }
+
+  return { message: 'Accounts were deleted successfully.' };
+}
+
 export async function redact(pluginRegistry, { accounts: allAccountUuids, mode }) {
   // validate data
   if (!Array.isArray(allAccountUuids)) {
@@ -159,18 +186,7 @@ export async function redact(pluginRegistry, { accounts: allAccountUuids, mode }
   await Promise.all(
     plugins.map(async ({ plugin, accountUuids, accountNativeIds }) => {
       await plugin.redactAccounts(accountNativeIds, mode);
-
-      const condition = {
-        uuid: { [Op.in]: accountUuids },
-      };
-
-      const num = await Account.destroy({ where: condition });
-
-      if (num !== accountUuids.length) {
-        throw new httpErrors[500](
-          `Not all accounts have been deleted from DYD after successfully redacting them`,
-        );
-      }
+      await delMany({ accounts: accountUuids });
     }),
   );
 

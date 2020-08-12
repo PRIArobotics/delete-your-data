@@ -179,5 +179,36 @@ describe('Log Controller', () => {
     // delete errors
 
     await expect(Log.del(1234567)).rejects.toThrow(httpErrors[404]);
+
+    // create new test log entry
+    {
+      const log = await Log.create({
+        accountUuid,
+        nativeLocation: 'foo',
+      });
+      // toMatchObject because sequelize model instances are not plain objects
+      expect(log).toMatchObject({
+        id: expect.any(Number),
+        accountUuid,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+        nativeLocation: 'foo',
+      });
+
+      id = log.id;
+    }
+
+    // delete many
+    {
+      await Log.delMany({ entries: [id] });
+
+      expect(await Log.readAll({ accountUuid })).toHaveLength(0);
+    }
+
+    // delete many errors
+
+    await expect(Log.delMany({})).rejects.toThrow(httpErrors[400]);
+
+    await expect(Log.delMany({ entries: [1234567] })).rejects.toThrow(httpErrors[404]);
   });
 });

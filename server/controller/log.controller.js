@@ -117,3 +117,30 @@ export async function del(id) {
 
   return { message: 'Log was deleted successfully.' };
 }
+
+export async function delMany({ entries }) {
+  // validate data
+  if (!Array.isArray(entries)) {
+    throw new httpErrors[400]('`entries` must be a list of log entry IDs!');
+  }
+
+  // save to database
+  let num;
+  try {
+    const condition = {
+      id: { [Op.in]: entries },
+    };
+
+    num = await Log.destroy({ where: condition });
+  } catch (err) /* istanbul ignore next */ {
+    throw new httpErrors[500](err.message || 'An error occurred...');
+  }
+
+  if (num !== entries.length) {
+    throw new httpErrors[404](
+      `Only ${num} of ${entries.length} log entries have been found and deleted`,
+    );
+  }
+
+  return { message: 'Log entries were deleted successfully.' };
+}
