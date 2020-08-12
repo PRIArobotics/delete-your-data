@@ -1,4 +1,5 @@
 import { isWebUri } from 'valid-url';
+import axios from 'axios';
 
 /**
  * The dummy plugin connects to DYD dummy service, which in turn manages a number of accounts
@@ -63,12 +64,13 @@ export default class DummyPlugin {
   // the plugin needs to properly cascade through all that data, though.
 
   async redactAccounts(ids, mode) {
-    // TODO
     console.log(this, mode, 'accounts', ids);
+    // TODO error handling. what if one request fails early; what happens to others?
+    await Promise.all(ids.map((id) => axios.delete(`${this.apiUrl}/account/${id}`)));
   }
 
   async redactEntries(locations, mode) {
-    // TODO
     console.log(this, mode, 'entries', locations);
+    // TODO
   }
 }

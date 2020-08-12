@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import httpErrors from 'httperrors';
 
 import { initSequelize } from '~/models';

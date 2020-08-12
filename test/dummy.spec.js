@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import http from 'http';
 import util from 'util';
 import request from 'supertest';
@@ -75,13 +79,6 @@ describe('Using the Dummy service', () => {
           accounts: [accountUuid],
           mode: 'DELETE',
         });
-      expect(res.statusCode).toEqual(200);
-    }
-
-    {
-      const res = await request(dummyServer)
-        .delete('/api/account/dummy_test_user')
-        .send();
       expect(res.statusCode).toEqual(200);
     }
   });

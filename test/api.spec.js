@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import request from 'supertest';
 
 import appPromise from '@/server/app';
