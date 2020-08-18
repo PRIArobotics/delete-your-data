@@ -97,7 +97,7 @@ export async function update(id, { accountUuid, nativeLocation }) {
     throw new httpErrors[404](`Log entry with ID=${id} not found`);
   }
 
-  return { message: 'Log was updated successfully.' };
+  return { message: 'Log entry was updated successfully.' };
 }
 
 export async function del(id) {
@@ -115,7 +115,7 @@ export async function del(id) {
     throw new httpErrors[404](`Log entry with ID=${id} not found`);
   }
 
-  return { message: 'Log was deleted successfully.' };
+  return { message: 'Log entry was deleted successfully.' };
 }
 
 export async function delMany({ entries }) {
