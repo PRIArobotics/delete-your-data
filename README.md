@@ -1,8 +1,8 @@
 # Delete Your Data
 
-> Managing your users data in compliance with GDPR
+> Managing your users' data in compliance with GDPR
 
-**alpha** - this project is not yet functional!
+**in development** - this project is not yet functional!
 
 ## Prerequisites
 
