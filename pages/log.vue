@@ -69,7 +69,7 @@
           <dt>ID</dt>
           <dd>{{ item.id }}</dd>
           <dt>Updated Timestamp</dt>
-          <dd>{{ item.updatedAt }}</dd>
+          <dd>{{ new Date(item.updatedAt).toLocaleString() }}</dd>
         </dl>
       </td>
     </template>
@@ -121,11 +121,11 @@ export default {
 
   methods: {
     editItem(item) {
-      const { uuid, accountUuid } = item;
+      const { id, accountUuid } = item;
       const nativeLocation = JSON.stringify(item.nativeLocation);
 
       this.editedIndex = this.items.indexOf(item);
-      this.editedItem = { uuid, nativeLocation, accountUuid };
+      this.editedItem = { id, nativeLocation, accountUuid };
       this.dialog = true;
     },
 
@@ -147,11 +147,11 @@ export default {
     },
 
     async save() {
-      const { uuid, accountUuid } = this.editedItem;
+      const { id, accountUuid } = this.editedItem;
       const nativeLocation = JSON.parse(this.editedItem.nativeLocation);
 
       if (this.editedIndex > -1) {
-        await this.$axios.$put(`/api/account/${uuid}`, { nativeLocation, accountUuid });
+        await this.$axios.$put(`/api/log/${id}`, { nativeLocation, accountUuid });
         Object.assign(this.items[this.editedIndex], { nativeLocation, accountUuid });
       } else {
         const account = await this.$axios.$post('/api/log/', { nativeLocation, accountUuid });

@@ -106,11 +106,11 @@ export default {
 
   methods: {
     editItem(item) {
-      const { uuid, pluginUuid } = item;
+      const { uuid, pluginUuid, personUuid } = item;
       const nativeId = JSON.stringify(item.nativeId);
 
       this.editedIndex = this.items.indexOf(item);
-      this.editedItem = { nativeId, pluginUuid };
+      this.editedItem = { uuid, nativeId, pluginUuid, personUuid };
       this.dialog = true;
     },
 
@@ -132,14 +132,14 @@ export default {
     },
 
     async save() {
-      const { uuid, pluginUuid } = this.editedItem;
+      const { uuid, pluginUuid, personUuid } = this.editedItem;
       const nativeId = JSON.parse(this.editedItem.nativeId);
 
       if (this.editedIndex > -1) {
-        await this.$axios.$put(`/api/account/${uuid}`, { nativeId, pluginUuid });
-        Object.assign(this.items[this.editedIndex], { nativeId, pluginUuid });
+        await this.$axios.$put(`/api/account/${uuid}`, { nativeId, pluginUuid, personUuid });
+        Object.assign(this.items[this.editedIndex], { nativeId, pluginUuid, personUuid });
       } else {
-        const account = await this.$axios.$post('/api/account/', { nativeId, pluginUuid });
+        const account = await this.$axios.$post('/api/account/', { nativeId, pluginUuid, personUuid });
         this.items.push(account);
       }
       this.close();
