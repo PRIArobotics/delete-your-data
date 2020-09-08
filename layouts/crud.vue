@@ -41,11 +41,11 @@
         </template>
       </v-list>
     </v-navigation-drawer>
-    <v-content>
+    <v-main>
       <v-container>
         <nuxt />
       </v-container>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
