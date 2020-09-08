@@ -121,11 +121,11 @@ export default {
 
   methods: {
     editItem(item) {
-      const { accountUuid } = item;
+      const { uuid, accountUuid } = item;
       const nativeLocation = JSON.stringify(item.nativeLocation);
 
       this.editedIndex = this.items.indexOf(item);
-      this.editedItem = { nativeLocation, accountUuid };
+      this.editedItem = { uuid, nativeLocation, accountUuid };
       this.dialog = true;
     },
 
@@ -147,7 +147,7 @@ export default {
     },
 
     async save() {
-      const { accountUuid } = this.editedItem;
+      const { uuid, accountUuid } = this.editedItem;
       const nativeLocation = JSON.parse(this.editedItem.nativeLocation);
 
       if (this.editedIndex > -1) {

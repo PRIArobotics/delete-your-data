@@ -106,7 +106,7 @@ export default {
 
   methods: {
     editItem(item) {
-      const { pluginUuid } = item;
+      const { uuid, pluginUuid } = item;
       const nativeId = JSON.stringify(item.nativeId);
 
       this.editedIndex = this.items.indexOf(item);
@@ -132,7 +132,7 @@ export default {
     },
 
     async save() {
-      const { pluginUuid } = this.editedItem;
+      const { uuid, pluginUuid } = this.editedItem;
       const nativeId = JSON.parse(this.editedItem.nativeId);
 
       if (this.editedIndex > -1) {
