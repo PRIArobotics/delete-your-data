@@ -28,13 +28,14 @@
             </v-col>
           </v-row>
           <v-divider v-else-if="item.divider" :key="i" />
-          <v-list-item v-else :key="i" link>
+          <v-list-item v-else :key="i" :to ="item.url">
             <v-list-item-action>
               <v-icon class="black--text">{{ item.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title @click="openCRUD(item.info)" class="black--text">
+              <v-list-item-title class="black--text">
                 {{ item.text }}
+                
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
@@ -55,17 +56,14 @@ export default {
     drawer: null,
     searchTerm: '',
     items: [
-      { icon: 'mdi-database-plus', text: 'Create Plugin', info: 'create' },
+      { icon: 'mdi-puzzle', text: 'Plugin', url: '/plugins' },
       { divider: true },
-      { icon: 'mdi-database-sync', text: 'Update Plugin', info: 'update' },
+      { icon: 'mdi-account', text: 'Account', url: '/accounts'},
       { divider: true },
-      { icon: 'mdi-delete', text: 'Delete Plugin', info: 'delete' },
+      { icon: 'mdi-inbox-multiple', text: 'Log', url: '/log'},
     ],
   }),
   methods: {
-    openCRUD(openWhat) {
-      alert(openWhat);
-    },
     searchPlugin() {
       alert(this.searchTerm);
     },
