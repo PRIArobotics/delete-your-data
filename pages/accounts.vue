@@ -27,7 +27,7 @@
                       <v-text-field v-model="editedItem.nativeId" label="Native ID"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.pluginUuid" label="Plugin Uuid"></v-text-field>
+                      <v-text-field v-model="editedItem.pluginUuid" label="Plugin UUID"></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -47,6 +47,11 @@
       <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
       <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
     </template>
+
+    <template v-slot:item.nativeId="{ item }">
+       {{ JSON.stringify(item.nativeId) }}
+    </template>
+
     <template v-slot:expanded-item="{ headers, item }">
       <td :colspan="headers.length">
         <dl>
@@ -66,8 +71,8 @@ export default {
   data: () => ({
     dialog: false,
     headers: [
-      { text: 'Native Id', value: 'nativeId', align: 'start' },
-      { text: 'Plugin Uuid', value: 'pluginUuid'},
+      { text: 'Native ID', value: 'nativeId', align: 'start' },
+      { text: 'Plugin UUID', value: 'pluginUuid'},
       { text: 'Actions', value: 'actions', sortable: false, width: '7em' },
       { text: '', value: 'data-table-expand' },
     ],
