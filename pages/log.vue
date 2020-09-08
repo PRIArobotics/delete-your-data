@@ -53,6 +53,10 @@
        {{ JSON.stringify(item.nativeLocation) }}
     </template>
 
+    <template v-slot:item.createdAt="{ item }">
+       {{ new Date(item.createdAt).toLocaleString() }}
+    </template>
+
     <template v-slot:expanded-item="{ headers, item }">
       <td :colspan="headers.length">
         <dl>
