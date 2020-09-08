@@ -25,10 +25,16 @@
                 <v-container>
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.nativeLocation" label="Native Location"></v-text-field>
+                      <v-text-field
+                        v-model="editedItem.nativeLocation"
+                        label="Native Location"
+                      ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.accountUuid" label="Account UUID"></v-text-field>
+                      <v-text-field
+                        v-model="editedItem.accountUuid"
+                        label="Account UUID"
+                      ></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -50,11 +56,11 @@
     </template>
 
     <template v-slot:item.nativeLocation="{ item }">
-       {{ JSON.stringify(item.nativeLocation) }}
+      {{ JSON.stringify(item.nativeLocation) }}
     </template>
 
     <template v-slot:item.createdAt="{ item }">
-       {{ new Date(item.createdAt).toLocaleString() }}
+      {{ new Date(item.createdAt).toLocaleString() }}
     </template>
 
     <template v-slot:expanded-item="{ headers, item }">
@@ -78,7 +84,7 @@ export default {
     headers: [
       { text: 'Created', value: 'createdAt', align: 'start' },
       { text: 'Native Location', value: 'nativeLocation', align: 'start' },
-      { text: 'Account UUID', value: 'accountUuid'},
+      { text: 'Account UUID', value: 'accountUuid' },
       { text: 'Actions', value: 'actions', sortable: false, width: '7em' },
       { text: '', value: 'data-table-expand' },
     ],

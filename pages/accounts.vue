@@ -1,11 +1,5 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="items"
-    item-key="uuid"
-    show-expand
-    class="elevation-1"
-  >
+  <v-data-table :headers="headers" :items="items" item-key="uuid" show-expand class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Account</v-toolbar-title>
@@ -27,7 +21,10 @@
                       <v-text-field v-model="editedItem.nativeId" label="Native ID"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.pluginUuid" label="Plugin UUID"></v-text-field>
+                      <v-text-field
+                        v-model="editedItem.pluginUuid"
+                        label="Plugin UUID"
+                      ></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -49,7 +46,7 @@
     </template>
 
     <template v-slot:item.nativeId="{ item }">
-       {{ JSON.stringify(item.nativeId) }}
+      {{ JSON.stringify(item.nativeId) }}
     </template>
 
     <template v-slot:expanded-item="{ headers, item }">
@@ -72,7 +69,7 @@ export default {
     dialog: false,
     headers: [
       { text: 'Native ID', value: 'nativeId', align: 'start' },
-      { text: 'Plugin UUID', value: 'pluginUuid'},
+      { text: 'Plugin UUID', value: 'pluginUuid' },
       { text: 'Actions', value: 'actions', sortable: false, width: '7em' },
       { text: '', value: 'data-table-expand' },
     ],

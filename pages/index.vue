@@ -21,8 +21,8 @@
           <p>
             If you have questions, please join the official
             <a href="https://chat.vuetifyjs.com/" target="_blank" title="chat">
-              discord
-            </a>.
+              discord </a
+            >.
           </p>
           <p>
             Find a bug? Report it on the github
@@ -31,8 +31,8 @@
               target="_blank"
               title="contribute"
             >
-              issue board
-            </a>.
+              issue board </a
+            >.
           </p>
           <p>
             Thank you for developing with Vuetify and I look forward to bringing more exciting
