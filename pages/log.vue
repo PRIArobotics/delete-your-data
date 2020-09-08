@@ -2,17 +2,18 @@
   <v-data-table
     :headers="headers"
     :items="items"
-    item-key="uuid"
+    sort-by="createdAt"
+    item-key="id"
     show-expand
     class="elevation-1"
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Account</v-toolbar-title>
+        <v-toolbar-title>Log</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">New Account</v-btn>
+            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">New Log</v-btn>
           </template>
           <v-card>
             <v-form @submit.prevent="save">
@@ -24,10 +25,10 @@
                 <v-container>
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.nativeId" label="Native ID"></v-text-field>
+                      <v-text-field v-model="editedItem.nativeLocation" label="Native Location"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.pluginUuid" label="Plugin Uuid"></v-text-field>
+                      <v-text-field v-model="editedItem.accountUuid" label="Account Uuid"></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -50,10 +51,10 @@
     <template v-slot:expanded-item="{ headers, item }">
       <td :colspan="headers.length">
         <dl>
-          <dt>UUID</dt>
-          <dd>{{ item.uuid }}</dd>
-          <dt>Person UUID</dt>
-          <dd>{{ item.personUuid }}</dd>
+          <dt>ID</dt>
+          <dd>{{ item.id }}</dd>
+          <dt>Updated Timestamp</dt>
+          <dd>{{ item.updatedAt }}</dd>
         </dl>
       </td>
     </template>
@@ -66,31 +67,32 @@ export default {
   data: () => ({
     dialog: false,
     headers: [
-      { text: 'Native Id', value: 'nativeId', align: 'start' },
-      { text: 'Plugin Uuid', value: 'pluginUuid'},
+      { text: 'Created', value: 'createdAt', align: 'start' },
+      { text: 'Native Location', value: 'nativeLocation', align: 'start' },
+      { text: 'Account Uuid', value: 'accountUuid'},
       { text: 'Actions', value: 'actions', sortable: false, width: '7em' },
       { text: '', value: 'data-table-expand' },
     ],
     items: [],
     editedIndex: -1,
     editedItem: {
-      nativeId: '{}',
-      pluginUuid: '',
+      nativeLocation: '{}',
+      accountUuid: '',
     },
     defaultItem: {
-      nativeId: '{}',
-      pluginUuid: '',
+      nativeLocation: '{}',
+      accountUuid: '',
     },
   }),
 
   async asyncData({ $axios }) {
-    const items = await $axios.$get('/api/account/');
+    const items = await $axios.$get('/api/log/');
     return { items };
   },
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? 'New Account' : 'Edit Account';
+      return this.editedIndex === -1 ? 'New Log' : 'Edit Log';
     },
   },
 
@@ -104,11 +106,11 @@ export default {
 
   methods: {
     editItem(item) {
-      const { pluginUuid } = item;
-      const nativeId = JSON.stringify(item.nativeId);
+      const { accountUuid } = item;
+      const nativeLocation = JSON.stringify(item.nativeLocation);
 
       this.editedIndex = this.items.indexOf(item);
-      this.editedItem = { nativeId, pluginUuid };
+      this.editedItem = { nativeLocation, accountUuid };
       this.dialog = true;
     },
 
@@ -116,7 +118,7 @@ export default {
       const index = this.items.indexOf(item);
       const confirmed = confirm('Are you sure you want to delete this account?');
       if (confirmed) {
-        await this.$axios.$delete(`/api/account/${item.uuid}`);
+        await this.$axios.$delete(`/api/log/${item.id}`);
         this.items.splice(index, 1);
       }
     },
@@ -130,14 +132,14 @@ export default {
     },
 
     async save() {
-      const { pluginUuid } = this.editedItem;
-      const nativeId = JSON.parse(this.editedItem.nativeId);
+      const { accountUuid } = this.editedItem;
+      const nativeLocation = JSON.parse(this.editedItem.nativeLocation);
 
       if (this.editedIndex > -1) {
-        await this.$axios.$put(`/api/account/${uuid}`, { nativeId, pluginUuid });
-        Object.assign(this.items[this.editedIndex], { nativeId, pluginUuid });
+        await this.$axios.$put(`/api/account/${uuid}`, { nativeLocation, accountUuid });
+        Object.assign(this.items[this.editedIndex], { nativeLocation, accountUuid });
       } else {
-        const account = await this.$axios.$post('/api/account/', { nativeId, pluginUuid });
+        const account = await this.$axios.$post('/api/log/', { nativeLocation, accountUuid });
         this.items.push(account);
       }
       this.close();
