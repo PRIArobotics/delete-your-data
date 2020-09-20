@@ -12,8 +12,8 @@ module.exports = {
   collectCoverage: true,
   collectCoverageFrom: [
     // consider all source directories
-    '<rootDir>/{components,layouts,middleware,models,pages,plugins,server,store}/**/*.{vue,js}',
+    '<rootDir>/{components,layouts,middleware,pages,plugins,server,store}/**/*.{vue,js}',
     // model files are declarative, their coverage doesn't tell us anything
-    '!<rootDir>/models/**/*.model.js',
+    '!<rootDir>/server/models/**/*.model.js',
   ],
 };

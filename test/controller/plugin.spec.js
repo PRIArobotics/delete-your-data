@@ -4,7 +4,7 @@
 
 import httpErrors from 'httperrors';
 
-import { initSequelize } from '~/models';
+import { initSequelize } from '~/server/models';
 import { Plugin } from '~/server/controller';
 
 beforeAll(async () => {

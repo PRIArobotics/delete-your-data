@@ -4,7 +4,7 @@
 
 import httpErrors from 'httperrors';
 
-import { initSequelize } from '~/models';
+import { initSequelize } from '~/server/models';
 import { Plugin, Account, Log } from '~/server/controller';
 
 let pluginUuid, accountUuid, personUuid;
