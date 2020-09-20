@@ -1,7 +1,7 @@
 import httpErrors from 'httperrors';
 import { Op } from 'sequelize';
 
-import { Account, Log } from '../../models';
+import { Account, Log } from '../models';
 
 export async function create({ accountUuid, nativeLocation }) {
   // validate data

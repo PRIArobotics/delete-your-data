@@ -1,6 +1,6 @@
 import express from 'express';
 import { Nuxt, Builder } from 'nuxt';
-import { initSequelize } from '../models';
+import { initSequelize } from './models';
 import createApi from './api';
 import DummyPlugin from '../dydPlugins/dummy';
 

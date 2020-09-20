@@ -1,7 +1,7 @@
 import httpErrors from 'httperrors';
 import { Op } from 'sequelize';
 
-import { Plugin, Account } from '../../models';
+import { Plugin, Account } from '../models';
 
 export async function create({ pluginUuid, nativeId }) {
   // validate data

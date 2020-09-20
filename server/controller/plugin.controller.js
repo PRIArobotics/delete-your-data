@@ -1,7 +1,7 @@
 import httpErrors from 'httperrors';
 import { Op } from 'sequelize';
 
-import { Plugin } from '../../models';
+import { Plugin } from '../models';
 
 export async function create({ name, type, config }) {
   // validate data
