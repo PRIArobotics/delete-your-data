@@ -4,7 +4,7 @@
 
 import request from 'supertest';
 
-import appPromise from '@/server/app';
+import appPromise from '~/server/app';
 import { Plugin, Account, Log } from '~/server/controller';
 
 jest.mock('~/server/controller/plugin.controller');

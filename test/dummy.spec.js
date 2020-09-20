@@ -6,8 +6,8 @@ import http from 'http';
 import util from 'util';
 import request from 'supertest';
 
-import appPromise from '@/server/app';
-import dummyAppPromise from '@/dummyService/app';
+import appPromise from '~/server/app';
+import dummyAppPromise from '~/dummyService/app';
 
 let dummyServer, appServer, pluginUuid;
 
