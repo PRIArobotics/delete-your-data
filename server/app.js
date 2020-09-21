@@ -11,12 +11,7 @@ config.dev = process.env.NODE_ENV === 'development';
 // Init Nuxt.js
 const nuxt = new Nuxt(config);
 
-// specify DYD plugins to use
-const pluginRegistry = {
-  [DummyPlugin.TYPE_NAME]: DummyPlugin,
-};
-
-async function createApp() {
+async function createApp(pluginRegistry) {
   const app = express();
 
   await nuxt.ready();
@@ -39,7 +34,12 @@ async function createApp() {
   return app;
 }
 
-export default createApp();
+// specify DYD plugins to use
+const appPromise = createApp({
+  [DummyPlugin.TYPE_NAME]: DummyPlugin,
+});
+
+export default appPromise;
 
 const { host, port } = nuxt.options.server;
 export { host, port };
