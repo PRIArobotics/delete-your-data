@@ -81,11 +81,11 @@ module.exports = {
           [
             '@nuxt/babel-preset-app',
             {
-              corejs: { version: 3 }
-            }
-          ]
-        ]
-      }
-    }
+              corejs: { version: 3 },
+            },
+          ],
+        ];
+      },
+    },
   },
 };
