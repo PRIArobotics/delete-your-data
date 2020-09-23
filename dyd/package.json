@@ -32,6 +32,8 @@
     "@nuxtjs/vuetify": "^1.0.0",
     "@vue/test-utils": "^1.0.0-beta.27",
     "babel-jest": "^24.1.0",
+    "dummy-service": "file:../dummy-service",
+    "dyd-dummy-plugin": "file:../dyd-dummy-plugin",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
     "jest": "^24.1.0",
