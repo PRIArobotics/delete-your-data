@@ -1,1 +1,0 @@
-This directory is not part of the DYD core, it contains plugins that can be optionally used with DYD.
