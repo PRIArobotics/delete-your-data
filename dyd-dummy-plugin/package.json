@@ -2,8 +2,8 @@
   "name": "dyd-dummy-plugin",
   "version": "0.0.0",
   "private": true,
-  "main": "./lib/index.js",
-  "browser": "./lib/index.js",
+  "main": "./lib/index.server.js",
+  "browser": "./lib/index.client.js",
   "scripts": {
     "lint": "prettier --check **/*.js",
     "lint-fix": "prettier --write **/*.js",
