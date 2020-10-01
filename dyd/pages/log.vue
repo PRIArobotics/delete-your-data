@@ -31,10 +31,15 @@
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field
+                      <v-select
                         v-model="editedItem.accountUuid"
+                        :items="accounts"
+                        item-text="nativeId"
+                        item-value="uuid"
                         label="Account UUID"
-                      ></v-text-field>
+                        single-line
+                      >
+                      </v-select>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -102,7 +107,8 @@ export default {
 
   async asyncData({ $axios }) {
     const items = await $axios.$get('/api/log/');
-    return { items };
+    const accounts = await $axios.$get('/api/account/')
+    return { items, accounts };
   },
 
   computed: {

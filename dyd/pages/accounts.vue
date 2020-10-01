@@ -21,10 +21,15 @@
                       <v-text-field v-model="editedItem.nativeId" label="Native ID"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field
+                      <v-select
                         v-model="editedItem.pluginUuid"
+                        :items="plugins"
+                        item-text="type"
+                        item-value="uuid"
                         label="Plugin UUID"
-                      ></v-text-field>
+                        single-line
+                      >
+                      </v-select>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -87,7 +92,8 @@ export default {
 
   async asyncData({ $axios }) {
     const items = await $axios.$get('/api/account/');
-    return { items };
+    const plugins = await $axios.$get('/api/plugin/')
+    return { items, plugins };
   },
 
   computed: {
