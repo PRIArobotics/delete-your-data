@@ -92,7 +92,7 @@ export default {
 
   async asyncData({ $axios }) {
     const items = await $axios.$get('/api/account/');
-    const plugins = await $axios.$get('/api/plugin/')
+    const plugins = await $axios.$get('/api/plugin/');
     return { items, plugins };
   },
 
@@ -145,7 +145,11 @@ export default {
         await this.$axios.$put(`/api/account/${uuid}`, { nativeId, pluginUuid, personUuid });
         Object.assign(this.items[this.editedIndex], { nativeId, pluginUuid, personUuid });
       } else {
-        const account = await this.$axios.$post('/api/account/', { nativeId, pluginUuid, personUuid });
+        const account = await this.$axios.$post('/api/account/', {
+          nativeId,
+          pluginUuid,
+          personUuid,
+        });
         this.items.push(account);
       }
       this.close();

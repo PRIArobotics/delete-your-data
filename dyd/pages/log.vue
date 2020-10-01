@@ -107,7 +107,7 @@ export default {
 
   async asyncData({ $axios }) {
     const items = await $axios.$get('/api/log/');
-    const accounts = await $axios.$get('/api/account/')
+    const accounts = await $axios.$get('/api/account/');
     return { items, accounts };
   },
 

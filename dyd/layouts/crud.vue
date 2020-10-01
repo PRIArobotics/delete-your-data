@@ -28,14 +28,13 @@
             </v-col>
           </v-row>
           <v-divider v-else-if="item.divider" :key="i" />
-          <v-list-item v-else :key="i" :to ="item.url">
+          <v-list-item v-else :key="i" :to="item.url">
             <v-list-item-action>
               <v-icon class="black--text">{{ item.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title class="black--text">
                 {{ item.text }}
-                
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
@@ -58,9 +57,9 @@ export default {
     items: [
       { icon: 'mdi-puzzle', text: 'Plugin', url: '/plugins' },
       { divider: true },
-      { icon: 'mdi-account', text: 'Account', url: '/accounts'},
+      { icon: 'mdi-account', text: 'Account', url: '/accounts' },
       { divider: true },
-      { icon: 'mdi-inbox-multiple', text: 'Log', url: '/log'},
+      { icon: 'mdi-inbox-multiple', text: 'Log', url: '/log' },
     ],
   }),
   methods: {
