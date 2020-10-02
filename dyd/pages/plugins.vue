@@ -70,7 +70,6 @@
 export default {
   layout: 'crud',
   data: () => ({
-    dialog: false,
     headers: [
       { text: 'Name', value: 'name', align: 'start' },
       { text: 'Type', value: 'type' },
@@ -79,8 +78,10 @@ export default {
       { text: 'Actions', value: 'actions', sortable: false, width: '7em' },
       { text: '', value: 'data-table-expand' },
     ],
-    items: [],
-    editedIndex: -1,
+    // is the dialog visible?
+    dialog: false,
+    // is the dialog editing an existing item?
+    editing: false,
     editedItem: {
       name: '',
       type: '',
@@ -93,14 +94,16 @@ export default {
     },
   }),
 
-  async asyncData({ $axios }) {
-    const items = await $axios.$get('/api/plugin/');
-    return { items };
+  async fetch({ store }) {
+    await store.dispatch('plugins/refresh');
   },
 
   computed: {
+    items() {
+      return this.$store.state.plugins.list;
+    },
     formTitle() {
-      return this.editedIndex === -1 ? 'New Plugin' : 'Edit Plugin';
+      return this.editing ? 'Edit Plugin' : 'New Plugin';
     },
   },
 
@@ -116,18 +119,29 @@ export default {
     editItem(item) {
       const { uuid, name, type } = item;
       const config = JSON.stringify(item.config);
-
-      this.editedIndex = this.items.indexOf(item);
       this.editedItem = { uuid, name, type, config };
+
       this.dialog = true;
+      this.editing = true;
+    },
+
+    async save() {
+      const { uuid, name, type } = this.editedItem;
+      const config = JSON.parse(this.editedItem.config);
+
+      const item = { uuid, name, type, config };
+
+      if (this.editing) {
+        await this.$store.dispatch('plugins/update', item);
+      } else {
+        await this.$store.dispatch('plugins/create', item);
+      }
+      this.close();
     },
 
     async deleteItem(item) {
-      const index = this.items.indexOf(item);
-      const confirmed = confirm('Are you sure you want to delete this plugin?');
-      if (confirmed) {
-        await this.$axios.$delete(`/api/plugin/${item.uuid}`);
-        this.items.splice(index, 1);
+      if (confirm('Are you sure you want to delete this plugin?')) {
+        await this.$store.dispatch('plugins/delete', item);
       }
     },
 
@@ -135,22 +149,8 @@ export default {
       this.dialog = false;
       this.$nextTick(() => {
         this.editedItem = { ...this.defaultItem };
-        this.editedIndex = -1;
+        this.editing = false;
       });
-    },
-
-    async save() {
-      const { uuid, name, type } = this.editedItem;
-      const config = JSON.parse(this.editedItem.config);
-
-      if (this.editedIndex > -1) {
-        await this.$axios.$put(`/api/plugin/${uuid}`, { name, type, config });
-        Object.assign(this.items[this.editedIndex], { name, type, config });
-      } else {
-        const plugin = await this.$axios.$post('/api/plugin/', { name, type, config });
-        this.items.push(plugin);
-      }
-      this.close();
     },
   },
 };
