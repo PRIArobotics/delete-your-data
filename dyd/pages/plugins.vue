@@ -67,6 +67,10 @@
 </template>
 
 <script>
+import { createNamespacedHelpers } from 'vuex';
+
+const { mapState, mapActions } = createNamespacedHelpers('plugins');
+
 export default {
   layout: 'crud',
   data: () => ({
@@ -99,9 +103,9 @@ export default {
   },
 
   computed: {
-    items() {
-      return this.$store.state.plugins.list;
-    },
+    ...mapState({
+      items: 'list',
+    }),
     formTitle() {
       return this.editing ? 'Edit Plugin' : 'New Plugin';
     },
@@ -116,6 +120,8 @@ export default {
   },
 
   methods: {
+    ...mapActions(['create', 'update', 'delete']),
+
     editItem(item) {
       const { uuid, name, type } = item;
       const config = JSON.stringify(item.config);
@@ -132,16 +138,16 @@ export default {
       const item = { uuid, name, type, config };
 
       if (this.editing) {
-        await this.$store.dispatch('plugins/update', item);
+        await this.update(item);
       } else {
-        await this.$store.dispatch('plugins/create', item);
+        await this.create(item);
       }
       this.close();
     },
 
     async deleteItem(item) {
       if (confirm('Are you sure you want to delete this plugin?')) {
-        await this.$store.dispatch('plugins/delete', item);
+        await this.delete(item);
       }
     },
 
