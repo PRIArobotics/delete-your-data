@@ -2,7 +2,7 @@ import express from 'express';
 import { Nuxt, Builder } from 'nuxt';
 import { initSequelize } from './models';
 import createApi from './api';
-import { plugins } from '../plugins/dydPluginRegistry.js';
+import { pluginRegistry } from '../plugins/dydPluginRegistry.js';
 
 // Import and Set Nuxt.js options
 import config from '../nuxt.config.js';
@@ -34,7 +34,7 @@ async function createApp(pluginRegistry) {
   return app;
 }
 
-const appPromise = createApp(plugins);
+const appPromise = createApp(pluginRegistry);
 
 export default appPromise;
 
