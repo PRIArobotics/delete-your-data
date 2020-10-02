@@ -34,7 +34,7 @@
                       <v-select
                         v-model="editedItem.accountUuid"
                         :items="accounts"
-                        :item-text="account => JSON.stringify(account.nativeId)"
+                        :item-text="(account) => JSON.stringify(account.nativeId)"
                         item-value="uuid"
                         label="Account UUID"
                         single-line
