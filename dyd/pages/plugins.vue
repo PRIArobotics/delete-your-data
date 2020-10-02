@@ -28,7 +28,15 @@
                       <v-text-field v-model="editedItem.name" label="Plugin name"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.type" label="Plugin Type"></v-text-field>
+                      <v-select
+                        v-model="editedItem.type"
+                        :items="$dydPlugins"
+                        item-text="TYPE_NAME"
+                        item-value="TYPE_NAME"
+                        label="Plugin Type"
+                        single-line
+                      >
+                      </v-select>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field v-model="editedItem.config" label="Config JSON"></v-text-field>
