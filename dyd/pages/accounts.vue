@@ -50,6 +50,10 @@
       <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
     </template>
 
+    <template v-slot:item.pluginName="{ item }">
+      {{ getPluginName(item) }}
+    </template>
+
     <template v-slot:item.nativeId="{ item }">
       {{ JSON.stringify(item.nativeId) }}
     </template>
@@ -77,7 +81,7 @@ export default {
   data: () => ({
     headers: [
       { text: 'Native ID', value: 'nativeId', align: 'start' },
-      { text: 'Plugin UUID', value: 'pluginUuid' },
+      { text: 'Plugin Name', value: 'pluginName' },
       { text: 'Actions', value: 'actions', sortable: false, width: '7em' },
       { text: '', value: 'data-table-expand' },
     ],
@@ -108,6 +112,7 @@ export default {
   computed: {
     ...mapPluginState({
       plugins: 'list',
+      pluginMap: 'map',
     }),
     formTitle() {
       return this.editedIndex === -1 ? 'New Account' : 'Edit Account';
@@ -123,6 +128,10 @@ export default {
   },
 
   methods: {
+    getPluginName(account) {
+      return this.pluginMap.get(account.pluginUuid)?.name ?? account.pluginUuid;
+    },
+
     editItem(item) {
       const { uuid, pluginUuid, personUuid } = item;
       const nativeId = JSON.stringify(item.nativeId);

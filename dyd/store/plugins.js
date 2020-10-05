@@ -2,15 +2,21 @@ import axios from 'axios';
 
 export const state = () => ({
   list: [],
+  map: new Map(),
 });
 
 export const mutations = {
   setList(state, list) {
     state.list = list;
+    state.map.clear();
+    for (const item of list) {
+      state.map.set(item.uuid, item);
+    }
   },
 
   createItem(state, item) {
     state.list.push(item);
+    state.map.set(item.uuid, item);
   },
 
   updateItem(state, { uuid, ...item }) {
@@ -21,6 +27,7 @@ export const mutations = {
   deleteItem(state, { uuid }) {
     const index = state.list.findIndex((x) => x.uuid === uuid);
     state.list.splice(index, 1);
+    state.map.delete(uuid);
   },
 };
 
