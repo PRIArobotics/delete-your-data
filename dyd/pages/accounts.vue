@@ -24,7 +24,7 @@
                       <v-select
                         v-model="editedItem.pluginUuid"
                         :items="plugins"
-                        item-text="type"
+                        item-text="name"
                         item-value="uuid"
                         label="Plugin UUID"
                         single-line
@@ -68,10 +68,13 @@
 </template>
 
 <script>
+import { createNamespacedHelpers } from 'vuex';
+
+const {mapState: mapPluginState } = createNamespacedHelpers('plugins');
+
 export default {
   layout: 'crud',
   data: () => ({
-    dialog: false,
     headers: [
       { text: 'Native ID', value: 'nativeId', align: 'start' },
       { text: 'Plugin UUID', value: 'pluginUuid' },
@@ -79,6 +82,9 @@ export default {
       { text: '', value: 'data-table-expand' },
     ],
     items: [],
+    // is the dialog visible?
+    dialog: false,
+    // is the dialog editing an existing item? -1 if not
     editedIndex: -1,
     editedItem: {
       nativeId: '{}',
@@ -92,11 +98,17 @@ export default {
 
   async asyncData({ $axios }) {
     const items = await $axios.$get('/api/account/');
-    const plugins = await $axios.$get('/api/plugin/');
-    return { items, plugins };
+    return { items };
+  },
+
+  async fetch({ store }) {
+    await store.dispatch('plugins/refresh');
   },
 
   computed: {
+    ...mapPluginState({
+      plugins: 'list',
+    }),
     formTitle() {
       return this.editedIndex === -1 ? 'New Account' : 'Edit Account';
     },
