@@ -13,7 +13,7 @@
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">New Log</v-btn>
+            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">New Log Entry</v-btn>
           </template>
           <v-card>
             <v-form @submit.prevent="save">
@@ -82,10 +82,14 @@
 </template>
 
 <script>
+import { createNamespacedHelpers } from 'vuex';
+
+const { mapState, mapActions } = createNamespacedHelpers('log');
+const { mapState: mapAccountState } = createNamespacedHelpers('accounts');
+
 export default {
   layout: 'crud',
   data: () => ({
-    dialog: false,
     headers: [
       { text: 'Created', value: 'createdAt', align: 'start' },
       { text: 'Native Location', value: 'nativeLocation', align: 'start' },
@@ -93,8 +97,10 @@ export default {
       { text: 'Actions', value: 'actions', sortable: false, width: '7em' },
       { text: '', value: 'data-table-expand' },
     ],
-    items: [],
-    editedIndex: -1,
+    // is the dialog visible?
+    dialog: false,
+    // is the dialog editing an existing item?
+    editing: false,
     editedItem: {
       nativeLocation: '{}',
       accountUuid: '',
@@ -105,15 +111,22 @@ export default {
     },
   }),
 
-  async asyncData({ $axios }) {
-    const items = await $axios.$get('/api/log/');
-    const accounts = await $axios.$get('/api/account/');
-    return { items, accounts };
+  async fetch({ store }) {
+    await Promise.all([
+      store.dispatch('accounts/initialize'),
+      store.dispatch('log/initialize'),
+    ]);
   },
 
   computed: {
+    ...mapState({
+      items: 'list',
+    }),
+    ...mapAccountState({
+      accounts: 'list',
+    }),
     formTitle() {
-      return this.editedIndex === -1 ? 'New Log' : 'Edit Log';
+      return this.editedIndex === -1 ? 'New Log Entry' : 'Edit Log Entry';
     },
   },
 
@@ -126,21 +139,34 @@ export default {
   },
 
   methods: {
+    ...mapActions(['create', 'update', 'delete']),
+
     editItem(item) {
       const { id, accountUuid } = item;
       const nativeLocation = JSON.stringify(item.nativeLocation);
-
-      this.editedIndex = this.items.indexOf(item);
       this.editedItem = { id, nativeLocation, accountUuid };
+
       this.dialog = true;
+      this.editing = true;
+    },
+
+    async save() {
+      const { id, accountUuid } = this.editedItem;
+      const nativeLocation = JSON.parse(this.editedItem.nativeLocation);
+
+      const item = { id, nativeLocation, accountUuid };
+
+      if (this.editing) {
+        await this.update(item);
+      } else {
+        await this.create(item);
+      }
+      this.close();
     },
 
     async deleteItem(item) {
-      const index = this.items.indexOf(item);
-      const confirmed = confirm('Are you sure you want to delete this account?');
-      if (confirmed) {
-        await this.$axios.$delete(`/api/log/${item.id}`);
-        this.items.splice(index, 1);
+      if (confirm('Are you sure you want to delete this log entry?')) {
+        await this.delete(item);
       }
     },
 
@@ -148,22 +174,8 @@ export default {
       this.dialog = false;
       this.$nextTick(() => {
         this.editedItem = { ...this.defaultItem };
-        this.editedIndex = -1;
+        this.editing = false;
       });
-    },
-
-    async save() {
-      const { id, accountUuid } = this.editedItem;
-      const nativeLocation = JSON.parse(this.editedItem.nativeLocation);
-
-      if (this.editedIndex > -1) {
-        await this.$axios.$put(`/api/log/${id}`, { nativeLocation, accountUuid });
-        Object.assign(this.items[this.editedIndex], { nativeLocation, accountUuid });
-      } else {
-        const account = await this.$axios.$post('/api/log/', { nativeLocation, accountUuid });
-        this.items.push(account);
-      }
-      this.close();
     },
   },
 };
