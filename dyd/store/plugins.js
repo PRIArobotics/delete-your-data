@@ -1,12 +1,14 @@
 import axios from 'axios';
 
 export const state = () => ({
+  initialized: false,
   list: [],
   map: new Map(),
 });
 
 export const mutations = {
   setList(state, list) {
+    state.initialized = true;
     state.list = list;
     state.map.clear();
     for (const item of list) {
@@ -32,6 +34,11 @@ export const mutations = {
 };
 
 export const actions = {
+  async initialize({ state, dispatch }) {
+    if (state.initialized) return;
+    await dispatch('refresh');
+  },
+
   async refresh({ commit }) {
     const items = await this.$axios.$get('/api/plugin/');
     commit('setList', items);

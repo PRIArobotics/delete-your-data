@@ -107,7 +107,7 @@ export default {
   }),
 
   async fetch({ store }) {
-    await store.dispatch('plugins/refresh');
+    await store.dispatch('plugins/initialize');
   },
 
   computed: {
