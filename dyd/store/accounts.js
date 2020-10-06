@@ -45,16 +45,14 @@ export const actions = {
   },
 
   async create({ commit }, item) {
-    const { nativeId, pluginUuid, personUuid } = item;
-
-    const newItem = await this.$axios.$post('/api/account/', { nativeId, pluginUuid, personUuid });
+    const newItem = await this.$axios.$post('/api/account/', item);
     commit('createItem', newItem);
   },
 
   async update({ commit }, item) {
-    const { uuid, nativeId, pluginUuid, personUuid } = item;
+    const { uuid, ...values } = item;
 
-    await this.$axios.$put(`/api/account/${uuid}`, { nativeId, pluginUuid, personUuid });
+    await this.$axios.$put(`/api/account/${uuid}`, values);
     commit('updateItem', item);
   },
 
