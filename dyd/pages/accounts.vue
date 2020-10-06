@@ -74,7 +74,8 @@
 <script>
 import { createNamespacedHelpers } from 'vuex';
 
-const {mapState: mapPluginState } = createNamespacedHelpers('plugins');
+const { mapState, mapActions } = createNamespacedHelpers('accounts');
+const { mapState: mapPluginState } = createNamespacedHelpers('plugins');
 
 export default {
   layout: 'crud',
@@ -85,11 +86,10 @@ export default {
       { text: 'Actions', value: 'actions', sortable: false, width: '7em' },
       { text: '', value: 'data-table-expand' },
     ],
-    items: [],
     // is the dialog visible?
     dialog: false,
-    // is the dialog editing an existing item? -1 if not
-    editedIndex: -1,
+    // is the dialog editing an existing item?
+    editing: false,
     editedItem: {
       nativeId: '{}',
       pluginUuid: '',
@@ -100,16 +100,17 @@ export default {
     },
   }),
 
-  async asyncData({ $axios }) {
-    const items = await $axios.$get('/api/account/');
-    return { items };
-  },
-
   async fetch({ store }) {
-    await store.dispatch('plugins/initialize');
+    await Promise.all([
+      store.dispatch('plugins/initialize'),
+      store.dispatch('accounts/initialize'),
+    ]);
   },
 
   computed: {
+    ...mapState({
+      items: 'list',
+    }),
     ...mapPluginState({
       plugins: 'list',
       pluginMap: 'map',
@@ -128,6 +129,8 @@ export default {
   },
 
   methods: {
+    ...mapActions(['create', 'update', 'delete']),
+
     getPluginName(account) {
       return this.pluginMap.get(account.pluginUuid)?.name ?? account.pluginUuid;
     },
@@ -135,18 +138,29 @@ export default {
     editItem(item) {
       const { uuid, pluginUuid, personUuid } = item;
       const nativeId = JSON.stringify(item.nativeId);
-
-      this.editedIndex = this.items.indexOf(item);
       this.editedItem = { uuid, nativeId, pluginUuid, personUuid };
+
       this.dialog = true;
+      this.editing = true;
+    },
+
+    async save() {
+      const { uuid, pluginUuid, personUuid } = this.editedItem;
+      const nativeId = JSON.parse(this.editedItem.nativeId);
+
+      const item = { uuid, nativeId, pluginUuid, personUuid };
+
+      if (this.editing) {
+        await this.update(item);
+      } else {
+        await this.create(item);
+      }
+      this.close();
     },
 
     async deleteItem(item) {
-      const index = this.items.indexOf(item);
-      const confirmed = confirm('Are you sure you want to delete this account?');
-      if (confirmed) {
-        await this.$axios.$delete(`/api/account/${item.uuid}`);
-        this.items.splice(index, 1);
+      if (confirm('Are you sure you want to delete this account?')) {
+        await this.delete(item);
       }
     },
 
@@ -154,26 +168,8 @@ export default {
       this.dialog = false;
       this.$nextTick(() => {
         this.editedItem = { ...this.defaultItem };
-        this.editedIndex = -1;
+        this.editing = false;
       });
-    },
-
-    async save() {
-      const { uuid, pluginUuid, personUuid } = this.editedItem;
-      const nativeId = JSON.parse(this.editedItem.nativeId);
-
-      if (this.editedIndex > -1) {
-        await this.$axios.$put(`/api/account/${uuid}`, { nativeId, pluginUuid, personUuid });
-        Object.assign(this.items[this.editedIndex], { nativeId, pluginUuid, personUuid });
-      } else {
-        const account = await this.$axios.$post('/api/account/', {
-          nativeId,
-          pluginUuid,
-          personUuid,
-        });
-        this.items.push(account);
-      }
-      this.close();
     },
   },
 };
