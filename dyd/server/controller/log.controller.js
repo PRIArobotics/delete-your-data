@@ -32,7 +32,13 @@ export async function readAll({ accountUuid, personUuid, earliest, latest }) {
     // even though we want the account only for filtering
     include.push({
       model: Account,
+      attributes: ['pluginUuid'],
       where: { personUuid },
+    });
+  }else{
+    include.push({
+      model: Account,
+      attributes: ['pluginUuid'],
     });
   }
   if (earliest || latest) {
@@ -45,7 +51,7 @@ export async function readAll({ accountUuid, personUuid, earliest, latest }) {
   // query database
   try {
     const log = await Log.findAll({ where: condition, include });
-    return log;
+    return log.map(({ account: { pluginUuid }, accountUuid, createdAt, id, nativeLocation, updatedAt }) => ({ pluginUuid, accountUuid, createdAt, id, nativeLocation, updatedAt }));
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
