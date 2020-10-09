@@ -25,22 +25,7 @@ export async function create({ accountUuid, nativeLocation }) {
 export async function readAll({ accountUuid, personUuid, earliest, latest }) {
   // create filter
   const condition = {};
-  const include = [];
   if (accountUuid) condition.accountUuid = accountUuid;
-  if (personUuid) {
-    // TODO this adds the account to the fetched data,
-    // even though we want the account only for filtering
-    include.push({
-      model: Account,
-      attributes: ['pluginUuid'],
-      where: { personUuid },
-    });
-  }else{
-    include.push({
-      model: Account,
-      attributes: ['pluginUuid'],
-    });
-  }
   if (earliest || latest) {
     const createdAt = {};
     if (earliest) createdAt[Op.gte] = earliest;
@@ -48,10 +33,25 @@ export async function readAll({ accountUuid, personUuid, earliest, latest }) {
     condition.createdAt = createdAt;
   }
 
+  const accountInclude = {
+    model: Account,
+    attributes: ['pluginUuid'],
+  };
+  if (personUuid) accountInclude.where = { personUuid };
+
   // query database
   try {
-    const log = await Log.findAll({ where: condition, include });
-    return log.map(({ account: { pluginUuid }, accountUuid, createdAt, id, nativeLocation, updatedAt }) => ({ pluginUuid, accountUuid, createdAt, id, nativeLocation, updatedAt }));
+    const log = await Log.findAll({ where: condition, include: [accountInclude] });
+    return log.map(
+      ({ account: { pluginUuid }, accountUuid, createdAt, id, nativeLocation, updatedAt }) => ({
+        pluginUuid,
+        accountUuid,
+        createdAt,
+        id,
+        nativeLocation,
+        updatedAt,
+      }),
+    );
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
