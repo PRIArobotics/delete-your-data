@@ -47,6 +47,7 @@ describe('Log Controller', () => {
       // toMatchObject because sequelize model instances are not plain objects
       expect(log).toMatchObject({
         id: expect.any(Number),
+        pluginUuid,
         accountUuid,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
@@ -77,6 +78,7 @@ describe('Log Controller', () => {
       expect(logs).toMatchObject([
         {
           id: expect.any(Number),
+          pluginUuid,
           accountUuid,
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
@@ -90,6 +92,7 @@ describe('Log Controller', () => {
       expect(logs).toMatchObject([
         {
           id: expect.any(Number),
+          pluginUuid,
           accountUuid,
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
@@ -103,6 +106,7 @@ describe('Log Controller', () => {
       expect(logs).toMatchObject([
         {
           id: expect.any(Number),
+          pluginUuid,
           accountUuid,
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
@@ -116,6 +120,7 @@ describe('Log Controller', () => {
       expect(logs).toMatchObject([
         {
           id: expect.any(Number),
+          pluginUuid,
           accountUuid,
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
@@ -158,6 +163,7 @@ describe('Log Controller', () => {
       // toMatchObject because sequelize model instances are not plain objects
       expect(log).toMatchObject({
         id: expect.any(Number),
+        pluginUuid,
         accountUuid,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
@@ -189,6 +195,7 @@ describe('Log Controller', () => {
       // toMatchObject because sequelize model instances are not plain objects
       expect(log).toMatchObject({
         id: expect.any(Number),
+        pluginUuid,
         accountUuid,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
