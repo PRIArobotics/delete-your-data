@@ -4,6 +4,12 @@ import { Op } from 'sequelize';
 import { Account, Log } from '../models';
 
 export async function create({ accountUuid, nativeLocation }) {
+
+  const accountInclude = {
+    model: Account,
+    attributes: ['pluginUuid'],
+  };
+
   // validate data
   if (!accountUuid) {
     throw new httpErrors[400]('`accountUuid` can not be empty!');
@@ -15,8 +21,8 @@ export async function create({ accountUuid, nativeLocation }) {
 
   // save to database
   try {
-    const log = await Log.create({ accountUuid, nativeLocation });
-    return log;
+    const log = await Log.create({ accountUuid, nativeLocation }, {include: [accountInclude]});
+    return await read(log.id);
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
@@ -58,10 +64,15 @@ export async function readAll({ accountUuid, personUuid, earliest, latest }) {
 }
 
 export async function read(id) {
+  const accountInclude = {
+    model: Account,
+    attributes: ['pluginUuid'],
+  };
+
   // query database
   let log;
   try {
-    log = await Log.findByPk(id);
+    log = await Log.findByPk(id, {include: [accountInclude]});
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
@@ -70,7 +81,16 @@ export async function read(id) {
     throw new httpErrors[404](`Log entry with ID=${id} not found`);
   }
 
-  return log;
+  let { account: { pluginUuid }, accountUuid, createdAt, id: _id, nativeLocation, updatedAt } = log;
+
+  return {
+    pluginUuid,
+    accountUuid,
+    createdAt,
+    id: _id,
+    nativeLocation,
+    updatedAt,
+  };
 }
 
 export async function update(id, { accountUuid, nativeLocation }) {
