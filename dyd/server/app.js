@@ -2,7 +2,6 @@ import express from 'express';
 import { Nuxt, Builder } from 'nuxt';
 import { initSequelize } from './models';
 import createApi from './api';
-import { pluginRegistry } from '../plugins/dydPluginRegistry.js';
 
 // Import and Set Nuxt.js options
 import config from '../nuxt.config.js';
@@ -11,7 +10,7 @@ config.dev = process.env.NODE_ENV === 'development';
 // Init Nuxt.js
 const nuxt = new Nuxt(config);
 
-async function createApp(pluginRegistry) {
+export default async function createApp(pluginRegistry) {
   const app = express();
 
   await nuxt.ready();
@@ -33,10 +32,6 @@ async function createApp(pluginRegistry) {
 
   return app;
 }
-
-const appPromise = createApp(pluginRegistry);
-
-export default appPromise;
 
 const { host, port } = nuxt.options.server;
 export { host, port };

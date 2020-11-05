@@ -6,7 +6,7 @@ import http from 'http';
 import util from 'util';
 import request from 'supertest';
 
-import appPromise from '~/server/app';
+import appPromise from './test_app';
 import dummyAppPromise from 'dummy-service/lib/app';
 
 let dummyServer, appServer, pluginUuid;
@@ -18,7 +18,8 @@ beforeAll(async () => {
   const dummyApiUrl = `http://localhost:${dummyServer.address().port}/api`;
 
   // start DYD service
-  appServer = http.createServer(await appPromise);
+  const app = await appPromise;
+  appServer = http.createServer(app);
   await util.promisify(appServer.listen).call(appServer, 0);
 
   // register dummy plugin
