@@ -48,7 +48,7 @@ function wrapAsync(method) {
   };
 }
 
-export default () => {
+export default (dydConfig) => {
   const router = Router();
   // parse JSON on a request's body
   router.use(json());
@@ -65,7 +65,7 @@ export default () => {
   });
 
   // account routes
-  router.postAsync('/account/', (req) => Account.create(req.body));
+  router.postAsync('/account/', (req) => Account.create(dydConfig, req.body));
   router.getAsync('/account/', (req) => Account.readAll());
   router.getAsync('/account/:username', (req) => Account.read(req.params.username));
   router.deleteAsync('/account/:username', (req) => Account.del(req.params.username));

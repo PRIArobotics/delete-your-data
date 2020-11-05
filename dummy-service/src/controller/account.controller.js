@@ -3,19 +3,31 @@ import { Op } from 'sequelize';
 
 import { Account } from '../models';
 
-export async function create({ username }) {
+export async function create({ dydAxios, dydPluginUuid }, { username }) {
   // validate data
   if (!username) {
     throw new httpErrors[400]('`username` can not be empty!');
   }
 
   // save to database
+  let account;
   try {
-    const account = await Account.create({ username });
-    return account;
+    account = await Account.create({ username });
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
+
+  // index in DYD
+  try {
+    await dydAxios.post('account', {
+      pluginUuid: dydPluginUuid,
+      nativeId: username,
+    });
+  } catch (err) /* istanbul ignore next */ {
+    throw new httpErrors[500](err.message || 'An error occurred indexing the account...');
+  }
+
+  return account;
 }
 
 export async function readAll() {

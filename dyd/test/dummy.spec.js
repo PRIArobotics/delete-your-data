@@ -11,17 +11,16 @@ import createDummyApp from 'dummy-service/lib/app';
 
 let dummyServer, appServer, pluginUuid;
 
-beforeAll(async () => {
-  // start dummy service
-  const dummyApp = await createDummyApp();
-  dummyServer = http.createServer(dummyApp);
-  await util.promisify(dummyServer.listen).call(dummyServer, 0);
-  const dummyApiUrl = `http://localhost:${dummyServer.address().port}/api`;
+const DUMMY_PORT = 3001;
+const DUMMY_API_URL = `http://localhost:${DUMMY_PORT}/api`;
+const DYD_PORT = 3002;
+const DYD_API_URL = `http://localhost:${DYD_PORT}/api`;
 
+beforeAll(async () => {
   // start DYD service
   const app = await appPromise;
   appServer = http.createServer(app);
-  await util.promisify(appServer.listen).call(appServer, 0);
+  await util.promisify(appServer.listen).call(appServer, DYD_PORT);
 
   // register dummy plugin
   const res = await request(appServer)
@@ -29,10 +28,18 @@ beforeAll(async () => {
     .send({
       name: 'dummy_test_plugin',
       type: 'Dummy',
-      config: { apiUrl: dummyApiUrl },
+      config: { apiUrl: DUMMY_API_URL },
     });
   expect(res.statusCode).toEqual(200);
   pluginUuid = res.body.uuid;
+
+  // start dummy service
+  const dummyApp = await createDummyApp({
+    dydEndpoint: DYD_API_URL,
+    dydPluginUuid: pluginUuid,
+  });
+  dummyServer = http.createServer(dummyApp);
+  await util.promisify(dummyServer.listen).call(dummyServer, DUMMY_PORT);
 });
 
 afterAll(async () => {
@@ -52,7 +59,7 @@ describe('Using the Dummy service', () => {
   test('it works', async () => {
     let accountUuid;
 
-    // create a user in the dummy service...
+    // create a user in the dummy service
     {
       const res = await request(dummyServer)
         .post('/api/account')
@@ -61,16 +68,17 @@ describe('Using the Dummy service', () => {
         });
       expect(res.statusCode).toEqual(200);
     }
-    // ...and register it in DYD
+
+    // check it exists in DYD
     {
       const res = await request(appServer)
-        .post('/api/account')
+        .get('/api/account')
         .send({
           pluginUuid,
-          nativeId: 'dummy_test_user',
         });
       expect(res.statusCode).toEqual(200);
-      accountUuid = res.body.uuid;
+      expect(res.body).toHaveLength(1);
+      accountUuid = res.body[0].uuid;
     }
 
     // delete the user via DYD
