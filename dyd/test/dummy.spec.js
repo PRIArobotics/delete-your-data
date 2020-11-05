@@ -7,13 +7,14 @@ import util from 'util';
 import request from 'supertest';
 
 import appPromise from './test_app';
-import dummyAppPromise from 'dummy-service/lib/app';
+import createDummyApp from 'dummy-service/lib/app';
 
 let dummyServer, appServer, pluginUuid;
 
 beforeAll(async () => {
   // start dummy service
-  dummyServer = http.createServer(await dummyAppPromise);
+  const dummyApp = await createDummyApp();
+  dummyServer = http.createServer(dummyApp);
   await util.promisify(dummyServer.listen).call(dummyServer, 0);
   const dummyApiUrl = `http://localhost:${dummyServer.address().port}/api`;
 
