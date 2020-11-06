@@ -27,7 +27,7 @@ afterAll(async () => {
 
 describe('Account Controller', () => {
   test('it works', async () => {
-    let uuid, personUuid;
+    let uuid, uuid2, personUuid;
 
     // create
     {
@@ -164,9 +164,54 @@ describe('Account Controller', () => {
       httpErrors[404],
     );
 
+    // create 2nd account
+    {
+      const account = await Account.create({
+        pluginUuid,
+        personUuid,
+        nativeId: '2nd_account',
+      });
+      // toMatchObject because sequelize model instances are not plain objects
+      expect(account).toMatchObject({
+        uuid: expect.any(String),
+        personUuid,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+        pluginUuid,
+        nativeId: '2nd_account',
+      });
+
+      uuid2 = account.uuid;
+    }
+
+    // read all
+    {
+      const accounts = await Account.readAll({ personUuid });
+      // toMatchObject because sequelize model instances are not plain objects
+      expect(accounts.sort((a, b) => a.createdAt - b.createdAt)).toMatchObject([
+        {
+          uuid: expect.any(String),
+          personUuid: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          pluginUuid,
+          nativeId: { username: 'account2' },
+        },
+        {
+          uuid: expect.any(String),
+          personUuid: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          pluginUuid,
+          nativeId: '2nd_account',
+        },
+      ]);
+    }
+
     // delete
     {
       await Account.del(uuid);
+      await Account.del(uuid2);
 
       expect(await Account.readAll({ pluginUuid })).toHaveLength(0);
     }

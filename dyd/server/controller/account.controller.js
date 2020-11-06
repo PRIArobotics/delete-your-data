@@ -3,7 +3,7 @@ import { Op } from 'sequelize';
 
 import { Plugin, Account } from '../models';
 
-export async function create({ pluginUuid, nativeId }) {
+export async function create({ pluginUuid, personUuid, nativeId }) {
   // validate data
   if (!pluginUuid) {
     throw new httpErrors[400]('`pluginUuid` can not be empty!');
@@ -15,7 +15,7 @@ export async function create({ pluginUuid, nativeId }) {
 
   // save to database
   try {
-    const account = await Account.create({ pluginUuid, nativeId });
+    const account = await Account.create({ pluginUuid, personUuid, nativeId });
     return account;
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
