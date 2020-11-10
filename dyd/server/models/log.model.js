@@ -22,6 +22,10 @@ export default (sequelize) => {
         {
           fields: [{ attribute: 'createdAt', order: 'ASC' }],
         },
+        {
+          fields: ['accountUuid', 'nativeLocation'],
+          unique: true,
+        },
       ],
     },
   );
