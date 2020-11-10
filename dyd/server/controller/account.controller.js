@@ -132,7 +132,9 @@ export async function readByNativeId({ pluginUuid, nativeId }) {
   }
 
   if (account === null) {
-    throw new httpErrors[404](`Account with plugin UUID=${pluginUuid}, nativeId=<REDACTED> not found`);
+    throw new httpErrors[404](
+      `Account with plugin UUID=${pluginUuid}, nativeId=<REDACTED> not found`,
+    );
   }
 
   return account;

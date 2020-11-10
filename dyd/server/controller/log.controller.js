@@ -4,7 +4,6 @@ import { Op } from 'sequelize';
 import { Account, Log } from '../models';
 
 export async function create({ accountUuid, nativeLocation }) {
-
   const accountInclude = {
     model: Account,
     attributes: ['pluginUuid'],
@@ -21,7 +20,7 @@ export async function create({ accountUuid, nativeLocation }) {
 
   // save to database
   try {
-    const log = await Log.create({ accountUuid, nativeLocation }, {include: [accountInclude]});
+    const log = await Log.create({ accountUuid, nativeLocation }, { include: [accountInclude] });
     return await read(log.id);
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
@@ -72,7 +71,7 @@ export async function read(id) {
   // query database
   let log;
   try {
-    log = await Log.findByPk(id, {include: [accountInclude]});
+    log = await Log.findByPk(id, { include: [accountInclude] });
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
@@ -81,7 +80,14 @@ export async function read(id) {
     throw new httpErrors[404](`Log entry with ID=${id} not found`);
   }
 
-  let { account: { pluginUuid }, accountUuid, createdAt, id: _id, nativeLocation, updatedAt } = log;
+  let {
+    account: { pluginUuid },
+    accountUuid,
+    createdAt,
+    id: _id,
+    nativeLocation,
+    updatedAt,
+  } = log;
 
   return {
     pluginUuid,
