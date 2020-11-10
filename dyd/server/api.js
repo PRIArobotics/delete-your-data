@@ -106,6 +106,7 @@ export default (pluginRegistry) => {
 
   // logic routes
   router.postAsync('/account/redact', (req) => Account.redact(pluginRegistry, req.body));
+  router.postAsync('/person/redact', (req) => Account.redactPersons(pluginRegistry, req.body));
 
   return router;
 };

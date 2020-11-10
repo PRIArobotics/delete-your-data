@@ -100,4 +100,49 @@ describe('Using the Dummy service', () => {
       expect(res.statusCode).toEqual(404);
     }
   });
+
+  test('redacting a person works', async () => {
+    let personUuid;
+
+    // create a user in the dummy service
+    {
+      const res = await request(dummyServer)
+        .post('/api/account')
+        .send({
+          username: 'dummy_test_user2',
+        });
+      expect(res.statusCode).toEqual(200);
+    }
+
+    // check it exists in DYD
+    {
+      const res = await request(appServer)
+        .get('/api/account')
+        .send({
+          pluginUuid,
+        });
+      expect(res.statusCode).toEqual(200);
+      expect(res.body).toHaveLength(1);
+      personUuid = res.body[0].personUuid;
+    }
+
+    // delete the user via DYD
+    {
+      const res = await request(appServer)
+        .post(`/api/person/redact`)
+        .send({
+          persons: [personUuid],
+          mode: 'DELETE',
+        });
+      expect(res.statusCode).toEqual(200);
+    }
+
+    // check it doesn't exist in the dummy service
+    {
+      const res = await request(dummyServer)
+        .get('/api/account/dummy_test_user2')
+        .send();
+      expect(res.statusCode).toEqual(404);
+    }
+  });
 });

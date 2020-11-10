@@ -191,13 +191,13 @@ export async function delMany({ accounts }) {
   return { message: 'Accounts were deleted successfully.' };
 }
 
-export async function redact(pluginRegistry, { accounts: allAccountUuids, mode }) {
+async function doRedact(pluginRegistry, mode, accountsGetter) {
   // validate data
   if (!['DELETE', 'ANONYMIZE'].includes(mode)) {
     throw new httpErrors[400]('`mode` must be either DELETE or ANONYMIZE!');
   }
 
-  const accounts = await readMany({ accounts: allAccountUuids });
+  const accounts = await accountsGetter();
 
   // for the redaction operations, we need to group all accounts by their plugin
   const pluginMap = new Map();
@@ -228,4 +228,12 @@ export async function redact(pluginRegistry, { accounts: allAccountUuids, mode }
   );
 
   return { message: 'Accounts were redacted successfully.' };
+}
+
+export async function redact(pluginRegistry, { accounts, mode }) {
+  return /* await */ doRedact(pluginRegistry, mode, () => readMany({ accounts }));
+}
+
+export async function redactPersons(pluginRegistry, { persons, mode }) {
+  return /* await */ doRedact(pluginRegistry, mode, () => readManyPersons({ persons }));
 }
