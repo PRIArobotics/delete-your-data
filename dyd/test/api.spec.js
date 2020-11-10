@@ -267,6 +267,35 @@ describe('REST API', () => {
     expect(res.statusCode).toEqual(200);
   });
 
+  test('GET /api/plugin/:pluginUuid/account/', async () => {
+    const createdAt = new Date();
+    const account = {
+      uuid: '1d47affb-74b9-42cc-920b-c97908064a79',
+      personUuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
+      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      createdAt,
+      updatedAt: createdAt,
+      nativeId: 'account',
+    };
+
+    Account.readByNativeId.mockImplementationOnce(async () => account);
+
+    const res = await request(await appPromise)
+      .get(`/api/plugin/${account.pluginUuid}/account/`)
+      .send({ nativeId: account.nativeId });
+
+    expect(Account.readByNativeId).toHaveBeenCalledWith({
+      pluginUuid: account.pluginUuid,
+      nativeId: account.nativeId,
+    });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      ...account,
+      createdAt: account.createdAt.toISOString(),
+      updatedAt: account.updatedAt.toISOString(),
+    });
+  });
+
   test('POST /api/log', async () => {
     let log;
 

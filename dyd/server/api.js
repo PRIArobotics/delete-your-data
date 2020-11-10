@@ -80,6 +80,11 @@ export default (pluginRegistry) => {
   router.deleteAsync('/account/', (req) => Account.delMany(req.body));
   router.deleteAsync('/account/:uuid', (req) => Account.del(req.params.uuid));
 
+  // per-plugin account routes
+  router.getAsync('/plugin/:pluginUuid/account/', (req) =>
+    Account.readByNativeId({ pluginUuid: req.params.pluginUuid, nativeId: req.body.nativeId }),
+  );
+
   // log routes
   async function convertDatesInQuery(req) {
     if ('earliest' in req.query) req.query.earliest = new Date(+req.query.earliest);
