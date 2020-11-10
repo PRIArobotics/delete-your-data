@@ -177,15 +177,40 @@ export async function del(uuid) {
   // save to database
   let num;
   try {
-    num = await Account.destroy({
-      where: { uuid },
-    });
+    num = await Account.destroy({ where: { uuid } });
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
   if (num !== 1) {
     throw new httpErrors[404](`Account with UUID=${uuid} not found`);
+  }
+
+  return { message: 'Account was deleted successfully.' };
+}
+
+export async function delByNativeId({ pluginUuid, nativeId }) {
+  // validate data
+  if (!pluginUuid) {
+    throw new httpErrors[400]('`pluginUuid` can not be empty!');
+  }
+
+  if (!nativeId) {
+    throw new httpErrors[400]('`nativeId` can not be empty!');
+  }
+
+  // save to database
+  let num;
+  try {
+    num = await Account.destroy({ where: { pluginUuid, nativeId } });
+  } catch (err) /* istanbul ignore next */ {
+    throw new httpErrors[500](err.message || 'An error occurred...');
+  }
+
+  if (num !== 1) {
+    throw new httpErrors[404](
+      `Account with plugin UUID=${pluginUuid}, nativeId=<REDACTED> not found`,
+    );
   }
 
   return { message: 'Account was deleted successfully.' };

@@ -308,5 +308,41 @@ describe('Account Controller', () => {
     await expect(
       Account.delMany({ accounts: ['1d47affb-74b9-42cc-920b-c97908064a79'] }),
     ).rejects.toThrow(httpErrors[404]);
+
+    // create new test account
+    {
+      const account = await Account.create({
+        pluginUuid,
+        nativeId: 'yet_another_account',
+      });
+      // toMatchObject because sequelize model instances are not plain objects
+      expect(account).toMatchObject({
+        uuid: expect.any(String),
+        personUuid: expect.any(String),
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+        pluginUuid,
+        nativeId: 'yet_another_account',
+      });
+    }
+
+    // delete by native ID
+    {
+      await Account.delByNativeId({ pluginUuid, nativeId: 'yet_another_account' });
+
+      expect(await Account.readAll({ pluginUuid })).toHaveLength(0);
+    }
+
+    // delete by native ID errors
+
+    await expect(Account.delByNativeId({ nativeId: 'yet_another_account' })).rejects.toThrow(
+      httpErrors[400],
+    );
+
+    await expect(Account.delByNativeId({ pluginUuid })).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Account.delByNativeId({ pluginUuid, nativeId: 'yet_another_account' }),
+    ).rejects.toThrow(httpErrors[404]);
   });
 });

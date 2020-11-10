@@ -296,6 +296,19 @@ describe('REST API', () => {
     });
   });
 
+  test('DELETE /api/plugin/:pluginUuid/account/', async () => {
+    Account.delByNativeId.mockImplementationOnce(async () => ({}));
+
+    const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
+    const nativeId = 'account';
+    const res = await request(await appPromise)
+      .delete(`/api/plugin/${pluginUuid}/account/`)
+      .send({ nativeId });
+
+    expect(Account.delByNativeId).toHaveBeenCalledWith({ pluginUuid, nativeId });
+    expect(res.statusCode).toEqual(200);
+  });
+
   test('POST /api/log', async () => {
     let log;
 
