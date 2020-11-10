@@ -52,6 +52,36 @@ export async function readMany({ accounts: allAccountUuids }) {
   return accounts;
 }
 
+export async function readManyPersons({ persons: allPersonUuids }) {
+  // validate data
+  if (!Array.isArray(allPersonUuids)) {
+    throw new httpErrors[400]('`persons` must be a list of person UUIDs!');
+  }
+
+  // query database
+  let accounts;
+  try {
+    const condition = {
+      personUuid: { [Op.in]: allPersonUuids },
+    };
+    const include = [{ model: Plugin }];
+
+    accounts = await Account.findAll({ where: condition, include });
+  } catch (err) /* istanbul ignore next */ {
+    throw new httpErrors[500](err.message || 'An error occurred...');
+  }
+
+  const actualPersonUuids = new Set(accounts.map((account) => account.personUuid));
+  const notFound = allPersonUuids.filter((uuid) => !actualPersonUuids.has(uuid));
+  if (notFound.length !== 0) {
+    throw new httpErrors[404](
+      `Accounts not found with person UUIDs:\n${notFound.map((uuid) => `  ${uuid}`).join('\n')}`,
+    );
+  }
+
+  return accounts;
+}
+
 export async function readAll({ personUuid, pluginUuid }) {
   // create filter
   const condition = {};
