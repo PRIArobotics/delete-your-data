@@ -56,7 +56,7 @@ afterAll(async () => {
 });
 
 describe('Using the Dummy service', () => {
-  test('it works', async () => {
+  test('redacting an account works', async () => {
     let accountUuid;
 
     // create a user in the dummy service
@@ -90,6 +90,14 @@ describe('Using the Dummy service', () => {
           mode: 'DELETE',
         });
       expect(res.statusCode).toEqual(200);
+    }
+
+    // check it doesn't exist in the dummy service
+    {
+      const res = await request(dummyServer)
+        .get('/api/account/dummy_test_user')
+        .send();
+      expect(res.statusCode).toEqual(404);
     }
   });
 });

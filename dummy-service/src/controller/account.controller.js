@@ -50,7 +50,7 @@ export async function read(username) {
   }
 
   if (account === null) {
-    throw new httpErrors[404](`Account with UUID=${uuid} not found`);
+    throw new httpErrors[404](`Account with username=${username} not found`);
   }
 
   return account;
