@@ -188,6 +188,34 @@ describe('Account Controller', () => {
       httpErrors[404],
     );
 
+    // read by native ID
+    {
+      const account = await Account.readByNativeId({ pluginUuid, nativeId: { username: 'account2' } });
+      // toMatchObject because sequelize model instances are not plain objects
+      expect(account).toMatchObject({
+        uuid: expect.any(String),
+        personUuid: expect.any(String),
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+        pluginUuid,
+        nativeId: { username: 'account2' },
+      });
+    }
+
+    // read by native ID errors
+
+    await expect(Account.readByNativeId({ nativeId: { username: 'account2' } })).rejects.toThrow(
+      httpErrors[400],
+    );
+
+    await expect(Account.readByNativeId({ pluginUuid })).rejects.toThrow(
+      httpErrors[400],
+    );
+
+    await expect(Account.readByNativeId({ pluginUuid, nativeId: { username: 'account' } })).rejects.toThrow(
+      httpErrors[404],
+    );
+
     // create 2nd account
     {
       const account = await Account.create({

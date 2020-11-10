@@ -113,6 +113,31 @@ export async function read(uuid) {
   return account;
 }
 
+export async function readByNativeId({ pluginUuid, nativeId }) {
+  // validate data
+  if (!pluginUuid) {
+    throw new httpErrors[400]('`pluginUuid` can not be empty!');
+  }
+
+  if (!nativeId) {
+    throw new httpErrors[400]('`nativeId` can not be empty!');
+  }
+
+  // query database
+  let account;
+  try {
+    account = await Account.findOne({ where: { pluginUuid, nativeId } });
+  } catch (err) /* istanbul ignore next */ {
+    throw new httpErrors[500](err.message || 'An error occurred...');
+  }
+
+  if (account === null) {
+    throw new httpErrors[404](`Account with plugin UUID=${pluginUuid}, nativeId=<REDACTED> not found`);
+  }
+
+  return account;
+}
+
 export async function update(uuid, { pluginUuid, nativeId }) {
   // validate data
   if (!pluginUuid) {
