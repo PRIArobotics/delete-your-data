@@ -90,6 +90,9 @@ export default (pluginRegistry) => {
   router.getAsync('/plugin/:pluginUuid/account/:nativeId', (req) =>
     Account.readByNativeId(req.params),
   );
+  router.putAsync('/plugin/:pluginUuid/account/:nativeId', (req) =>
+    Account.updateByNativeId(req.params, req.body),
+  );
   router.deleteAsync('/plugin/:pluginUuid/account/:nativeId', (req) =>
     Account.delByNativeId(req.params),
   );

@@ -188,11 +188,43 @@ describe('Account Controller', () => {
       httpErrors[404],
     );
 
+    // update by native ID
+    {
+      await Account.updateByNativeId(
+        { pluginUuid, nativeId: { username: 'account2' } },
+        { nativeId: { username: 'account3' } },
+      );
+    }
+
+    // update by native ID errors
+
+    await expect(
+      Account.updateByNativeId({ pluginUuid }, { nativeId: { username: 'account3' } }),
+    ).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Account.updateByNativeId(
+        { nativeId: { username: 'account3' } },
+        { nativeId: { username: 'account4' } },
+      ),
+    ).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Account.updateByNativeId({ pluginUuid, nativeId: { username: 'account3' } }, {}),
+    ).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Account.updateByNativeId(
+        { pluginUuid, nativeId: { username: 'account' } },
+        { nativeId: { username: 'account4' } },
+      ),
+    ).rejects.toThrow(httpErrors[404]);
+
     // read by native ID
     {
       const account = await Account.readByNativeId({
         pluginUuid,
-        nativeId: { username: 'account2' },
+        nativeId: { username: 'account3' },
       });
       // toMatchObject because sequelize model instances are not plain objects
       expect(account).toMatchObject({
@@ -201,13 +233,13 @@ describe('Account Controller', () => {
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
         pluginUuid,
-        nativeId: { username: 'account2' },
+        nativeId: { username: 'account3' },
       });
     }
 
     // read by native ID errors
 
-    await expect(Account.readByNativeId({ nativeId: { username: 'account2' } })).rejects.toThrow(
+    await expect(Account.readByNativeId({ nativeId: { username: 'account4' } })).rejects.toThrow(
       httpErrors[400],
     );
 
@@ -248,7 +280,7 @@ describe('Account Controller', () => {
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
           pluginUuid,
-          nativeId: { username: 'account2' },
+          nativeId: { username: 'account3' },
         },
         {
           uuid: expect.any(String),

@@ -156,18 +156,47 @@ export async function update(uuid, { pluginUuid, nativeId }) {
     // update returns one or two numbers (usually one, except for special circumstances:
     // https://sequelize.org/v5/class/lib/model.js~Model.html#static-method-update)
     // we want the first of those numbers, i.e. do an array destructuring assignment here:
-    [num] = await Account.update(
-      { pluginUuid, nativeId },
-      {
-        where: { uuid },
-      },
-    );
+    [num] = await Account.update({ pluginUuid, nativeId }, { where: { uuid } });
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
   if (num !== 1) {
     throw new httpErrors[404](`Account with UUID=${uuid} not found`);
+  }
+
+  return { message: 'Account was updated successfully.' };
+}
+
+export async function updateByNativeId({ pluginUuid, nativeId }, { nativeId: newNativeId }) {
+  // validate data
+  if (!pluginUuid) {
+    throw new httpErrors[400]('old `pluginUuid` can not be empty!');
+  }
+
+  if (!nativeId) {
+    throw new httpErrors[400]('old `nativeId` can not be empty!');
+  }
+
+  if (!newNativeId) {
+    throw new httpErrors[400]('new `nativeId` can not be empty!');
+  }
+
+  // save to database
+  let num;
+  try {
+    // update returns one or two numbers (usually one, except for special circumstances:
+    // https://sequelize.org/v5/class/lib/model.js~Model.html#static-method-update)
+    // we want the first of those numbers, i.e. do an array destructuring assignment here:
+    [num] = await Account.update({ nativeId: newNativeId }, { where: { pluginUuid, nativeId } });
+  } catch (err) /* istanbul ignore next */ {
+    throw new httpErrors[500](err.message || 'An error occurred...');
+  }
+
+  if (num !== 1) {
+    throw new httpErrors[404](
+      `Account with plugin UUID=${pluginUuid}, nativeId=<REDACTED> not found`,
+    );
   }
 
   return { message: 'Account was updated successfully.' };
