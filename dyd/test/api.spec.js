@@ -275,13 +275,14 @@ describe('REST API', () => {
       pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
       createdAt,
       updatedAt: createdAt,
-      nativeId: { username: 'account' },
+      nativeId: { username: 'acc/ount' },
     };
 
     Account.readByNativeId.mockImplementationOnce(async () => account);
 
+    const nativeIdEnc = encodeURIComponent(JSON.stringify(account.nativeId));
     const res = await request(await appPromise)
-      .get(`/api/plugin/${account.pluginUuid}/account/${JSON.stringify(account.nativeId)}`)
+      .get(`/api/plugin/${account.pluginUuid}/account/${nativeIdEnc}`)
       .send();
 
     expect(Account.readByNativeId).toHaveBeenCalledWith({
@@ -304,8 +305,9 @@ describe('REST API', () => {
     const body = {
       nativeId: 'account2',
     };
+    const nativeIdEnc = encodeURIComponent(JSON.stringify(nativeId));
     const res = await request(await appPromise)
-      .put(`/api/plugin/${pluginUuid}/account/${JSON.stringify(nativeId)}`)
+      .put(`/api/plugin/${pluginUuid}/account/${nativeIdEnc}`)
       .send(body);
 
     expect(Account.updateByNativeId).toHaveBeenCalledWith({ pluginUuid, nativeId }, body);
@@ -317,8 +319,9 @@ describe('REST API', () => {
 
     const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
     const nativeId = 'account';
+    const nativeIdEnc = encodeURIComponent(JSON.stringify(nativeId));
     const res = await request(await appPromise)
-      .delete(`/api/plugin/${pluginUuid}/account/${JSON.stringify(nativeId)}`)
+      .delete(`/api/plugin/${pluginUuid}/account/${nativeIdEnc}`)
       .send();
 
     expect(Account.delByNativeId).toHaveBeenCalledWith({ pluginUuid, nativeId });
