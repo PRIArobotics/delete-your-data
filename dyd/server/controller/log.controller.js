@@ -236,6 +236,42 @@ export async function del(id) {
   return { message: 'Log entry was deleted successfully.' };
 }
 
+export async function delByNativeLocation({ pluginUuid, nativeId, nativeLocation }) {
+  // validate data
+  if (!pluginUuid) {
+    throw new httpErrors[400]('`pluginUuid` can not be empty!');
+  }
+
+  if (!nativeId) {
+    throw new httpErrors[400]('`nativeId` can not be empty!');
+  }
+
+  if (!nativeLocation) {
+    throw new httpErrors[400]('`nativeLocation` can not be empty!');
+  }
+
+  // save to database
+  const accountInclude = {
+    model: Account,
+    where: { pluginUuid, nativeId },
+  };
+
+  let num;
+  try {
+    num = await Log.destroy({ where: { nativeLocation }, include: [accountInclude] });
+  } catch (err) /* istanbul ignore next */ {
+    throw new httpErrors[500](err.message || 'An error occurred...');
+  }
+
+  if (num !== 1) {
+    throw new httpErrors[404](
+      `Log entry with plugin UUID=${pluginUuid}, nativeId=<REDACTED>, nativeLocation=<REDACTED> not found`,
+    );
+  }
+
+  return { message: 'Log entry was deleted successfully.' };
+}
+
 export async function delMany({ entries }) {
   // validate data
   if (!Array.isArray(entries)) {

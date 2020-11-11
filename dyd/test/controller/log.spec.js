@@ -296,5 +296,49 @@ describe('Log Controller', () => {
     await expect(Log.delMany({})).rejects.toThrow(httpErrors[400]);
 
     await expect(Log.delMany({ entries: [1234567] })).rejects.toThrow(httpErrors[404]);
+
+    // create new test log entry
+    {
+      const log = await Log.create({
+        accountUuid,
+        nativeLocation: 'baz',
+      });
+      // toMatchObject because sequelize model instances are not plain objects
+      expect(log).toMatchObject({
+        id: expect.any(Number),
+        pluginUuid,
+        accountUuid,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+        nativeLocation: 'baz',
+      });
+
+      id = log.id;
+    }
+
+    // delete by native ID
+    {
+      await Log.delByNativeLocation({ pluginUuid, nativeId, nativeLocation: 'baz' });
+
+      expect(await Log.readAll({ pluginUuid })).toHaveLength(0);
+    }
+
+    // delete by native ID errors
+
+    await expect(Log.delByNativeLocation({ pluginUuid, nativeId })).rejects.toThrow(
+      httpErrors[400],
+    );
+
+    await expect(Log.delByNativeLocation({ pluginUuid, nativeLocation: 'baz' })).rejects.toThrow(
+      httpErrors[400],
+    );
+
+    await expect(Log.delByNativeLocation({ nativeId, nativeLocation: 'baz' })).rejects.toThrow(
+      httpErrors[400],
+    );
+
+    await expect(
+      Log.delByNativeLocation({ pluginUuid, nativeId, nativeLocation: 'foo' }),
+    ).rejects.toThrow(httpErrors[404]);
   });
 });

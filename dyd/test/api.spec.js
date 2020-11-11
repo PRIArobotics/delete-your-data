@@ -536,6 +536,22 @@ describe('REST API', () => {
     expect(res.statusCode).toEqual(200);
   });
 
+  test('DELETE /api/plugin/:pluginUuid/account/:nativeId/log/:nativeLocation', async () => {
+    Log.delByNativeLocation.mockImplementationOnce(async () => ({}));
+
+    const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
+    const nativeId = 'account';
+    const nativeLocation = 'foo';
+    const nativeIdEnc = encodeURIComponent(JSON.stringify(nativeId));
+    const nativeLocationEnc = encodeURIComponent(JSON.stringify(nativeLocation));
+    const res = await request(await appPromise)
+      .delete(`/api/plugin/${pluginUuid}/account/${nativeIdEnc}/log/${nativeLocationEnc}`)
+      .send();
+
+    expect(Log.delByNativeLocation).toHaveBeenCalledWith({ pluginUuid, nativeId, nativeLocation });
+    expect(res.statusCode).toEqual(200);
+  });
+
   test('GET /api/account/:uuid/log', async () => {
     const createdAt = new Date();
     const log = {

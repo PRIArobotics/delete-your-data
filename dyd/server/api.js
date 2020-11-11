@@ -123,6 +123,9 @@ export default (pluginRegistry) => {
   router.putAsync('/plugin/:pluginUuid/account/:nativeId/log/:nativeLocation', (req) =>
     Log.updateByNativeLocation(req.params, req.body),
   );
+  router.deleteAsync('/plugin/:pluginUuid/account/:nativeId/log/:nativeLocation', (req) =>
+    Log.delByNativeLocation(req.params),
+  );
 
   // additional routes
   router.getAsync('/account/:uuid/log', convertDatesInQuery, (req) =>
