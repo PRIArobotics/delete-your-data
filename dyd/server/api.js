@@ -57,6 +57,7 @@ export default (pluginRegistry) => {
   router.getAsync = wrapAsync(Router.get);
   router.postAsync = wrapAsync(Router.post);
   router.putAsync = wrapAsync(Router.put);
+  router.patchAsync = wrapAsync(Router.patch);
 
   // convert all `:id` params to integers
   router.param('id', (req, _res, next) => {
@@ -96,7 +97,7 @@ export default (pluginRegistry) => {
   router.getAsync('/plugin/:pluginUuid/account/:nativeId', (req) =>
     Account.readByNativeId(req.params),
   );
-  router.putAsync('/plugin/:pluginUuid/account/:nativeId', (req) =>
+  router.patchAsync('/plugin/:pluginUuid/account/:nativeId', (req) =>
     Account.updateByNativeId(req.params, req.body),
   );
   router.deleteAsync('/plugin/:pluginUuid/account/:nativeId', (req) =>
@@ -120,7 +121,7 @@ export default (pluginRegistry) => {
   router.getAsync('/plugin/:pluginUuid/account/:nativeId/log/:nativeLocation', (req) =>
     Log.readByNativeLocation(req.params),
   );
-  router.putAsync('/plugin/:pluginUuid/account/:nativeId/log/:nativeLocation', (req) =>
+  router.patchAsync('/plugin/:pluginUuid/account/:nativeId/log/:nativeLocation', (req) =>
     Log.updateByNativeLocation(req.params, req.body),
   );
   router.deleteAsync('/plugin/:pluginUuid/account/:nativeId/log/:nativeLocation', (req) =>

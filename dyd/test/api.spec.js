@@ -297,7 +297,7 @@ describe('REST API', () => {
     });
   });
 
-  test('PUT /api/plugin/:pluginUuid/account/:nativeId', async () => {
+  test('PATCH /api/plugin/:pluginUuid/account/:nativeId', async () => {
     Account.updateByNativeId.mockImplementationOnce(async () => ({}));
 
     const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
@@ -307,7 +307,7 @@ describe('REST API', () => {
     };
     const nativeIdEnc = encodeURIComponent(JSON.stringify(nativeId));
     const res = await request(await appPromise)
-      .put(`/api/plugin/${pluginUuid}/account/${nativeIdEnc}`)
+      .patch(`/api/plugin/${pluginUuid}/account/${nativeIdEnc}`)
       .send(body);
 
     expect(Account.updateByNativeId).toHaveBeenCalledWith({ pluginUuid, nativeId }, body);
@@ -514,7 +514,7 @@ describe('REST API', () => {
     });
   });
 
-  test('PUT /api/plugin/:pluginUuid/account/:nativeId/log/:nativeLocation', async () => {
+  test('PATCH /api/plugin/:pluginUuid/account/:nativeId/log/:nativeLocation', async () => {
     Log.updateByNativeLocation.mockImplementationOnce(async () => ({}));
 
     const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
@@ -526,7 +526,7 @@ describe('REST API', () => {
     const nativeIdEnc = encodeURIComponent(JSON.stringify(nativeId));
     const nativeLocationEnc = encodeURIComponent(JSON.stringify(nativeLocation));
     const res = await request(await appPromise)
-      .put(`/api/plugin/${pluginUuid}/account/${nativeIdEnc}/log/${nativeLocationEnc}`)
+      .patch(`/api/plugin/${pluginUuid}/account/${nativeIdEnc}/log/${nativeLocationEnc}`)
       .send(body);
 
     expect(Log.updateByNativeLocation).toHaveBeenCalledWith(
