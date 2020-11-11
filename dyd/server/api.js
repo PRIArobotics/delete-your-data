@@ -70,6 +70,12 @@ export default (pluginRegistry) => {
     next();
   });
 
+  // convert all `:nativeLocation` params to JS objects
+  router.param('nativeLocation', (req, _res, next) => {
+    req.params.nativeLocation = JSON.parse(req.params.nativeLocation);
+    next();
+  });
+
   // plugin routes
   router.postAsync('/plugin/', (req) => Plugin.create(req.body));
   router.getAsync('/plugin/', (req) => Plugin.readAll(req.query));
@@ -109,6 +115,11 @@ export default (pluginRegistry) => {
   router.putAsync('/log/:id(\\d+)', (req) => Log.update(req.params.id, req.body));
   router.deleteAsync('/log/', (req) => Log.delMany(req.body));
   router.deleteAsync('/log/:id(\\d+)', (req) => Log.del(req.params.id));
+
+  // per-plugin log routes
+  router.getAsync('/plugin/:pluginUuid/account/:nativeId/log/:nativeLocation', (req) =>
+    Log.readByNativeLocation(req.params),
+  );
 
   // additional routes
   router.getAsync('/account/:uuid/log', convertDatesInQuery, (req) =>

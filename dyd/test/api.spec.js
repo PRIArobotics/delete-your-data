@@ -481,6 +481,39 @@ describe('REST API', () => {
     expect(res.statusCode).toEqual(200);
   });
 
+  test('GET /api/plugin/:pluginUuid/account/:nativeId/log/:nativeLocation', async () => {
+    const createdAt = new Date();
+    const log = {
+      id: 1,
+      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      accountUuid: '1d47affb-74b9-42cc-920b-c97908064a79',
+      createdAt,
+      updatedAt: createdAt,
+      nativeLocation: 'foo',
+    };
+
+    Log.readByNativeLocation.mockImplementationOnce(async () => log);
+
+    const nativeId = 'account';
+    const nativeIdEnc = encodeURIComponent(JSON.stringify(nativeId));
+    const nativeLocationEnc = encodeURIComponent(JSON.stringify(log.nativeLocation));
+    const res = await request(await appPromise)
+      .get(`/api/plugin/${log.pluginUuid}/account/${nativeIdEnc}/log/${nativeLocationEnc}`)
+      .send();
+
+    expect(Log.readByNativeLocation).toHaveBeenCalledWith({
+      pluginUuid: log.pluginUuid,
+      nativeId,
+      nativeLocation: log.nativeLocation,
+    });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      ...log,
+      createdAt: log.createdAt.toISOString(),
+      updatedAt: log.updatedAt.toISOString(),
+    });
+  });
+
   test('GET /api/account/:uuid/log', async () => {
     const createdAt = new Date();
     const log = {
