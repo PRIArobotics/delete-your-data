@@ -7,7 +7,7 @@ import httpErrors from 'httperrors';
 import { initSequelize } from '~/server/models';
 import { Plugin, Account, Log } from '~/server/controller';
 
-let pluginUuid, accountUuid, personUuid;
+let pluginUuid, accountUuid, personUuid, nativeId;
 
 beforeAll(async () => {
   await initSequelize();
@@ -27,6 +27,7 @@ beforeAll(async () => {
 
   accountUuid = account.uuid;
   personUuid = account.personUuid;
+  nativeId = account.nativeId;
 });
 
 afterAll(async () => {
@@ -204,6 +205,38 @@ describe('Log Controller', () => {
 
       id = log.id;
     }
+
+    // read by native location
+    {
+      const log = await Log.readByNativeLocation({ pluginUuid, nativeId, nativeLocation: 'foo' });
+      // toMatchObject because sequelize model instances are not plain objects
+      expect(log).toMatchObject({
+        id: expect.any(Number),
+        pluginUuid,
+        accountUuid,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+        nativeLocation: 'foo',
+      });
+    }
+
+    // read by native location errors
+
+    await expect(Log.readByNativeLocation({ pluginUuid, nativeId })).rejects.toThrow(
+      httpErrors[400],
+    );
+
+    await expect(Log.readByNativeLocation({ pluginUuid, nativeLocation: 'foo' })).rejects.toThrow(
+      httpErrors[400],
+    );
+
+    await expect(Log.readByNativeLocation({ nativeId, nativeLocation: 'foo' })).rejects.toThrow(
+      httpErrors[400],
+    );
+
+    await expect(
+      Log.readByNativeLocation({ pluginUuid, nativeId, nativeLocation: 'bar' }),
+    ).rejects.toThrow(httpErrors[404]);
 
     // delete many
     {

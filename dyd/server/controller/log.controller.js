@@ -3,6 +3,26 @@ import { Op } from 'sequelize';
 
 import { Account, Log } from '../models';
 
+function unpackLog(log) {
+  let {
+    account: { pluginUuid },
+    accountUuid,
+    createdAt,
+    id,
+    nativeLocation,
+    updatedAt,
+  } = log;
+
+  return {
+    pluginUuid,
+    accountUuid,
+    createdAt,
+    id,
+    nativeLocation,
+    updatedAt,
+  };
+}
+
 export async function create({ accountUuid, nativeLocation }) {
   const accountInclude = {
     model: Account,
@@ -47,28 +67,19 @@ export async function readAll({ accountUuid, personUuid, earliest, latest }) {
   // query database
   try {
     const log = await Log.findAll({ where: condition, include: [accountInclude] });
-    return log.map(
-      ({ account: { pluginUuid }, accountUuid, createdAt, id, nativeLocation, updatedAt }) => ({
-        pluginUuid,
-        accountUuid,
-        createdAt,
-        id,
-        nativeLocation,
-        updatedAt,
-      }),
-    );
+    return log.map(unpackLog);
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 }
 
 export async function read(id) {
+  // query database
   const accountInclude = {
     model: Account,
     attributes: ['pluginUuid'],
   };
 
-  // query database
   let log;
   try {
     log = await Log.findByPk(id, { include: [accountInclude] });
@@ -80,23 +91,45 @@ export async function read(id) {
     throw new httpErrors[404](`Log entry with ID=${id} not found`);
   }
 
-  let {
-    account: { pluginUuid },
-    accountUuid,
-    createdAt,
-    id: _id,
-    nativeLocation,
-    updatedAt,
-  } = log;
+  return unpackLog(log);
+}
 
-  return {
-    pluginUuid,
-    accountUuid,
-    createdAt,
-    id: _id,
-    nativeLocation,
-    updatedAt,
+export async function readByNativeLocation({ pluginUuid, nativeId, nativeLocation }) {
+  // validate data
+  if (!pluginUuid) {
+    throw new httpErrors[400]('`pluginUuid` can not be empty!');
+  }
+
+  if (!nativeId) {
+    throw new httpErrors[400]('`nativeId` can not be empty!');
+  }
+
+  if (!nativeLocation) {
+    throw new httpErrors[400]('`nativeLocation` can not be empty!');
+  }
+
+  // query database
+
+  const accountInclude = {
+    model: Account,
+    attributes: ['pluginUuid'],
+    where: { pluginUuid, nativeId },
   };
+
+  let log;
+  try {
+    log = await Log.findOne({ where: { nativeLocation }, include: [accountInclude] });
+  } catch (err) /* istanbul ignore next */ {
+    throw new httpErrors[500](err.message || 'An error occurred...');
+  }
+
+  if (log === null) {
+    throw new httpErrors[404](
+      `Log entry with plugin UUID=${pluginUuid}, nativeId=<REDACTED>, nativeLocation=<REDACTED> not found`,
+    );
+  }
+
+  return unpackLog(log);
 }
 
 export async function update(id, { accountUuid, nativeLocation }) {
