@@ -165,6 +165,59 @@ export async function update(id, { accountUuid, nativeLocation }) {
   return { message: 'Log entry was updated successfully.' };
 }
 
+export async function updateByNativeLocation(
+  { pluginUuid, nativeId, nativeLocation },
+  { accountUuid, nativeLocation: newNativeLocation },
+) {
+  // validate data
+  if (!pluginUuid) {
+    throw new httpErrors[400]('old `pluginUuid` can not be empty!');
+  }
+
+  if (!nativeId) {
+    throw new httpErrors[400]('old `nativeId` can not be empty!');
+  }
+
+  if (!nativeLocation) {
+    throw new httpErrors[400]('old `nativeLocation` can not be empty!');
+  }
+
+  if (!accountUuid) {
+    throw new httpErrors[400]('new `accountUuid` can not be empty!');
+  }
+
+  if (!newNativeLocation) {
+    throw new httpErrors[400]('new `nativeLocation` can not be empty!');
+  }
+
+  // save to database
+  const accountInclude = {
+    model: Account,
+    where: { pluginUuid, nativeId },
+  };
+
+  let num;
+  try {
+    // update returns one or two numbers (usually one, except for special circumstances:
+    // https://sequelize.org/v5/class/lib/model.js~Model.html#static-method-update)
+    // we want the first of those numbers, i.e. do an array destructuring assignment here:
+    [num] = await Log.update(
+      { accountUuid, nativeLocation: newNativeLocation },
+      { where: { nativeLocation }, include: [accountInclude] },
+    );
+  } catch (err) /* istanbul ignore next */ {
+    throw new httpErrors[500](err.message || 'An error occurred...');
+  }
+
+  if (num !== 1) {
+    throw new httpErrors[404](
+      `Log entry with plugin UUID=${pluginUuid}, nativeId=<REDACTED>, nativeLocation=<REDACTED> not found`,
+    );
+  }
+
+  return { message: 'Log entry was updated successfully.' };
+}
+
 export async function del(id) {
   // save to database
   let num;

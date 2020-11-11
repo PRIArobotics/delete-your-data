@@ -206,9 +206,55 @@ describe('Log Controller', () => {
       id = log.id;
     }
 
+    // update by native location
+    {
+      await Log.updateByNativeLocation(
+        { pluginUuid, nativeId, nativeLocation: 'foo' },
+        { accountUuid, nativeLocation: 'bar' },
+      );
+    }
+
+    // update by native location errors
+
+    await expect(
+      Log.updateByNativeLocation({ pluginUuid, nativeId }, { accountUuid, nativeLocation: 'baz' }),
+    ).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Log.updateByNativeLocation(
+        { pluginUuid, nativeLocation: 'bar' },
+        { accountUuid, nativeLocation: 'baz' },
+      ),
+    ).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Log.updateByNativeLocation(
+        { nativeId, nativeLocation: 'bar' },
+        { accountUuid, nativeLocation: 'baz' },
+      ),
+    ).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Log.updateByNativeLocation({ pluginUuid, nativeId, nativeLocation: 'bar' }, { accountUuid }),
+    ).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Log.updateByNativeLocation(
+        { pluginUuid, nativeId, nativeLocation: 'bar' },
+        { nativeLocation: 'baz' },
+      ),
+    ).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Log.updateByNativeLocation(
+        { pluginUuid, nativeId, nativeLocation: 'foo' },
+        { accountUuid, nativeLocation: 'baz' },
+      ),
+    ).rejects.toThrow(httpErrors[404]);
+
     // read by native location
     {
-      const log = await Log.readByNativeLocation({ pluginUuid, nativeId, nativeLocation: 'foo' });
+      const log = await Log.readByNativeLocation({ pluginUuid, nativeId, nativeLocation: 'bar' });
       // toMatchObject because sequelize model instances are not plain objects
       expect(log).toMatchObject({
         id: expect.any(Number),
@@ -216,7 +262,7 @@ describe('Log Controller', () => {
         accountUuid,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
-        nativeLocation: 'foo',
+        nativeLocation: 'bar',
       });
     }
 
@@ -226,16 +272,16 @@ describe('Log Controller', () => {
       httpErrors[400],
     );
 
-    await expect(Log.readByNativeLocation({ pluginUuid, nativeLocation: 'foo' })).rejects.toThrow(
+    await expect(Log.readByNativeLocation({ pluginUuid, nativeLocation: 'bar' })).rejects.toThrow(
       httpErrors[400],
     );
 
-    await expect(Log.readByNativeLocation({ nativeId, nativeLocation: 'foo' })).rejects.toThrow(
+    await expect(Log.readByNativeLocation({ nativeId, nativeLocation: 'bar' })).rejects.toThrow(
       httpErrors[400],
     );
 
     await expect(
-      Log.readByNativeLocation({ pluginUuid, nativeId, nativeLocation: 'bar' }),
+      Log.readByNativeLocation({ pluginUuid, nativeId, nativeLocation: 'foo' }),
     ).rejects.toThrow(httpErrors[404]);
 
     // delete many
