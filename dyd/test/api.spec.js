@@ -345,6 +345,7 @@ describe('REST API', () => {
     const createdAt = new Date();
     const log = {
       id: 1,
+      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
       accountUuid: '1d47affb-74b9-42cc-920b-c97908064a79',
       createdAt,
       updatedAt: createdAt,
@@ -372,6 +373,7 @@ describe('REST API', () => {
     const createdAt = new Date();
     const log = {
       id: 1,
+      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
       accountUuid: '1d47affb-74b9-42cc-920b-c97908064a79',
       createdAt,
       updatedAt: createdAt,
@@ -399,6 +401,7 @@ describe('REST API', () => {
     const createdAt = new Date();
     const log = {
       id: 1,
+      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
       accountUuid: '1d47affb-74b9-42cc-920b-c97908064a79',
       createdAt,
       updatedAt: createdAt,
@@ -463,6 +466,7 @@ describe('REST API', () => {
     const createdAt = new Date();
     const log = {
       id: 1,
+      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
       accountUuid: '1d47affb-74b9-42cc-920b-c97908064a79',
       createdAt,
       updatedAt: createdAt,
