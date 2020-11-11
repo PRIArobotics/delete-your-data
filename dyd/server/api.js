@@ -59,8 +59,14 @@ export default (pluginRegistry) => {
   router.putAsync = wrapAsync(Router.put);
 
   // convert all `:id` params to integers
-  router.param('id', (req, res, next) => {
+  router.param('id', (req, _res, next) => {
     req.params.id = +req.params.id;
+    next();
+  });
+
+  // convert all `:nativeId` params to JS objects
+  router.param('nativeId', (req, _res, next) => {
+    req.params.nativeId = JSON.parse(req.params.nativeId);
     next();
   });
 
@@ -81,11 +87,11 @@ export default (pluginRegistry) => {
   router.deleteAsync('/account/:uuid', (req) => Account.del(req.params.uuid));
 
   // per-plugin account routes
-  router.getAsync('/plugin/:pluginUuid/account/', (req) =>
-    Account.readByNativeId({ pluginUuid: req.params.pluginUuid, nativeId: req.body.nativeId }),
+  router.getAsync('/plugin/:pluginUuid/account/:nativeId', (req) =>
+    Account.readByNativeId(req.params),
   );
-  router.deleteAsync('/plugin/:pluginUuid/account/', (req) =>
-    Account.delByNativeId({ pluginUuid: req.params.pluginUuid, nativeId: req.body.nativeId }),
+  router.deleteAsync('/plugin/:pluginUuid/account/:nativeId', (req) =>
+    Account.delByNativeId(req.params),
   );
 
   // log routes

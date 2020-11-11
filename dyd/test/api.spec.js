@@ -267,7 +267,7 @@ describe('REST API', () => {
     expect(res.statusCode).toEqual(200);
   });
 
-  test('GET /api/plugin/:pluginUuid/account/', async () => {
+  test('GET /api/plugin/:pluginUuid/account/:nativeId', async () => {
     const createdAt = new Date();
     const account = {
       uuid: '1d47affb-74b9-42cc-920b-c97908064a79',
@@ -275,14 +275,14 @@ describe('REST API', () => {
       pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
       createdAt,
       updatedAt: createdAt,
-      nativeId: 'account',
+      nativeId: { username: 'account' },
     };
 
     Account.readByNativeId.mockImplementationOnce(async () => account);
 
     const res = await request(await appPromise)
-      .get(`/api/plugin/${account.pluginUuid}/account/`)
-      .send({ nativeId: account.nativeId });
+      .get(`/api/plugin/${account.pluginUuid}/account/${JSON.stringify(account.nativeId)}`)
+      .send();
 
     expect(Account.readByNativeId).toHaveBeenCalledWith({
       pluginUuid: account.pluginUuid,
@@ -296,14 +296,14 @@ describe('REST API', () => {
     });
   });
 
-  test('DELETE /api/plugin/:pluginUuid/account/', async () => {
+  test('DELETE /api/plugin/:pluginUuid/account/:nativeId', async () => {
     Account.delByNativeId.mockImplementationOnce(async () => ({}));
 
     const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
     const nativeId = 'account';
     const res = await request(await appPromise)
-      .delete(`/api/plugin/${pluginUuid}/account/`)
-      .send({ nativeId });
+      .delete(`/api/plugin/${pluginUuid}/account/${JSON.stringify(nativeId)}`)
+      .send();
 
     expect(Account.delByNativeId).toHaveBeenCalledWith({ pluginUuid, nativeId });
     expect(res.statusCode).toEqual(200);
