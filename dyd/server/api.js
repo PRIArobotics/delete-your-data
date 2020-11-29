@@ -128,6 +128,14 @@ export default (pluginRegistry) => {
     Log.delByNativeLocation(req.params),
   );
 
+  // token routes
+  router.postAsync('/token/', (req) => Token.create(req.body));
+  router.getAsync('/token/', (req) => Token.readAll(req.query));
+  router.getAsync('/token/:tokenString', (req) => Token.read(req.params.tokenString));
+  router.putAsync('/token/:tokenString', (req) => Token.update(req.params.tokenString, req.body));
+  router.deleteAsync('/token/', (req) => Token.delMany(req.body));
+  router.deleteAsync('/token/:tokenString', (req) => Token.del(req.params.uuid));
+
   // additional routes
   router.getAsync('/account/:uuid/log', convertDatesInQuery, (req) =>
     Log.readAll({ ...req.query, accountUuid: req.params.uuid }),
