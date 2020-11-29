@@ -23,11 +23,14 @@ const sequelize = new Sequelize(config);
 const Account = sequelize.import('./account.model');
 const Log = sequelize.import('./log.model');
 const Plugin = sequelize.import('./plugin.model');
+const Token = sequelize.import('./token.model');
+const Access = sequelize.import('./access.model');
 
 Account.belongsTo(Plugin);
 Log.belongsTo(Account);
+Access.belongsTo(Token,Plugin);
 
-export { Account, Log, Plugin };
+export { Account, Log, Plugin, Token, Access };
 
 export async function initSequelize() {
   await sequelize.authenticate();
