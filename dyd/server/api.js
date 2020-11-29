@@ -134,7 +134,17 @@ export default (pluginRegistry) => {
   router.getAsync('/token/:tokenString', (req) => Token.read(req.params.tokenString));
   router.putAsync('/token/:tokenString', (req) => Token.update(req.params.tokenString, req.body));
   router.deleteAsync('/token/', (req) => Token.delMany(req.body));
-  router.deleteAsync('/token/:tokenString', (req) => Token.del(req.params.uuid));
+  router.deleteAsync('/token/:tokenString', (req) => Token.del(req.params.tokenString));
+
+  // access routes
+  router.postAsync('/access/', (req) => Access.create(req.body));
+  router.getAsync('/access/', (req) => Access.readAll(req.query));
+  router.getAsync('/access/:tokenString', (req) => Access.read(req.params.tokenString));
+  router.putAsync('/access/:tokenString', (req) => Access.update(req.params.tokenString, req.body));
+  router.deleteAsync('/access/', (req) => Access.delMany(req.body));
+  router.deleteAsync('/access/:tokenString', (req) => Access.del(req.params.tokenString));
+
+  // per-plugin/token routes  ??
 
   // additional routes
   router.getAsync('/account/:uuid/log', convertDatesInQuery, (req) =>
