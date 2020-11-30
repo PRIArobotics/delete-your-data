@@ -12,6 +12,14 @@ import BrowserDummyPlugin from './index.client';
  * The service makes its capabilities available via a Rest API.
  */
 export default class DummyPlugin extends BrowserDummyPlugin {
+  constructor({ apiUrl }) {
+    super({ apiUrl });
+
+    this.axios = axios.create({
+      baseURL: apiUrl,
+    });
+  }
+
   // The methods below can access databases etc.
   // The `mode` parameter must be either `DELETE` or `ANONYMIZE`, and specifies whether records
   // in the referenced data store are to be deleted or only cleared of personal information.
@@ -28,7 +36,7 @@ export default class DummyPlugin extends BrowserDummyPlugin {
   async redactAccounts(ids, mode) {
     console.log(this, mode, 'accounts', ids);
     // TODO error handling. what if one request fails early; what happens to others?
-    await Promise.all(ids.map((id) => axios.delete(`${this.apiUrl}/account/${id}`)));
+    await Promise.all(ids.map((id) => this.axios.delete(`account/${id}`)));
   }
 
   async redactEntries(locations, mode) {
