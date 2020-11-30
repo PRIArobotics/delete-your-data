@@ -4,16 +4,13 @@ export default (sequelize) => {
   class Access extends Model {}
   Access.init(
     {
+    },
+    {
       sequelize,
       modelName: 'access',
       indexes: [
         { 
-          fields: ['tokenString'],
-          unique: true,
-        },
-        
-        {
-          fields: ['pluginUuid'],
+          fields: ['tokenString', 'pluginUuid'],
           unique: true,
         },
       ],

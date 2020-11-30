@@ -9,6 +9,9 @@ export default (sequelize) => {
         type: Sequelize.STRING(128),
         primaryKey: true,
       },
+      description: {
+        type: Sequelize.STRING(64),
+      },
 
     },
     {

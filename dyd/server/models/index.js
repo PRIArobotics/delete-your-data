@@ -28,7 +28,8 @@ const Access = sequelize.import('./access.model');
 
 Account.belongsTo(Plugin);
 Log.belongsTo(Account);
-Access.belongsTo(Token,Plugin);
+Access.belongsTo(Token);
+Access.belongsTo(Plugin);
 
 export { Account, Log, Plugin, Token, Access };
 
