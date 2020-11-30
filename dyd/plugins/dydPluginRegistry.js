@@ -1,8 +1,10 @@
 import DummyPlugin from 'dyd-dummy-plugin';
+import MakersPlugin from 'dyd-makers-plugin';
 
 // specify DYD plugins to use
 export const plugins = [
   DummyPlugin,
+  MakersPlugin,
 ];
 
 // plugins indexed by their names
