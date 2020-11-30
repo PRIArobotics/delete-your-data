@@ -4,13 +4,15 @@ export default (sequelize) => {
   class Access extends Model {}
   Access.init(
     {
+      // tokenUuid defined as an association
+      // pluginUuid defined as an association
     },
     {
       sequelize,
       modelName: 'access',
       indexes: [
-        { 
-          fields: ['tokenString', 'pluginUuid'],
+        {
+          fields: ['tokenUuid', 'pluginUuid'],
           unique: true,
         },
       ],

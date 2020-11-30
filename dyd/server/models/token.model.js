@@ -4,10 +4,13 @@ export default (sequelize) => {
   class Token extends Model {}
   Token.init(
     {
-
-      tokenString: {
-        type: Sequelize.STRING(128),
+      uuid: {
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
+      },
+      tokenHash: {
+        type: Sequelize.STRING(128),
       },
       description: {
         type: Sequelize.STRING(64),
