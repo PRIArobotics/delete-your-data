@@ -72,6 +72,28 @@ describe('Log Controller', () => {
       }),
     ).rejects.toThrow(httpErrors[400]);
 
+    // read many
+    {
+      const logs = await Log.readMany({ entries: [id] });
+      // toMatchObject because sequelize model instances are not plain objects
+      expect(logs).toMatchObject([
+        {
+          id: expect.any(Number),
+          pluginUuid,
+          accountUuid,
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          nativeLocation: 'foo',
+        },
+      ]);
+    }
+
+    // read many errors
+
+    await expect(Log.readMany({})).rejects.toThrow(httpErrors[400]);
+
+    await expect(Log.readMany({ entries: [id, -1] })).rejects.toThrow(httpErrors[404]);
+
     // read all
     {
       const logs = await Log.readAll({ accountUuid });

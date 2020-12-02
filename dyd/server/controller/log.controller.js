@@ -47,6 +47,39 @@ export async function create({ accountUuid, nativeLocation }) {
   }
 }
 
+export async function readMany({ entries: allEntryIds }) {
+  // validate data
+  if (!Array.isArray(allEntryIds)) {
+    throw new httpErrors[400]('`entries` must be a list of log entry IDs!');
+  }
+
+  // query database
+  let entries;
+  try {
+    const condition = {
+      id: { [Op.in]: allEntryIds },
+    };
+    const accountInclude = {
+      model: Account,
+      attributes: ['pluginUuid'],
+    };
+
+    entries = await Log.findAll({ where: condition, include: [accountInclude] });
+  } catch (err) /* istanbul ignore next */ {
+    throw new httpErrors[500](err.message || 'An error occurred...');
+  }
+
+  if (entries.length !== allEntryIds.length) {
+    const actualEntryIds = new Set(entries.map((entry) => entry.id));
+    const notFound = allEntryIds.filter((id) => !actualEntryIds.has(id));
+    throw new httpErrors[404](
+      `Log entries not found with IDs:\n${notFound.map((id) => `  ${id}`).join('\n')}`,
+    );
+  }
+
+  return entries.map(unpackLog);
+}
+
 export async function readAll({ accountUuid, personUuid, earliest, latest }) {
   // create filter
   const condition = {};
