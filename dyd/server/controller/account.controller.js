@@ -283,16 +283,17 @@ async function doRedact(pluginRegistry, mode, accountsGetter) {
   // for the redaction operations, we need to group all accounts by their plugin
   const pluginMap = new Map();
   for (const account of accounts) {
+    const plugin = account.plugin;
+
     let accountUuids;
     let accountNativeIds;
-    if (!pluginMap.has(account.pluginUuid)) {
-      const { type, config } = account.plugin;
-      const plugin = new pluginRegistry[type](config);
+    if (!pluginMap.has(plugin.uuid)) {
+      const pluginInstance = new pluginRegistry[plugin.type](plugin.config);
       accountUuids = [];
       accountNativeIds = [];
-      pluginMap.set(account.pluginUuid, { plugin, accountUuids, accountNativeIds });
+      pluginMap.set(plugin.uuid, { pluginInstance, accountUuids, accountNativeIds });
     } else {
-      ({ accountUuids, accountNativeIds } = pluginMap.get(account.pluginUuid));
+      ({ accountUuids, accountNativeIds } = pluginMap.get(account.plugin.uuid));
     }
     accountUuids.push(account.uuid);
     accountNativeIds.push(account.nativeId);
@@ -302,8 +303,8 @@ async function doRedact(pluginRegistry, mode, accountsGetter) {
   // let all plugins run their redaction operations in parallel
   // TODO error handling. what if one plugin fails early; what happens to others?
   await Promise.all(
-    plugins.map(async ({ plugin, accountUuids, accountNativeIds }) => {
-      await plugin.redactAccounts(accountNativeIds, mode);
+    plugins.map(async ({ pluginInstance, accountUuids, accountNativeIds }) => {
+      await pluginInstance.redactAccounts(accountNativeIds, mode);
       await delMany({ accounts: accountUuids });
     }),
   );
