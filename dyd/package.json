@@ -11,7 +11,7 @@
     "build": "nuxt build",
     "start": "cross-env NODE_ENV=production babel-node server/index.js",
     "generate": "nuxt generate",
-    "test": "jest --silent",
+    "test": "jest",
     "dummy-service": "nodemon --exec babel-node dummyService/index.js --watch dummyService"
   },
   "dependencies": {
