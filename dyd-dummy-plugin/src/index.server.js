@@ -41,6 +41,7 @@ export default class DummyPlugin extends BrowserDummyPlugin {
 
   async redactEntries(locations, mode) {
     console.log(this, mode, 'entries', locations);
-    // TODO
+    // TODO error handling. what if one request fails early; what happens to others?
+    await Promise.all(locations.map((location) => this.axios.delete(`entry/${location}`)));
   }
 }

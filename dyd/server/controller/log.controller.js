@@ -336,3 +336,47 @@ export async function delMany({ entries }) {
 
   return { message: 'Log entries were deleted successfully.' };
 }
+
+async function doRedact(pluginRegistry, mode, entriesGetter) {
+  // validate data
+  if (!['DELETE', 'ANONYMIZE'].includes(mode)) {
+    throw new httpErrors[400]('`mode` must be either DELETE or ANONYMIZE!');
+  }
+
+  const entries = await entriesGetter();
+
+  // for the redaction operations, we need to group all entries by their plugin
+  const pluginMap = new Map();
+  for (const entry of entries) {
+    const plugin = entry.account.plugin;
+
+    let entryIds;
+    let entryNativeLocations;
+    if (!pluginMap.has(plugin.uuid)) {
+      const pluginInstance = new pluginRegistry[plugin.type](plugin.config);
+      entryIds = [];
+      entryNativeLocations = [];
+      pluginMap.set(plugin.uuid, { pluginInstance, entryIds, entryNativeLocations });
+    } else {
+      ({ entryIds, entryNativeLocations } = pluginMap.get(plugin.uuid));
+    }
+    entryIds.push(entry.id);
+    entryNativeLocations.push(entry.nativeLocation);
+  }
+
+  const plugins = Array.from(pluginMap.values());
+  // let all plugins run their redaction operations in parallel
+  // TODO error handling. what if one plugin fails early; what happens to others?
+  await Promise.all(
+    plugins.map(async ({ pluginInstance, entryIds, entryNativeLocations }) => {
+      await pluginInstance.redactEntries(entryNativeLocations, mode);
+      await delMany({ entries: entryIds });
+    }),
+  );
+
+  return { message: 'Accounts were redacted successfully.' };
+}
+
+export async function redact(pluginRegistry, { entries, mode }) {
+  return /* await */ doRedact(pluginRegistry, mode, () => readMany({ entries }));
+}

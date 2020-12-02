@@ -71,7 +71,7 @@ export default (dydConfig) => {
   router.deleteAsync('/account/:username', (req) => Account.del(req.params.username));
 
   // entry routes
-  router.postAsync('/entry/', (req) => Entry.create(req.body));
+  router.postAsync('/entry/', (req) => Entry.create(dydConfig, req.body));
   router.getAsync('/entry/', (req) => Entry.readAll(req.query));
   router.getAsync('/entry/:id(\\d+)', (req) => Entry.read(req.params.id));
   router.putAsync('/entry/:id(\\d+)', (req) => Entry.update(req.params.id, req.body));
