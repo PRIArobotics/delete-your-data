@@ -1,7 +1,7 @@
 import httpErrors from 'httperrors';
 import { Op } from 'sequelize';
 
-import { Account, Log } from '../models';
+import { Plugin, Account, Log } from '../models';
 
 function unpackLog(log) {
   let {
@@ -62,6 +62,11 @@ export async function readMany({ entries: allEntryIds }) {
     const accountInclude = {
       model: Account,
       attributes: ['pluginUuid'],
+      include: [
+        {
+          model: Plugin,
+        },
+      ],
     };
 
     entries = await Log.findAll({ where: condition, include: [accountInclude] });
@@ -77,7 +82,7 @@ export async function readMany({ entries: allEntryIds }) {
     );
   }
 
-  return entries.map(unpackLog);
+  return entries;
 }
 
 export async function readAll({ accountUuid, personUuid, earliest, latest }) {

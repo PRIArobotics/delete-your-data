@@ -78,8 +78,15 @@ describe('Log Controller', () => {
       // toMatchObject because sequelize model instances are not plain objects
       expect(logs).toMatchObject([
         {
+          account: {
+            plugin: {
+              uuid: expect.any(String),
+              name: 'log_test_plugin',
+              type: 'log_test_plugin',
+              config: { foo: 0 },
+            },
+          },
           id: expect.any(Number),
-          pluginUuid,
           accountUuid,
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
