@@ -209,7 +209,7 @@ describe('Using the Dummy service', () => {
     // check it doesn't exist in the dummy service
     {
       const res = await request(dummyServer)
-        .get(`/api/log/${nativeLogLocation}`)
+        .get(`/api/entry/${nativeLogLocation}`)
         .send();
       expect(res.statusCode).toEqual(404);
     }
