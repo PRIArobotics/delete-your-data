@@ -28,6 +28,7 @@ const Access = sequelize.import('./access.model');
 
 Account.belongsTo(Plugin);
 Log.belongsTo(Account);
+Account.hasMany(Log);
 Access.belongsTo(Token);
 Access.belongsTo(Plugin);
 

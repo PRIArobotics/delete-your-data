@@ -233,4 +233,81 @@ describe('Using the Dummy service', () => {
       expect(res.statusCode).toEqual(404);
     }
   });
+
+  test('redacting accounts with log entries works', async () => {
+    let accountUuid, logId, nativeLogLocation;
+
+    // create a user in the dummy service
+    {
+      const res = await request(dummyServer)
+        .post('/api/account')
+        .send({
+          username: 'dummy_test_user4',
+        });
+      expect(res.statusCode).toEqual(200);
+    }
+
+    // check it exists in DYD
+    {
+      const res = await request(appServer)
+        .get('/api/account')
+        .send({
+          pluginUuid,
+        });
+      expect(res.statusCode).toEqual(200);
+      expect(res.body).toHaveLength(1);
+      accountUuid = res.body[0].uuid;
+    }
+
+    // create an entry in the dummy service
+    {
+      const res = await request(dummyServer)
+        .post('/api/entry')
+        .send({
+          username: 'dummy_test_user4',
+          content: 'foo',
+        });
+      expect(res.statusCode).toEqual(200);
+    }
+
+    // check it exists in DYD
+    {
+      const res = await request(appServer)
+        .get('/api/log')
+        .send({
+          accountUuid,
+        });
+      expect(res.statusCode).toEqual(200);
+      expect(res.body).toHaveLength(1);
+      logId = res.body[0].id;
+      nativeLogLocation = res.body[0].nativeLocation;
+    }
+
+    // delete the user via DYD
+    {
+      const res = await request(appServer)
+        .post(`/api/account/redact`)
+        .send({
+          accounts: [accountUuid],
+          mode: 'DELETE',
+        });
+      expect(res.statusCode).toEqual(200);
+    }
+
+    // check the log entry doesn't exist in the dummy service
+    {
+      const res = await request(dummyServer)
+        .get(`/api/entry/${nativeLogLocation}`)
+        .send();
+      expect(res.statusCode).toEqual(404);
+    }
+
+    // check the user doesn't exist in the dummy service
+    {
+      const res = await request(dummyServer)
+        .get('/api/account/dummy_test_user4')
+        .send();
+      expect(res.statusCode).toEqual(404);
+    }
+  });
 });

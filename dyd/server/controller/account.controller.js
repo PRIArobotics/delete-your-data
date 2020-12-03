@@ -1,7 +1,8 @@
 import httpErrors from 'httperrors';
 import { Op } from 'sequelize';
 
-import { Plugin, Account } from '../models';
+import { Plugin, Account, Log } from '../models';
+import * as LogController from './log.controller';
 
 export async function create({ pluginUuid, personUuid, nativeId }) {
   // validate data
@@ -34,7 +35,10 @@ export async function readMany({ accounts: allAccountUuids }) {
     const condition = {
       uuid: { [Op.in]: allAccountUuids },
     };
-    const include = [{ model: Plugin }];
+    const include = [
+      { model: Plugin },
+      { model: Log },
+    ];
 
     accounts = await Account.findAll({ where: condition, include });
   } catch (err) /* istanbul ignore next */ {
@@ -64,7 +68,10 @@ export async function readManyPersons({ persons: allPersonUuids }) {
     const condition = {
       personUuid: { [Op.in]: allPersonUuids },
     };
-    const include = [{ model: Plugin }];
+    const include = [
+      { model: Plugin },
+      { model: Log },
+    ];
 
     accounts = await Account.findAll({ where: condition, include });
   } catch (err) /* istanbul ignore next */ {
@@ -287,23 +294,31 @@ async function doRedact(pluginRegistry, mode, accountsGetter) {
 
     let accountUuids;
     let accountNativeIds;
+    let entryIds;
+    let entryNativeLocations;
     if (!pluginMap.has(plugin.uuid)) {
       const pluginInstance = new pluginRegistry[plugin.type](plugin.config);
       accountUuids = [];
       accountNativeIds = [];
-      pluginMap.set(plugin.uuid, { pluginInstance, accountUuids, accountNativeIds });
+      entryIds = [];
+      entryNativeLocations = [];
+      pluginMap.set(plugin.uuid, { pluginInstance, accountUuids, accountNativeIds, entryIds, entryNativeLocations });
     } else {
-      ({ accountUuids, accountNativeIds } = pluginMap.get(account.plugin.uuid));
+      ({ accountUuids, accountNativeIds, entryIds, entryNativeLocations } = pluginMap.get(account.plugin.uuid));
     }
     accountUuids.push(account.uuid);
     accountNativeIds.push(account.nativeId);
+    entryIds.push(...account.logs.map(entry => entry.id));
+    entryNativeLocations.push(...account.logs.map(entry => entry.nativeLocation));
   }
 
   const plugins = Array.from(pluginMap.values());
   // let all plugins run their redaction operations in parallel
   // TODO error handling. what if one plugin fails early; what happens to others?
   await Promise.all(
-    plugins.map(async ({ pluginInstance, accountUuids, accountNativeIds }) => {
+    plugins.map(async ({ pluginInstance, accountUuids, accountNativeIds, entryIds, entryNativeLocations }) => {
+      await pluginInstance.redactEntries(entryNativeLocations, mode);
+      await LogController.delMany({ entries: entryIds });
       await pluginInstance.redactAccounts(accountNativeIds, mode);
       await delMany({ accounts: accountUuids });
     }),
