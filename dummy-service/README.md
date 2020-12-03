@@ -1,8 +1,10 @@
-# Delete Your Data
+# Dummy Service
 
 > for general information on what DYD is, look in the [repository root](../README.md).
 
-**Delete Your Data (DYD)** helps platform providers in granting their users' rights to information, access, rectification, and erasure of their data.
+Don't mind me, I don't do anything useful.
+I store users and entries (think blog posts, but more boring) that can be accessed using a REST API.
+That's about it.
 
 ## Prerequisites
 
