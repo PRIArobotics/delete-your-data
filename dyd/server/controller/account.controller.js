@@ -292,31 +292,29 @@ async function doRedact(pluginRegistry, mode, accountsGetter) {
   for (const account of accounts) {
     const plugin = account.plugin;
 
-    let accountUuids;
-    let accountNativeIds;
-    let entryIds;
-    let entryNativeLocations;
+    let accounts;
     if (!pluginMap.has(plugin.uuid)) {
       const pluginInstance = new pluginRegistry[plugin.type](plugin.config);
-      accountUuids = [];
-      accountNativeIds = [];
-      entryIds = [];
-      entryNativeLocations = [];
-      pluginMap.set(plugin.uuid, { pluginInstance, accountUuids, accountNativeIds, entryIds, entryNativeLocations });
+      accounts = [];
+      pluginMap.set(plugin.uuid, { pluginInstance, accounts });
     } else {
-      ({ accountUuids, accountNativeIds, entryIds, entryNativeLocations } = pluginMap.get(account.plugin.uuid));
+      ({ accounts } = pluginMap.get(account.plugin.uuid));
     }
-    accountUuids.push(account.uuid);
-    accountNativeIds.push(account.nativeId);
-    entryIds.push(...account.logs.map(entry => entry.id));
-    entryNativeLocations.push(...account.logs.map(entry => entry.nativeLocation));
+    accounts.push(account);
   }
 
   const plugins = Array.from(pluginMap.values());
   // let all plugins run their redaction operations in parallel
   // TODO error handling. what if one plugin fails early; what happens to others?
   await Promise.all(
-    plugins.map(async ({ pluginInstance, accountUuids, accountNativeIds, entryIds, entryNativeLocations }) => {
+    plugins.map(async ({ pluginInstance, accounts }) => {
+      const accountUuids = accounts.map((account) => account.uuid);
+      const accountNativeIds = accounts.map((account) => account.nativeId);
+
+      const entries = accounts.flatMap((account) => account.logs);
+      const entryIds = entries.map((entry) => entry.id);
+      const entryNativeLocations = entries.map((entry) => entry.nativeLocation);
+
       await pluginInstance.redactEntries(entryNativeLocations, mode);
       await LogController.delMany({ entries: entryIds });
       await pluginInstance.redactAccounts(accountNativeIds, mode);

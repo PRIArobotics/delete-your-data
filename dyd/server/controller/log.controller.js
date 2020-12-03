@@ -350,25 +350,25 @@ async function doRedact(pluginRegistry, mode, entriesGetter) {
   for (const entry of entries) {
     const plugin = entry.account.plugin;
 
-    let entryIds;
-    let entryNativeLocations;
+    let entries;
     if (!pluginMap.has(plugin.uuid)) {
       const pluginInstance = new pluginRegistry[plugin.type](plugin.config);
-      entryIds = [];
-      entryNativeLocations = [];
-      pluginMap.set(plugin.uuid, { pluginInstance, entryIds, entryNativeLocations });
+      entries = [];
+      pluginMap.set(plugin.uuid, { pluginInstance, entries });
     } else {
-      ({ entryIds, entryNativeLocations } = pluginMap.get(plugin.uuid));
+      ({ entries } = pluginMap.get(plugin.uuid));
     }
-    entryIds.push(entry.id);
-    entryNativeLocations.push(entry.nativeLocation);
+    entries.push(entry);
   }
 
   const plugins = Array.from(pluginMap.values());
   // let all plugins run their redaction operations in parallel
   // TODO error handling. what if one plugin fails early; what happens to others?
   await Promise.all(
-    plugins.map(async ({ pluginInstance, entryIds, entryNativeLocations }) => {
+    plugins.map(async ({ pluginInstance, entries }) => {
+      const entryIds = entries.map((entry) => entry.id);
+      const entryNativeLocations = entries.map((entry) => entry.nativeLocation);
+
       await pluginInstance.redactEntries(entryNativeLocations, mode);
       await delMany({ entries: entryIds });
     }),
