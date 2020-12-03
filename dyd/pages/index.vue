@@ -20,9 +20,7 @@
           </p>
           <p>
             If you have questions, please join the official
-            <a href="https://chat.vuetifyjs.com/" target="_blank" title="chat">
-              discord </a
-            >.
+            <a href="https://chat.vuetifyjs.com/" target="_blank" title="chat">discord</a>.
           </p>
           <p>
             Find a bug? Report it on the github

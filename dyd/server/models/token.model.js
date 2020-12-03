@@ -15,7 +15,6 @@ export default (sequelize) => {
       description: {
         type: Sequelize.STRING(64),
       },
-
     },
     {
       sequelize,

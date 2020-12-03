@@ -142,7 +142,6 @@ export default (pluginRegistry) => {
   router.deleteAsync('/access/', (req) => Access.delMany(req.body));
   router.deleteAsync('/access/:tokenString', (req) => Access.del(req.params.tokenString));
 
-
   // additional routes
   router.getAsync('/account/:uuid/log', convertDatesInQuery, (req) =>
     Log.readAll({ ...req.query, accountUuid: req.params.uuid }),
