@@ -69,7 +69,13 @@ export async function readMany({ entries: allEntryIds }) {
       ],
     };
 
-    entries = await Log.findAll({ where: condition, include: [accountInclude] });
+    entries = await Log.findAll({
+      where: condition,
+      include: [accountInclude],
+      order: [
+        ['createdAt', 'DESC'],
+      ],
+    });
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }

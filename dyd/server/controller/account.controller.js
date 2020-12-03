@@ -37,7 +37,12 @@ export async function readMany({ accounts: allAccountUuids }) {
     };
     const include = [
       { model: Plugin },
-      { model: Log },
+      {
+        model: Log,
+        order: [
+          ['createdAt', 'DESC'],
+        ],
+      },
     ];
 
     accounts = await Account.findAll({ where: condition, include });
@@ -70,7 +75,12 @@ export async function readManyPersons({ persons: allPersonUuids }) {
     };
     const include = [
       { model: Plugin },
-      { model: Log },
+      {
+        model: Log,
+        order: [
+          ['createdAt', 'DESC'],
+        ],
+      },
     ];
 
     accounts = await Account.findAll({ where: condition, include });
