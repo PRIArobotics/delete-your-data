@@ -24,7 +24,7 @@ export default class DummyPlugin {
       throw new Error(`config has unexpected entries: ${msg}`);
     }
 
-    if (isWebUri(apiUrl)) {
+    if (!isWebUri(apiUrl)) {
       throw new Error(`apiUrl must be a legal http or https URL`);
     }
   }
