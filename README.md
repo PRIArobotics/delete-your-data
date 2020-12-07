@@ -25,6 +25,9 @@ What DYD is *not*:
 - a user-facing part of your website: at least not specifically. DYD is at its core a tool for platform *providers*, who have obligations to their users.
   The core functionality of DYD is to allow admins of that platform to query and erase information on behalf of their users - i.e. there is a human (admin) in the loop with each such request.
   Of course, the same APIs that power the DYD admin interface can be used to let users access or erase their data directly, via any means you grant them.
+- a storage system for personal data: to the contrary, DYD by design contains no personal data at all.
+  The index that DYD builds contains only IDs, and "native" IDs that are used by the connected systems.
+  That means, as long as those "native" IDs do not contain personal data (such as user-chosen usernames or similar identifiers), DYD is *not* a system for processing personal data and does not add to any related headaches.
 - a complete GDPR solution: the GDPR is complex and comprehensive, and DYD helps in implementing some of the rights it grants.
   Others, such as gathering consent, are served by other services and technologies.
   Furthermore, basic data protection (such as general security of the systems that store and process user data) can not be provided by an add-on service such as DYD
