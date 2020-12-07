@@ -5,6 +5,12 @@ import { Op } from 'sequelize';
 
 import { Token } from '../models';
 
+function unpackToken(token) {
+  let { uuid, description } = token;
+
+  return { uuid, description };
+}
+
 export async function create({ description }) {
   // validate data
   if (!description) {
@@ -18,7 +24,7 @@ export async function create({ description }) {
     const tokenHash = await bcrypt.hash(token, 10);
 
     const tokenObj = await Token.create({ tokenHash, description });
-    return { uuid: tokenObj.uuid, token, description: tokenObj.description };
+    return { ...unpackToken(tokenObj), token };
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
@@ -31,8 +37,8 @@ export async function readAll({ description }) {
 
   // query database
   try {
-    const token = await Token.findAll({ where: condition });
-    return token;
+    const tokens = await Token.findAll({ where: condition });
+    return tokens.map(unpackToken);
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
@@ -51,7 +57,7 @@ export async function read(uuid) {
     throw new httpErrors[404](`Token with UUID=${uuid} not found`);
   }
 
-  return token;
+  return unpackToken(token);
 }
 
 export async function del(uuid) {
