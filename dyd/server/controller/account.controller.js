@@ -39,9 +39,7 @@ export async function readMany({ accounts: allAccountUuids }) {
       { model: Plugin },
       {
         model: Log,
-        order: [
-          ['createdAt', 'DESC'],
-        ],
+        order: [['createdAt', 'DESC']],
       },
     ];
 
@@ -77,9 +75,7 @@ export async function readManyPersons({ persons: allPersonUuids }) {
       { model: Plugin },
       {
         model: Log,
-        order: [
-          ['createdAt', 'DESC'],
-        ],
+        order: [['createdAt', 'DESC']],
       },
     ];
 
