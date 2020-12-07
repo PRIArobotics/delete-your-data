@@ -317,6 +317,7 @@ async function doRedact(pluginRegistry, mode, accountsGetter) {
       const accountUuids = accounts.map((account) => account.uuid);
       const accountNativeIds = accounts.map((account) => account.nativeId);
 
+      // TODO these are sorted by account not overall
       const entries = accounts.flatMap((account) => account.logs);
       const entryIds = entries.map((entry) => entry.id);
       const entryNativeLocations = entries.map((entry) => entry.nativeLocation);
