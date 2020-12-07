@@ -138,14 +138,10 @@ export async function read(id) {
   return unpackLog(log);
 }
 
-export async function readByNativeLocation({ pluginUuid, nativeId, nativeLocation }) {
+export async function readByNativeLocation({ pluginUuid, nativeLocation }) {
   // validate data
   if (!pluginUuid) {
     throw new httpErrors[400]('`pluginUuid` can not be empty!');
-  }
-
-  if (!nativeId) {
-    throw new httpErrors[400]('`nativeId` can not be empty!');
   }
 
   if (!nativeLocation) {
@@ -157,7 +153,7 @@ export async function readByNativeLocation({ pluginUuid, nativeId, nativeLocatio
   const accountInclude = {
     model: Account,
     attributes: ['pluginUuid'],
-    where: { pluginUuid, nativeId },
+    where: { pluginUuid },
   };
 
   let log;
@@ -169,7 +165,7 @@ export async function readByNativeLocation({ pluginUuid, nativeId, nativeLocatio
 
   if (log === null) {
     throw new httpErrors[404](
-      `Log entry with plugin UUID=${pluginUuid}, nativeId=<REDACTED>, nativeLocation=<REDACTED> not found`,
+      `Log entry with plugin UUID=${pluginUuid}, nativeLocation=<REDACTED> not found`,
     );
   }
 
@@ -210,16 +206,12 @@ export async function update(id, { accountUuid, nativeLocation }) {
 }
 
 export async function updateByNativeLocation(
-  { pluginUuid, nativeId, nativeLocation },
+  { pluginUuid, nativeLocation },
   { accountUuid, nativeLocation: newNativeLocation },
 ) {
   // validate data
   if (!pluginUuid) {
     throw new httpErrors[400]('old `pluginUuid` can not be empty!');
-  }
-
-  if (!nativeId) {
-    throw new httpErrors[400]('old `nativeId` can not be empty!');
   }
 
   if (!nativeLocation) {
@@ -237,7 +229,7 @@ export async function updateByNativeLocation(
   // save to database
   const accountInclude = {
     model: Account,
-    where: { pluginUuid, nativeId },
+    where: { pluginUuid },
   };
 
   let num;
@@ -255,7 +247,7 @@ export async function updateByNativeLocation(
 
   if (num !== 1) {
     throw new httpErrors[404](
-      `Log entry with plugin UUID=${pluginUuid}, nativeId=<REDACTED>, nativeLocation=<REDACTED> not found`,
+      `Log entry with plugin UUID=${pluginUuid}, nativeLocation=<REDACTED> not found`,
     );
   }
 
@@ -280,14 +272,10 @@ export async function del(id) {
   return { message: 'Log entry was deleted successfully.' };
 }
 
-export async function delByNativeLocation({ pluginUuid, nativeId, nativeLocation }) {
+export async function delByNativeLocation({ pluginUuid, nativeLocation }) {
   // validate data
   if (!pluginUuid) {
     throw new httpErrors[400]('`pluginUuid` can not be empty!');
-  }
-
-  if (!nativeId) {
-    throw new httpErrors[400]('`nativeId` can not be empty!');
   }
 
   if (!nativeLocation) {
@@ -297,7 +285,7 @@ export async function delByNativeLocation({ pluginUuid, nativeId, nativeLocation
   // save to database
   const accountInclude = {
     model: Account,
-    where: { pluginUuid, nativeId },
+    where: { pluginUuid },
   };
 
   let num;
@@ -309,7 +297,7 @@ export async function delByNativeLocation({ pluginUuid, nativeId, nativeLocation
 
   if (num !== 1) {
     throw new httpErrors[404](
-      `Log entry with plugin UUID=${pluginUuid}, nativeId=<REDACTED>, nativeLocation=<REDACTED> not found`,
+      `Log entry with plugin UUID=${pluginUuid}, nativeLocation=<REDACTED> not found`,
     );
   }
 

@@ -238,7 +238,7 @@ describe('Log Controller', () => {
     // update by native location
     {
       await Log.updateByNativeLocation(
-        { pluginUuid, nativeId, nativeLocation: 'foo' },
+        { pluginUuid, nativeLocation: 'foo' },
         { accountUuid, nativeLocation: 'bar' },
       );
     }
@@ -246,44 +246,31 @@ describe('Log Controller', () => {
     // update by native location errors
 
     await expect(
-      Log.updateByNativeLocation({ pluginUuid, nativeId }, { accountUuid, nativeLocation: 'baz' }),
+      Log.updateByNativeLocation({ pluginUuid }, { accountUuid, nativeLocation: 'baz' }),
+    ).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Log.updateByNativeLocation({ nativeLocation: 'bar' }, { accountUuid, nativeLocation: 'baz' }),
+    ).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Log.updateByNativeLocation({ pluginUuid, nativeLocation: 'bar' }, { accountUuid }),
+    ).rejects.toThrow(httpErrors[400]);
+
+    await expect(
+      Log.updateByNativeLocation({ pluginUuid, nativeLocation: 'bar' }, { nativeLocation: 'baz' }),
     ).rejects.toThrow(httpErrors[400]);
 
     await expect(
       Log.updateByNativeLocation(
-        { pluginUuid, nativeLocation: 'bar' },
-        { accountUuid, nativeLocation: 'baz' },
-      ),
-    ).rejects.toThrow(httpErrors[400]);
-
-    await expect(
-      Log.updateByNativeLocation(
-        { nativeId, nativeLocation: 'bar' },
-        { accountUuid, nativeLocation: 'baz' },
-      ),
-    ).rejects.toThrow(httpErrors[400]);
-
-    await expect(
-      Log.updateByNativeLocation({ pluginUuid, nativeId, nativeLocation: 'bar' }, { accountUuid }),
-    ).rejects.toThrow(httpErrors[400]);
-
-    await expect(
-      Log.updateByNativeLocation(
-        { pluginUuid, nativeId, nativeLocation: 'bar' },
-        { nativeLocation: 'baz' },
-      ),
-    ).rejects.toThrow(httpErrors[400]);
-
-    await expect(
-      Log.updateByNativeLocation(
-        { pluginUuid, nativeId, nativeLocation: 'foo' },
+        { pluginUuid, nativeLocation: 'foo' },
         { accountUuid, nativeLocation: 'baz' },
       ),
     ).rejects.toThrow(httpErrors[404]);
 
     // read by native location
     {
-      const log = await Log.readByNativeLocation({ pluginUuid, nativeId, nativeLocation: 'bar' });
+      const log = await Log.readByNativeLocation({ pluginUuid, nativeLocation: 'bar' });
       // toMatchObject because sequelize model instances are not plain objects
       expect(log).toMatchObject({
         id: expect.any(Number),
@@ -297,21 +284,15 @@ describe('Log Controller', () => {
 
     // read by native location errors
 
-    await expect(Log.readByNativeLocation({ pluginUuid, nativeId })).rejects.toThrow(
+    await expect(Log.readByNativeLocation({ pluginUuid })).rejects.toThrow(httpErrors[400]);
+
+    await expect(Log.readByNativeLocation({ nativeLocation: 'bar' })).rejects.toThrow(
       httpErrors[400],
     );
 
-    await expect(Log.readByNativeLocation({ pluginUuid, nativeLocation: 'bar' })).rejects.toThrow(
-      httpErrors[400],
+    await expect(Log.readByNativeLocation({ pluginUuid, nativeLocation: 'foo' })).rejects.toThrow(
+      httpErrors[404],
     );
-
-    await expect(Log.readByNativeLocation({ nativeId, nativeLocation: 'bar' })).rejects.toThrow(
-      httpErrors[400],
-    );
-
-    await expect(
-      Log.readByNativeLocation({ pluginUuid, nativeId, nativeLocation: 'foo' }),
-    ).rejects.toThrow(httpErrors[404]);
 
     // delete many
     {
@@ -347,27 +328,21 @@ describe('Log Controller', () => {
 
     // delete by native ID
     {
-      await Log.delByNativeLocation({ pluginUuid, nativeId, nativeLocation: 'baz' });
+      await Log.delByNativeLocation({ pluginUuid, nativeLocation: 'baz' });
 
       expect(await Log.readAll({ pluginUuid })).toHaveLength(0);
     }
 
     // delete by native ID errors
 
-    await expect(Log.delByNativeLocation({ pluginUuid, nativeId })).rejects.toThrow(
+    await expect(Log.delByNativeLocation({ pluginUuid })).rejects.toThrow(httpErrors[400]);
+
+    await expect(Log.delByNativeLocation({ nativeLocation: 'baz' })).rejects.toThrow(
       httpErrors[400],
     );
 
-    await expect(Log.delByNativeLocation({ pluginUuid, nativeLocation: 'baz' })).rejects.toThrow(
-      httpErrors[400],
+    await expect(Log.delByNativeLocation({ pluginUuid, nativeLocation: 'foo' })).rejects.toThrow(
+      httpErrors[404],
     );
-
-    await expect(Log.delByNativeLocation({ nativeId, nativeLocation: 'baz' })).rejects.toThrow(
-      httpErrors[400],
-    );
-
-    await expect(
-      Log.delByNativeLocation({ pluginUuid, nativeId, nativeLocation: 'foo' }),
-    ).rejects.toThrow(httpErrors[404]);
   });
 });

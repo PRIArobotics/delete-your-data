@@ -118,13 +118,13 @@ export default (pluginRegistry) => {
   router.deleteAsync('/log/:id(\\d+)', (req) => Log.del(req.params.id));
 
   // per-plugin log routes
-  router.getAsync('/plugin/:pluginUuid/account/:nativeId/log/:nativeLocation', (req) =>
+  router.getAsync('/plugin/:pluginUuid/log/:nativeLocation', (req) =>
     Log.readByNativeLocation(req.params),
   );
-  router.patchAsync('/plugin/:pluginUuid/account/:nativeId/log/:nativeLocation', (req) =>
+  router.patchAsync('/plugin/:pluginUuid/log/:nativeLocation', (req) =>
     Log.updateByNativeLocation(req.params, req.body),
   );
-  router.deleteAsync('/plugin/:pluginUuid/account/:nativeId/log/:nativeLocation', (req) =>
+  router.deleteAsync('/plugin/:pluginUuid/log/:nativeLocation', (req) =>
     Log.delByNativeLocation(req.params),
   );
 

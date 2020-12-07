@@ -481,7 +481,7 @@ describe('REST API', () => {
     expect(res.statusCode).toEqual(200);
   });
 
-  test('GET /api/plugin/:pluginUuid/account/:nativeId/log/:nativeLocation', async () => {
+  test('GET /api/plugin/:pluginUuid/log/:nativeLocation', async () => {
     const createdAt = new Date();
     const log = {
       id: 1,
@@ -494,16 +494,13 @@ describe('REST API', () => {
 
     Log.readByNativeLocation.mockImplementationOnce(async () => log);
 
-    const nativeId = 'account';
-    const nativeIdEnc = encodeURIComponent(JSON.stringify(nativeId));
     const nativeLocationEnc = encodeURIComponent(JSON.stringify(log.nativeLocation));
     const res = await request(await appPromise)
-      .get(`/api/plugin/${log.pluginUuid}/account/${nativeIdEnc}/log/${nativeLocationEnc}`)
+      .get(`/api/plugin/${log.pluginUuid}/log/${nativeLocationEnc}`)
       .send();
 
     expect(Log.readByNativeLocation).toHaveBeenCalledWith({
       pluginUuid: log.pluginUuid,
-      nativeId,
       nativeLocation: log.nativeLocation,
     });
     expect(res.statusCode).toEqual(200);
@@ -514,41 +511,34 @@ describe('REST API', () => {
     });
   });
 
-  test('PATCH /api/plugin/:pluginUuid/account/:nativeId/log/:nativeLocation', async () => {
+  test('PATCH /api/plugin/:pluginUuid/log/:nativeLocation', async () => {
     Log.updateByNativeLocation.mockImplementationOnce(async () => ({}));
 
     const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
-    const nativeId = 'account';
     const nativeLocation = 'foo';
     const body = {
       nativeId: 'account2',
     };
-    const nativeIdEnc = encodeURIComponent(JSON.stringify(nativeId));
     const nativeLocationEnc = encodeURIComponent(JSON.stringify(nativeLocation));
     const res = await request(await appPromise)
-      .patch(`/api/plugin/${pluginUuid}/account/${nativeIdEnc}/log/${nativeLocationEnc}`)
+      .patch(`/api/plugin/${pluginUuid}/log/${nativeLocationEnc}`)
       .send(body);
 
-    expect(Log.updateByNativeLocation).toHaveBeenCalledWith(
-      { pluginUuid, nativeId, nativeLocation },
-      body,
-    );
+    expect(Log.updateByNativeLocation).toHaveBeenCalledWith({ pluginUuid, nativeLocation }, body);
     expect(res.statusCode).toEqual(200);
   });
 
-  test('DELETE /api/plugin/:pluginUuid/account/:nativeId/log/:nativeLocation', async () => {
+  test('DELETE /api/plugin/:pluginUuid/log/:nativeLocation', async () => {
     Log.delByNativeLocation.mockImplementationOnce(async () => ({}));
 
     const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
-    const nativeId = 'account';
     const nativeLocation = 'foo';
-    const nativeIdEnc = encodeURIComponent(JSON.stringify(nativeId));
     const nativeLocationEnc = encodeURIComponent(JSON.stringify(nativeLocation));
     const res = await request(await appPromise)
-      .delete(`/api/plugin/${pluginUuid}/account/${nativeIdEnc}/log/${nativeLocationEnc}`)
+      .delete(`/api/plugin/${pluginUuid}/log/${nativeLocationEnc}`)
       .send();
 
-    expect(Log.delByNativeLocation).toHaveBeenCalledWith({ pluginUuid, nativeId, nativeLocation });
+    expect(Log.delByNativeLocation).toHaveBeenCalledWith({ pluginUuid, nativeLocation });
     expect(res.statusCode).toEqual(200);
   });
 
