@@ -11,16 +11,14 @@ export async function create({ description }) {
     throw new httpErrors[400]('`description` can not be empty!');
   }
 
-  
-
   // save to database
   try {
     //create the token String
-    const tokenString = crypto.randomBytes(20).toString('hex');
-    const hashedToken = await bcrypt.hash(tokenString, 10);
+    const token = crypto.randomBytes(20).toString('hex');
+    const tokenHash = await bcrypt.hash(token, 10);
 
-    const token = await Token.create({ hashedToken, description });
-    return { description: token.description, token: tokenString };
+    const tokenObj = await Token.create({ tokenHash, description });
+    return { uuid: tokenObj.uuid, token, description: tokenObj.description };
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
@@ -30,7 +28,6 @@ export async function readAll({ description }) {
   // create filter
   const condition = {};
   if (description) condition.description = { [Op.like]: `%${description}%` };
-  
 
   // query database
   try {
@@ -56,8 +53,6 @@ export async function read(uuid) {
 
   return token;
 }
-
-
 
 export async function del(uuid) {
   // save to database
@@ -96,9 +91,7 @@ export async function delMany({ tokens }) {
   }
 
   if (num !== tokens.length) {
-    throw new httpErrors[404](
-      `Only ${num} of ${tokens.length} tokens have been found and deleted`,
-    );
+    throw new httpErrors[404](`Only ${num} of ${tokens.length} tokens have been found and deleted`);
   }
 
   return { message: 'Tokens were deleted successfully.' };
