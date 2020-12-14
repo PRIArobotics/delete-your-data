@@ -37,61 +37,34 @@ export async function readAll({ pluginUuid, tokenUuid }) {
   }
 }
 
-export async function read(pluginUuid) {
+export async function read(pluginUuid, tokenUuid) {
   // query database
   let access;
   try {
-    access = await Access.findByPk(pluginUuid);
+    access = await Access.findOne({ where:  {pluginUuid, tokenUuid}});
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
-  if (account === null) {
-    throw new httpErrors[404](`Account with UUID=${uuid} not found`);
+  if (access === null) {
+    throw new httpErrors[404](`Access with PluginUuid=${pluginUuid}, TokenUuidnot=${tokenUuid} not found`);
   }
 
-  return account;
+  return access;
 }
 
-export async function del(uuid) {
+export async function del(pluginUuid, tokenUuid) {
   // save to database
   let num;
   try {
-    num = await Account.destroy({ where: { uuid } });
+    num = await Access.destroy({ where: { pluginUuid, tokenUuid } });
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
   if (num !== 1) {
-    throw new httpErrors[404](`Account with UUID=${uuid} not found`);
+    throw new httpErrors[404](`Access with PluginUuid=${pluginUuid}, TokenUuidnot=${tokenUuid} found`);
   }
 
-  return { message: 'Account was deleted successfully.' };
-}
-
-export async function delMany({ accounts }) {
-  // validate data
-  if (!Array.isArray(accounts)) {
-    throw new httpErrors[400]('`accounts` must be a list of accout UUIDs!');
-  }
-
-  // save to database
-  let num;
-  try {
-    const condition = {
-      uuid: { [Op.in]: accounts },
-    };
-
-    num = await Account.destroy({ where: condition });
-  } catch (err) /* istanbul ignore next */ {
-    throw new httpErrors[500](err.message || 'An error occurred...');
-  }
-
-  if (num !== accounts.length) {
-    throw new httpErrors[404](
-      `Only ${num} of ${accounts.length} accounts have been found and deleted`,
-    );
-  }
-
-  return { message: 'Accounts were deleted successfully.' };
+  return { message: 'Access was deleted successfully.' };
 }

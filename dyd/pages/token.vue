@@ -2,9 +2,8 @@
   <v-data-table
     :headers="headers"
     :items="items"
-    sort-by="tokenHash"
+    sort-by="description"
     item-key="uuid"
-    show-expand
     class="elevation-1"
   >
     <template v-slot:top>
@@ -18,7 +17,7 @@
           <v-card>
             <v-form @submit.prevent="save">
               <v-card-title>
-                <span class="headline">{{ formTitle }}</span>
+                <span class="headline">New Token</span>
               </v-card-title>
 
               <v-card-text>
@@ -50,23 +49,21 @@
 <script>
 import { createNamespacedHelpers } from 'vuex';
 
-const { mapState, mapActions } = createNamespacedHelpers('token');
+const { mapState, mapActions } = createNamespacedHelpers('tokens');
 
 export default {
   layout: 'crud',
   data: () => ({
     headers: [
-      { text: 'Uuid', value: 'uuid', align: 'start' },
+      { text: 'UUID', value: 'uuid', align: 'start' },
       { text: 'Description', value: 'description' },
       // { text: 'ID', value: 'uuid' },
       // { text: 'Config JSON', value: 'config' },
       { text: 'Actions', value: 'actions', sortable: false, width: '7em' },
-      { text: '', value: 'data-table-expand' },
     ],
     // is the dialog visible?
     dialog: false,
-    // is the dialog editing an existing item?
-    editing: false,
+    
     editedItem: {
       uuid: '',
       description: '',
@@ -81,6 +78,12 @@ export default {
     await store.dispatch('tokens/initialize');
   },
 
+  computed: {
+    ...mapState({
+      items: 'list',
+    }),
+  },
+
   watch: {
     dialog(val) {
       if (!val) {
@@ -93,7 +96,7 @@ export default {
     ...mapActions(['create', 'delete']),
 
     async save() {
-      const { uuid, tokenHash, description } = this.editedItem;
+      const { description } = this.editedItem;
 
       const item = { description };
 

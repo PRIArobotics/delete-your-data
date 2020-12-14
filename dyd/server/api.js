@@ -139,7 +139,6 @@ export default (pluginRegistry) => {
   router.postAsync('/access/', (req) => Access.create(req.body));
   router.getAsync('/access/', (req) => Access.readAll(req.query));
   router.getAsync('/access/:tokenString', (req) => Access.read(req.params.tokenString));
-  router.deleteAsync('/access/', (req) => Access.delMany(req.body));
   router.deleteAsync('/access/:tokenString', (req) => Access.del(req.params.tokenString));
 
   // additional routes
