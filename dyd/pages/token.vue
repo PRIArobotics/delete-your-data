@@ -65,11 +65,9 @@ export default {
     dialog: false,
     
     editedItem: {
-      uuid: '',
       description: '',
     },
     defaultItem: {
-      uuid: '',
       description: '',
     },
   }),
