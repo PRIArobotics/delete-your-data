@@ -2,7 +2,7 @@
 
 > for general information on what DYD is, look in the [repository root](../README.md).
 
-**Delete Your Data (DYD)** helps platform providers in granting their users' rights to information, access, rectification, and erasure of their data.
+**Delete Your Data (DYD)** helps platform providers in granting their users' rights to information, access, and erasure of their data.
 
 This directory is the main DYD application.
 To host and use DYD, clone or copy it, configure the database and any plugins you need, and then deploy it on your systems.
@@ -76,6 +76,8 @@ their sole purpose is to identify other data for querying or deletion, which is 
 ## Indexing APIs
 
 DYD offers the following REST APIs that are meant for access by systems:
+
+(arguments either denote `:urlParams` or `bodyContents`, depending on whether they start with a colon)
 
 - `POST /api/account`: Indexes an account that was created in a system.
   The new account will be assigned a newly generated account UUID.

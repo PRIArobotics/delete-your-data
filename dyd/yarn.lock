@@ -3626,13 +3626,13 @@ duplexify@^3.4.2, duplexify@^3.6.0:
     readable-stream "^2.0.0"
     stream-shift "^1.0.0"
 
-"dyd-dummy-plugin@file:../dyd-dummy-plugin":
+"dyd-axios-rest-plugin@file:../dyd-axios-rest-plugin":
   version "0.0.0"
   dependencies:
     axios "^0.20.0"
     valid-url "^1.0.9"
 
-"dyd-makers-plugin@file:../../MakersAtSchool/dyd-makers-plugin":
+"dyd-dummy-plugin@file:../dyd-dummy-plugin":
   version "0.0.0"
   dependencies:
     axios "^0.20.0"
@@ -4930,9 +4930,9 @@ inherits@2.0.3:
   integrity sha1-Yzwsg+PaQqUC9SRmAiSA9CCCYd4=
 
 ini@^1.3.4, ini@~1.3.0:
-  version "1.3.5"
-  resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.5.tgz#eee25f56db1c9ec6085e0c22778083f596abf927"
-  integrity sha512-RZY5huIKCMRWDUqZlEi72f/lmXKMvuszcMBduliQ3nnWbx9X/ZBQO7DijMEYS9EhHBb2qacRUMtC7svLwe0lcw==
+  version "1.3.8"
+  resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.8.tgz#a29da425b48806f34767a4efce397269af28432c"
+  integrity sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==
 
 invariant@^2.2.2, invariant@^2.2.4:
   version "2.2.4"

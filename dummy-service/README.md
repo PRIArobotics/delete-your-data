@@ -3,7 +3,7 @@
 > for general information on what DYD is, look in the [repository root](../README.md).
 
 Don't mind me, I don't do anything useful.
-I store users and entries (think blog posts, but more boring) that can be accessed using a REST API.
+I store accounts and entries (think blog posts, but more boring) that can be accessed using a REST API.
 That's about it.
 
 ## Prerequisites
