@@ -63,7 +63,6 @@ export default {
     ],
     // is the dialog visible?
     dialog: false,
-    
     editedItem: {
       description: '',
     },

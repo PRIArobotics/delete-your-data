@@ -41,13 +41,13 @@ export async function read(pluginUuid, tokenUuid) {
   // query database
   let access;
   try {
-    access = await Access.findOne({ where:  {pluginUuid, tokenUuid}});
+    access = await Access.findOne({ where: { pluginUuid, tokenUuid } });
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
 
   if (access === null) {
-    throw new httpErrors[404](`Access with PluginUuid=${pluginUuid}, TokenUuidnot=${tokenUuid} not found`);
+    throw new httpErrors[404](`Access with pluginUuid=${pluginUuid}, tokenUuid=${tokenUuid} not found`);
   }
 
   return access;
@@ -63,7 +63,7 @@ export async function del(pluginUuid, tokenUuid) {
   }
 
   if (num !== 1) {
-    throw new httpErrors[404](`Access with PluginUuid=${pluginUuid}, TokenUuidnot=${tokenUuid} found`);
+    throw new httpErrors[404](`Access with pluginUuid=${pluginUuid}, tokenUuid=${tokenUuid} not found`);
   }
 
   return { message: 'Access was deleted successfully.' };
