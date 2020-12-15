@@ -18,7 +18,7 @@
     "@nuxtjs/axios": "^5.12.0",
     "bcrypt": "^5.0.0",
     "cross-env": "^5.2.0",
-    "dyd-makers-plugin": "file:../../MakersAtSchool/dyd-makers-plugin",
+    "dyd-axios-rest-plugin": "file:../dyd-axios-rest-plugin",
     "express": "^4.16.4",
     "fs": "^0.0.1-security",
     "httperrors": "^2.3.0",

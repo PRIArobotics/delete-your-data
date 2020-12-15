@@ -3626,13 +3626,13 @@ duplexify@^3.4.2, duplexify@^3.6.0:
     readable-stream "^2.0.0"
     stream-shift "^1.0.0"
 
-"dyd-dummy-plugin@file:../dyd-dummy-plugin":
+"dyd-axios-rest-plugin@file:../dyd-axios-rest-plugin":
   version "0.0.0"
   dependencies:
     axios "^0.20.0"
     valid-url "^1.0.9"
 
-"dyd-makers-plugin@file:../../MakersAtSchool/dyd-makers-plugin":
+"dyd-dummy-plugin@file:../dyd-dummy-plugin":
   version "0.0.0"
   dependencies:
     axios "^0.20.0"

@@ -1,10 +1,10 @@
 import DummyPlugin from 'dyd-dummy-plugin';
-import MakersPlugin from 'dyd-makers-plugin';
+import RestPlugin from 'dyd-axios-rest-plugin';
 
 // specify DYD plugins to use
 export const plugins = [
   DummyPlugin,
-  MakersPlugin,
+  RestPlugin,
 ];
 
 // plugins indexed by their names
