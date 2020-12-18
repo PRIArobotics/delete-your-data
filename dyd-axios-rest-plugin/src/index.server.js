@@ -9,12 +9,10 @@ import BrowserAxiosRestPlugin from './index.client';
  * The service makes its capabilities available via a Rest API.
  */
 export default class AxiosRestPlugin extends BrowserAxiosRestPlugin {
-  constructor({ apiUrl }) {
-    super({ apiUrl });
+  constructor({ baseURL, accountEndpoint, accountMethod, entryEndpoint, entryMethod }) {
+    super({ baseURL, accountEndpoint, accountMethod, entryEndpoint, entryMethod });
 
-    this.axios = axios.create({
-      baseURL: apiUrl,
-    });
+    this.axios = axios.create({ baseURL });
   }
 
   // The methods below can access databases etc.
