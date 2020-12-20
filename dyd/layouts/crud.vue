@@ -62,6 +62,8 @@ export default {
       { icon: 'mdi-inbox-multiple', text: 'Log', url: '/log' },
       { divider: true },
       { icon: 'mdi-security', text: 'Token', url: '/tokens' },
+      { divider: true },
+      { icon: 'mdi-lock-open', text: 'Access', url: '/access' },
     ],
   }),
   methods: {
