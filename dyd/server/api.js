@@ -1,6 +1,6 @@
 import { json, Router } from 'express';
 
-import { Plugin, Account, Log } from './controller';
+import { Plugin, Account, Log, Token, Access } from './controller';
 
 /**
  * Converts an async function into an express-conformant request handler.

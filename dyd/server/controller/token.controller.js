@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import bcrypt from 'bcrypt';
 
 import httpErrors from 'httperrors';
 import { Op } from 'sequelize';
