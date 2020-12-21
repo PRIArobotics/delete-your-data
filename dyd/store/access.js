@@ -27,7 +27,9 @@ export const mutations = {
   // },
 
   deleteItem(state, { pluginUuid, tokenUuid }) {
-    const index = state.list.findIndex((x) => x.pluginUuid === pluginUuid && x.tokenUuid === tokenUuid);
+    const index = state.list.findIndex(
+      (x) => x.pluginUuid === pluginUuid && x.tokenUuid === tokenUuid,
+    );
     state.list.splice(index, 1);
     // state.map.delete([pluginUuid, tokenUuid]);
   },

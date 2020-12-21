@@ -47,7 +47,9 @@ export async function read(pluginUuid, tokenUuid) {
   }
 
   if (access === null) {
-    throw new httpErrors[404](`Access with pluginUuid=${pluginUuid}, tokenUuid=${tokenUuid} not found`);
+    throw new httpErrors[404](
+      `Access with pluginUuid=${pluginUuid}, tokenUuid=${tokenUuid} not found`,
+    );
   }
 
   return access;
@@ -63,7 +65,9 @@ export async function del(pluginUuid, tokenUuid) {
   }
 
   if (num !== 1) {
-    throw new httpErrors[404](`Access with pluginUuid=${pluginUuid}, tokenUuid=${tokenUuid} not found`);
+    throw new httpErrors[404](
+      `Access with pluginUuid=${pluginUuid}, tokenUuid=${tokenUuid} not found`,
+    );
   }
 
   return { message: 'Access was deleted successfully.' };

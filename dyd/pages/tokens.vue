@@ -24,7 +24,7 @@
                 <v-container>
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.description" label="Description"></v-text-field>
+                      <v-text-field v-model="editedItem.description" label="Description" />
                     </v-col>
                   </v-row>
                 </v-container>
@@ -98,7 +98,9 @@ export default {
       const item = { description };
 
       const token = await this.create(item);
-      alert(`The new token's secret is ${token}. Write down this token, you can not view it again.`);
+      alert(
+        `The new token's secret is ${token}. Write down this token, you can not view it again.`,
+      );
 
       this.close();
     },

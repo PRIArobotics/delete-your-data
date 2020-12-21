@@ -15,22 +15,25 @@ export default (req, res, next) => {
 
   const [username, password] = base64decode(authHeader.substring(prefix.length)).split(':');
 
-  Token.check(username, password).then((matches) => {
-    if (!matches) {
-      req.authorization = null;
+  Token.check(username, password)
+    .then((matches) => {
+      if (!matches) {
+        req.authorization = null;
+        next();
+        return;
+      }
+
+      return Access.readAll({ tokenUuid: username });
+    })
+    .then((accesses) => {
+      req.authorization = {
+        token: username,
+        pluginAccess: new Set(accesses.map((accesses) => accesses.pluginUuid)),
+      };
+
+      console.log(req.authorization);
+
       next();
-      return;
-    }
-
-    return Access.readAll({ tokenUuid: username });
-  }).then((accesses) => {
-    req.authorization = {
-      token: username,
-      pluginAccess: new Set(accesses.map(accesses => accesses.pluginUuid)),
-    };
-
-    console.log(req.authorization);
-
-    next();
-  }).catch(next);
+    })
+    .catch(next);
 };

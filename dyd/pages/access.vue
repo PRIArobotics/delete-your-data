@@ -1,9 +1,9 @@
 <template>
-  <v-data-table 
-    :headers="headers" 
-    :items="items" 
+  <v-data-table
+    :headers="headers"
+    :items="items"
     sort-by="pluginuuid"
-    item-key="uuid" 
+    item-key="uuid"
     class="elevation-1"
   >
     <template v-slot:top>
@@ -34,7 +34,7 @@
                       >
                       </v-select>
                     </v-col>
-                    
+
                     <v-col cols="12" sm="6" md="4">
                       <v-select
                         v-model="editedItem.pluginUuid"
@@ -67,7 +67,7 @@
     <template v-slot:item.pluginName="{ item }">
       {{ getPluginName(item) }}
     </template>
-     <template v-slot:item.description="{ item }">
+    <template v-slot:item.description="{ item }">
       {{ getTokenDescription(item) }}
     </template>
   </v-data-table>
@@ -91,12 +91,12 @@ export default {
     // is the dialog visible?
     dialog: false,
     editedItem: {
-        pluginUuid: '',
-        tokenUuid: '',
+      pluginUuid: '',
+      tokenUuid: '',
     },
     defaultItem: {
-        pluginUuid: '',
-        tokenUuid: '',
+      pluginUuid: '',
+      tokenUuid: '',
     },
   }),
 
