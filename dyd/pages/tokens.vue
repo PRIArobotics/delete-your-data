@@ -103,7 +103,7 @@ export default {
     },
 
     async deleteItem(item) {
-      if (confirm('Are you sure you want to delete this Token?')) {
+      if (confirm('Are you sure you want to delete this token?')) {
         await this.delete(item);
       }
     },

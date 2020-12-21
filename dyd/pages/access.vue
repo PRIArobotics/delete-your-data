@@ -17,7 +17,7 @@
           <v-card>
             <v-form @submit.prevent="save">
               <v-card-title>
-                <span class="headline"> New Access </span>
+                <span class="headline">New Access</span>
               </v-card-title>
 
               <v-card-text>
@@ -136,6 +136,7 @@ export default {
     getPluginName(access) {
       return this.pluginMap.get(access.pluginUuid)?.name ?? access.pluginUuid;
     },
+
     getTokenDescription(access) {
       return this.tokenMap.get(access.tokenUuid)?.description ?? access.tokenUuid;
     },
@@ -151,7 +152,7 @@ export default {
     },
 
     async deleteItem(item) {
-      if (confirm('Are you sure you want to delete this Access?')) {
+      if (confirm('Are you sure you want to delete this access?')) {
         await this.delete(item);
       }
     },
