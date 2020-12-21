@@ -61,6 +61,19 @@ export async function read(uuid) {
   return unpackToken(token);
 }
 
+export async function check(uuid, token) {
+  // query database
+  try {
+    const tokenObj = await Token.findByPk(uuid);
+    if (tokenObj === null) return false;
+
+    const matches = await bcrypt.compare(token, tokenObj.tokenHash);
+    return matches;
+  } catch (err) /* istanbul ignore next */ {
+    throw new httpErrors[500](err.message || 'An error occurred...');
+  }
+}
+
 export async function del(uuid) {
   // save to database
   let num;
