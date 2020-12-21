@@ -31,8 +31,6 @@ export default (req, res, next) => {
         pluginAccess: new Set(accesses.map((accesses) => accesses.pluginUuid)),
       };
 
-      console.log(req.authorization);
-
       next();
     })
     .catch(next);
