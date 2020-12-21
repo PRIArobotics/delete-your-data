@@ -1,4 +1,4 @@
-import { Token } from './controller';
+import { Token, Access } from './controller';
 
 function base64decode(base64) {
   return Buffer.from(base64, 'base64').toString('utf8');
@@ -22,7 +22,13 @@ export default (req, res, next) => {
       return;
     }
 
-    req.authorization = { token: username };
+    return Access.readAll({ tokenUuid: username });
+  }).then((accesses) => {
+    req.authorization = {
+      token: username,
+      pluginAccess: new Set(accesses.map(accesses => accesses.pluginUuid)),
+    };
+
     console.log(req.authorization);
 
     next();
