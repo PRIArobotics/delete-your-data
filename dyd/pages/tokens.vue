@@ -97,7 +97,8 @@ export default {
 
       const item = { description };
 
-      await this.create(item);
+      const token = await this.create(item);
+      alert(`The new token's secret is ${token}. Write down this token, you can not view it again.`);
 
       this.close();
     },
