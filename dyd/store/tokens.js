@@ -21,10 +21,10 @@ export const mutations = {
     state.map.set(item.uuid, item);
   },
 
-  updateItem(state, { uuid, ...item }) {
-    const found = state.list.find((x) => x.uuid === uuid);
-    Object.assign(found, item);
-  },
+  // updateItem(state, { uuid, ...item }) {
+  //   const found = state.list.find((x) => x.uuid === uuid);
+  //   Object.assign(found, item);
+  // },
 
   deleteItem(state, { uuid }) {
     const index = state.list.findIndex((x) => x.uuid === uuid);

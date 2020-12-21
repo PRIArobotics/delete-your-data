@@ -12,24 +12,24 @@ export const mutations = {
     state.list = list;
     // state.map.clear();
     // for (const item of list) {
-    //   state.map.set(item.uuid, item);
+    //   state.map.set([item.pluginUuid, item.tokenUuid], item);
     // }
   },
 
   createItem(state, item) {
     state.list.push(item);
-    // state.map.set(item.uuid, item);
+    // state.map.set([item.pluginUuid, item.tokenUuid], item);
   },
 
-  updateItem(state, { uuid, ...item }) {
-    const found = state.list.find((x) => x.uuid === uuid);
-    Object.assign(found, item);
-  },
+  // updateItem(state, { pluginUuid, tokenUuid, ...item }) {
+  //   const found = state.list.find((x) => x.pluginUuid === pluginUuid && x.tokenUuid === tokenUuid);
+  //   Object.assign(found, item);
+  // },
 
-  deleteItem(state, { uuid }) {
-    const index = state.list.findIndex((x) => x.uuid === uuid);
+  deleteItem(state, { pluginUuid, tokenUuid }) {
+    const index = state.list.findIndex((x) => x.pluginUuid === pluginUuid && x.tokenUuid === tokenUuid);
     state.list.splice(index, 1);
-    // state.map.delete(uuid);
+    // state.map.delete([pluginUuid, tokenUuid]);
   },
 };
 
