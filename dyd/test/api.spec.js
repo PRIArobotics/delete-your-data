@@ -5,11 +5,29 @@
 import request from 'supertest';
 
 import appPromise from './test_app';
-import { Plugin, Account, Log } from '~/server/controller';
+import { Plugin, Account, Log, Token, Access } from '~/server/controller';
 
 jest.mock('~/server/controller/plugin.controller');
 jest.mock('~/server/controller/account.controller');
 jest.mock('~/server/controller/log.controller');
+jest.mock('~/server/controller/token.controller');
+jest.mock('~/server/controller/access.controller');
+
+const basicAuthHeader = (() => {
+  const tokenUuid = '20ce53ec-310a-49ac-9df3-0bc04f11301e';
+  const tokenSecret = 'secret';
+  const credentials = Buffer.from(`${tokenUuid}:${tokenSecret}`, 'utf8').toString('base64');
+
+  return `Basic ${credentials}`;
+})();
+
+Token.check.mockImplementation(async (_uuid, _token) => true);
+Access.readAll.mockImplementation(async (_criteria) => [
+  {
+    tokenUuid: '20ce53ec-310a-49ac-9df3-0bc04f11301e',
+    pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+  },
+]);
 
 describe('REST API', () => {
   test('POST /api/plugin', async () => {
@@ -283,6 +301,7 @@ describe('REST API', () => {
     const nativeIdEnc = encodeURIComponent(JSON.stringify(account.nativeId));
     const res = await request(await appPromise)
       .get(`/api/plugin/${account.pluginUuid}/account/${nativeIdEnc}`)
+      .set('Authorization', basicAuthHeader)
       .send();
 
     expect(Account.readByNativeId).toHaveBeenCalledWith({
@@ -308,6 +327,7 @@ describe('REST API', () => {
     const nativeIdEnc = encodeURIComponent(JSON.stringify(nativeId));
     const res = await request(await appPromise)
       .patch(`/api/plugin/${pluginUuid}/account/${nativeIdEnc}`)
+      .set('Authorization', basicAuthHeader)
       .send(body);
 
     expect(Account.updateByNativeId).toHaveBeenCalledWith({ pluginUuid, nativeId }, body);
@@ -322,6 +342,7 @@ describe('REST API', () => {
     const nativeIdEnc = encodeURIComponent(JSON.stringify(nativeId));
     const res = await request(await appPromise)
       .delete(`/api/plugin/${pluginUuid}/account/${nativeIdEnc}`)
+      .set('Authorization', basicAuthHeader)
       .send();
 
     expect(Account.delByNativeId).toHaveBeenCalledWith({ pluginUuid, nativeId });
@@ -497,6 +518,7 @@ describe('REST API', () => {
     const nativeLocationEnc = encodeURIComponent(JSON.stringify(log.nativeLocation));
     const res = await request(await appPromise)
       .get(`/api/plugin/${log.pluginUuid}/log/${nativeLocationEnc}`)
+      .set('Authorization', basicAuthHeader)
       .send();
 
     expect(Log.readByNativeLocation).toHaveBeenCalledWith({
@@ -522,6 +544,7 @@ describe('REST API', () => {
     const nativeLocationEnc = encodeURIComponent(JSON.stringify(nativeLocation));
     const res = await request(await appPromise)
       .patch(`/api/plugin/${pluginUuid}/log/${nativeLocationEnc}`)
+      .set('Authorization', basicAuthHeader)
       .send(body);
 
     expect(Log.updateByNativeLocation).toHaveBeenCalledWith({ pluginUuid, nativeLocation }, body);
@@ -536,6 +559,7 @@ describe('REST API', () => {
     const nativeLocationEnc = encodeURIComponent(JSON.stringify(nativeLocation));
     const res = await request(await appPromise)
       .delete(`/api/plugin/${pluginUuid}/log/${nativeLocationEnc}`)
+      .set('Authorization', basicAuthHeader)
       .send();
 
     expect(Log.delByNativeLocation).toHaveBeenCalledWith({ pluginUuid, nativeLocation });

@@ -19,8 +19,7 @@ export async function create({ dydAxios, dydPluginUuid }, { username }) {
 
   // index in DYD
   try {
-    await dydAxios.post('account', {
-      pluginUuid: dydPluginUuid,
+    await dydAxios.post(`plugin/${dydPluginUuid}/account`, {
       nativeId: username,
     });
   } catch (err) /* istanbul ignore next */ {

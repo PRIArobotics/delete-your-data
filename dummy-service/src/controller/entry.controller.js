@@ -26,7 +26,7 @@ export async function create({ dydAxios, dydPluginUuid }, { username, content })
     const nativeId = JSON.stringify(username);
     const { data: account } = await dydAxios.get(`/plugin/${dydPluginUuid}/account/${nativeId}`);
 
-    await dydAxios.post('log', {
+    await dydAxios.post(`plugin/${dydPluginUuid}/log`, {
       accountUuid: account.uuid,
       nativeLocation: entry.id,
     });

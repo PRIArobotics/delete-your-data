@@ -7,9 +7,16 @@ import createApi from './api';
 export default async function createApp({
   dydEndpoint,
   dydPluginUuid,
+  dydTokenUuid,
+  dydTokenSecret,
 }) {
+  const credentials = Buffer.from(`${dydTokenUuid}:${dydTokenSecret}`, 'utf8').toString('base64');
+
   const dydAxios = axios.create({
     baseURL: dydEndpoint,
+    headers: {
+      'Authorization': `Basic ${credentials}`,
+    },
   });
 
   const app = express();

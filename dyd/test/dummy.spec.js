@@ -23,20 +23,50 @@ beforeAll(async () => {
   await util.promisify(appServer.listen).call(appServer, DYD_PORT);
 
   // register dummy plugin
-  const res = await request(appServer)
-    .post('/api/plugin')
-    .send({
-      name: 'dummy_test_plugin',
-      type: 'Dummy',
-      config: { apiUrl: DUMMY_API_URL },
-    });
-  expect(res.statusCode).toEqual(200);
-  pluginUuid = res.body.uuid;
+  {
+    const res = await request(appServer)
+      .post('/api/plugin')
+      .send({
+        name: 'dummy_test_plugin',
+        type: 'Dummy',
+        config: { apiUrl: DUMMY_API_URL },
+      });
+    expect(res.statusCode).toEqual(200);
+
+    pluginUuid = res.body.uuid;
+  }
+
+  // create token
+  let tokenUuid, tokenSecret;
+  {
+    const res = await request(appServer)
+      .post('/api/token')
+      .send({
+        description: 'dummy',
+      });
+    expect(res.statusCode).toEqual(200);
+
+    tokenUuid = res.body.uuid;
+    tokenSecret = res.body.token;
+  }
+
+  // grant access
+  {
+    const res = await request(appServer)
+      .post('/api/access')
+      .send({
+        pluginUuid,
+        tokenUuid,
+      });
+    expect(res.statusCode).toEqual(200);
+  }
 
   // start dummy service
   const dummyApp = await createDummyApp({
     dydEndpoint: DYD_API_URL,
     dydPluginUuid: pluginUuid,
+    dydTokenUuid: tokenUuid,
+    dydTokenSecret: tokenSecret,
   });
   dummyServer = http.createServer(dummyApp);
   await util.promisify(dummyServer.listen).call(dummyServer, DUMMY_PORT);
