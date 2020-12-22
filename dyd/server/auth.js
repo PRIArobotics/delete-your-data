@@ -6,7 +6,7 @@ function base64decode(base64) {
   return Buffer.from(base64, 'base64').toString('utf8');
 }
 
-export function authMiddleware(req, res, next) {
+export function authMiddleware(req, _res, next) {
   const prefix = 'Basic ';
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith(prefix)) {

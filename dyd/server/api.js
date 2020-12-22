@@ -61,24 +61,6 @@ export default (pluginRegistry) => {
   router.putAsync = wrapAsync(Router.put);
   router.patchAsync = wrapAsync(Router.patch);
 
-  // convert all `:id` params to integers
-  router.param('id', (req, _res, next) => {
-    req.params.id = +req.params.id;
-    next();
-  });
-
-  // convert all `:nativeId` params to JS objects
-  router.param('nativeId', (req, _res, next) => {
-    req.params.nativeId = JSON.parse(req.params.nativeId);
-    next();
-  });
-
-  // convert all `:nativeLocation` params to JS objects
-  router.param('nativeLocation', (req, _res, next) => {
-    req.params.nativeLocation = JSON.parse(req.params.nativeLocation);
-    next();
-  });
-
   {
     const adminRouter = Router();
     // add wrappers for async handlers
@@ -92,6 +74,12 @@ export default (pluginRegistry) => {
     adminRouter.use((req, _res, next) => {
       // TODO implement admins & admin access
       // requireAccess(req, 'admin');
+      next();
+    });
+
+    // convert all `:id` params to integers
+    adminRouter.param('id', (req, _res, next) => {
+      req.params.id = +req.params.id;
       next();
     });
 
@@ -170,6 +158,18 @@ export default (pluginRegistry) => {
     // to ensure authorization is checked
     pluginRouter.param('pluginUuid', (req, _res, next) => {
       requireAccess(req, req.params.pluginUuid);
+      next();
+    });
+
+    // convert all `:nativeId` params to JS objects
+    pluginRouter.param('nativeId', (req, _res, next) => {
+      req.params.nativeId = JSON.parse(req.params.nativeId);
+      next();
+    });
+
+    // convert all `:nativeLocation` params to JS objects
+    pluginRouter.param('nativeLocation', (req, _res, next) => {
+      req.params.nativeLocation = JSON.parse(req.params.nativeLocation);
       next();
     });
 
