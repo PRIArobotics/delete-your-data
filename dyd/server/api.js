@@ -77,85 +77,109 @@ export default (pluginRegistry) => {
     next();
   });
 
-  // plugin routes
-  router.postAsync('/plugin/', (req) => Plugin.create(req.body));
-  router.getAsync('/plugin/', (req) => Plugin.readAll(req.query));
-  router.getAsync('/plugin/:uuid', (req) => Plugin.read(req.params.uuid));
-  router.putAsync('/plugin/:uuid', (req) => Plugin.update(req.params.uuid, req.body));
-  router.deleteAsync('/plugin/', (req) => Plugin.delMany(req.body));
-  router.deleteAsync('/plugin/:uuid', (req) => Plugin.del(req.params.uuid));
+  {
+    const adminRouter = Router();
+    // add wrappers for async handlers
+    adminRouter.deleteAsync = wrapAsync(Router.delete);
+    adminRouter.getAsync = wrapAsync(Router.get);
+    adminRouter.postAsync = wrapAsync(Router.post);
+    adminRouter.putAsync = wrapAsync(Router.put);
+    adminRouter.patchAsync = wrapAsync(Router.patch);
 
-  // account routes
-  router.postAsync('/account/', (req) => Account.create(req.body));
-  router.getAsync('/account/', (req) => Account.readAll(req.query));
-  router.getAsync('/account/:uuid', (req) => Account.read(req.params.uuid));
-  router.putAsync('/account/:uuid', (req) => Account.update(req.params.uuid, req.body));
-  router.deleteAsync('/account/', (req) => Account.delMany(req.body));
-  router.deleteAsync('/account/:uuid', (req) => Account.del(req.params.uuid));
+    // plugin routes
+    adminRouter.postAsync('/plugin/', (req) => Plugin.create(req.body));
+    adminRouter.getAsync('/plugin/', (req) => Plugin.readAll(req.query));
+    adminRouter.getAsync('/plugin/:uuid', (req) => Plugin.read(req.params.uuid));
+    adminRouter.putAsync('/plugin/:uuid', (req) => Plugin.update(req.params.uuid, req.body));
+    adminRouter.deleteAsync('/plugin/', (req) => Plugin.delMany(req.body));
+    adminRouter.deleteAsync('/plugin/:uuid', (req) => Plugin.del(req.params.uuid));
 
-  // per-plugin account routes
-  router.getAsync('/plugin/:pluginUuid/account/:nativeId', (req) =>
-    Account.readByNativeId(req.params),
-  );
-  router.patchAsync('/plugin/:pluginUuid/account/:nativeId', (req) =>
-    Account.updateByNativeId(req.params, req.body),
-  );
-  router.deleteAsync('/plugin/:pluginUuid/account/:nativeId', (req) =>
-    Account.delByNativeId(req.params),
-  );
+    // account routes
+    adminRouter.postAsync('/account/', (req) => Account.create(req.body));
+    adminRouter.getAsync('/account/', (req) => Account.readAll(req.query));
+    adminRouter.getAsync('/account/:uuid', (req) => Account.read(req.params.uuid));
+    adminRouter.putAsync('/account/:uuid', (req) => Account.update(req.params.uuid, req.body));
+    adminRouter.deleteAsync('/account/', (req) => Account.delMany(req.body));
+    adminRouter.deleteAsync('/account/:uuid', (req) => Account.del(req.params.uuid));
 
-  // log routes
-  async function convertDatesInQuery(req) {
-    if ('earliest' in req.query) req.query.earliest = new Date(+req.query.earliest);
-    if ('latest' in req.query) req.query.latest = new Date(+req.query.latest);
+    // log routes
+    async function convertDatesInQuery(req) {
+      if ('earliest' in req.query) req.query.earliest = new Date(+req.query.earliest);
+      if ('latest' in req.query) req.query.latest = new Date(+req.query.latest);
+    }
+
+    adminRouter.postAsync('/log/', (req) => Log.create(req.body));
+    adminRouter.getAsync('/log/', convertDatesInQuery, (req) => Log.readAll(req.query));
+    adminRouter.getAsync('/log/:id(\\d+)', (req) => Log.read(req.params.id));
+    adminRouter.putAsync('/log/:id(\\d+)', (req) => Log.update(req.params.id, req.body));
+    adminRouter.deleteAsync('/log/', (req) => Log.delMany(req.body));
+    adminRouter.deleteAsync('/log/:id(\\d+)', (req) => Log.del(req.params.id));
+
+    // token routes
+    adminRouter.postAsync('/token/', (req) => Token.create(req.body));
+    adminRouter.getAsync('/token/', (req) => Token.readAll(req.query));
+    adminRouter.getAsync('/token/:tokenString', (req) => Token.read(req.params.tokenString));
+    adminRouter.deleteAsync('/token/', (req) => Token.delMany(req.body));
+    adminRouter.deleteAsync('/token/:tokenString', (req) => Token.del(req.params.tokenString));
+
+    // access routes
+    adminRouter.postAsync('/access/', (req) => Access.create(req.body));
+    adminRouter.getAsync('/access/', (req) => Access.readAll(req.query));
+    adminRouter.getAsync('/access/:tokenString', (req) => Access.read(req.params.tokenString));
+    adminRouter.deleteAsync('/access/:tokenString', (req) => Access.del(req.params.tokenString));
+
+    // additional routes
+    adminRouter.getAsync('/account/:uuid/log', convertDatesInQuery, (req) =>
+      Log.readAll({ ...req.query, accountUuid: req.params.uuid }),
+    );
+    adminRouter.getAsync('/person/:uuid/account', (req) =>
+      Account.readAll({ ...req.query, personUuid: req.params.uuid }),
+    );
+    adminRouter.getAsync('/person/:uuid/log', convertDatesInQuery, (req) =>
+      Log.readAll({ ...req.query, personUuid: req.params.uuid }),
+    );
+
+    // logic routes
+    adminRouter.postAsync('/account/redact', (req) => Account.redact(pluginRegistry, req.body));
+    adminRouter.postAsync('/person/redact', (req) => Account.redactPersons(pluginRegistry, req.body));
+    adminRouter.postAsync('/log/redact', (req) => Log.redact(pluginRegistry, req.body));
+
+    router.use(adminRouter);
   }
 
-  router.postAsync('/log/', (req) => Log.create(req.body));
-  router.getAsync('/log/', convertDatesInQuery, (req) => Log.readAll(req.query));
-  router.getAsync('/log/:id(\\d+)', (req) => Log.read(req.params.id));
-  router.putAsync('/log/:id(\\d+)', (req) => Log.update(req.params.id, req.body));
-  router.deleteAsync('/log/', (req) => Log.delMany(req.body));
-  router.deleteAsync('/log/:id(\\d+)', (req) => Log.del(req.params.id));
+  {
+    const pluginRouter = Router();
+    // add wrappers for async handlers
+    pluginRouter.deleteAsync = wrapAsync(Router.delete);
+    pluginRouter.getAsync = wrapAsync(Router.get);
+    pluginRouter.postAsync = wrapAsync(Router.post);
+    pluginRouter.putAsync = wrapAsync(Router.put);
+    pluginRouter.patchAsync = wrapAsync(Router.patch);
 
-  // per-plugin log routes
-  router.getAsync('/plugin/:pluginUuid/log/:nativeLocation', (req) =>
-    Log.readByNativeLocation(req.params),
-  );
-  router.patchAsync('/plugin/:pluginUuid/log/:nativeLocation', (req) =>
-    Log.updateByNativeLocation(req.params, req.body),
-  );
-  router.deleteAsync('/plugin/:pluginUuid/log/:nativeLocation', (req) =>
-    Log.delByNativeLocation(req.params),
-  );
+    // per-plugin account routes
+    pluginRouter.getAsync('/plugin/:pluginUuid/account/:nativeId', (req) =>
+      Account.readByNativeId(req.params),
+    );
+    pluginRouter.patchAsync('/plugin/:pluginUuid/account/:nativeId', (req) =>
+      Account.updateByNativeId(req.params, req.body),
+    );
+    pluginRouter.deleteAsync('/plugin/:pluginUuid/account/:nativeId', (req) =>
+      Account.delByNativeId(req.params),
+    );
 
-  // token routes
-  router.postAsync('/token/', (req) => Token.create(req.body));
-  router.getAsync('/token/', (req) => Token.readAll(req.query));
-  router.getAsync('/token/:tokenString', (req) => Token.read(req.params.tokenString));
-  router.deleteAsync('/token/', (req) => Token.delMany(req.body));
-  router.deleteAsync('/token/:tokenString', (req) => Token.del(req.params.tokenString));
+    // per-plugin log routes
+    pluginRouter.getAsync('/plugin/:pluginUuid/log/:nativeLocation', (req) =>
+      Log.readByNativeLocation(req.params),
+    );
+    pluginRouter.patchAsync('/plugin/:pluginUuid/log/:nativeLocation', (req) =>
+      Log.updateByNativeLocation(req.params, req.body),
+    );
+    pluginRouter.deleteAsync('/plugin/:pluginUuid/log/:nativeLocation', (req) =>
+      Log.delByNativeLocation(req.params),
+    );
 
-  // access routes
-  router.postAsync('/access/', (req) => Access.create(req.body));
-  router.getAsync('/access/', (req) => Access.readAll(req.query));
-  router.getAsync('/access/:tokenString', (req) => Access.read(req.params.tokenString));
-  router.deleteAsync('/access/:tokenString', (req) => Access.del(req.params.tokenString));
-
-  // additional routes
-  router.getAsync('/account/:uuid/log', convertDatesInQuery, (req) =>
-    Log.readAll({ ...req.query, accountUuid: req.params.uuid }),
-  );
-  router.getAsync('/person/:uuid/account', (req) =>
-    Account.readAll({ ...req.query, personUuid: req.params.uuid }),
-  );
-  router.getAsync('/person/:uuid/log', convertDatesInQuery, (req) =>
-    Log.readAll({ ...req.query, personUuid: req.params.uuid }),
-  );
-
-  // logic routes
-  router.postAsync('/account/redact', (req) => Account.redact(pluginRegistry, req.body));
-  router.postAsync('/person/redact', (req) => Account.redactPersons(pluginRegistry, req.body));
-  router.postAsync('/log/redact', (req) => Log.redact(pluginRegistry, req.body));
+    router.use(pluginRouter);
+  }
 
   return router;
 };
