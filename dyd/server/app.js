@@ -2,7 +2,7 @@ import express from 'express';
 import { Nuxt, Builder } from 'nuxt';
 import { initSequelize } from './models';
 import createApi from './api';
-import auth from './auth';
+import { authMiddleware } from './auth';
 
 // Import and Set Nuxt.js options
 import config from '../nuxt.config.js';
@@ -22,7 +22,7 @@ export default async function createApp(pluginRegistry) {
     await builder.build();
   }
 
-  app.use(auth);
+  app.use(authMiddleware);
 
   // register API routes before nuxt middleware
   app.use('/api', createApi(pluginRegistry));
