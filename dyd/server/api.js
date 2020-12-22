@@ -2,6 +2,8 @@ import { json, Router } from 'express';
 
 import { Plugin, Account, Log, Token, Access } from './controller';
 
+import { requireAccess } from './auth';
+
 /**
  * Converts an async function into an express-conformant request handler.
  * This function responds in the following way to the handler's result:
@@ -86,6 +88,13 @@ export default (pluginRegistry) => {
     adminRouter.putAsync = wrapAsync(Router.put);
     adminRouter.patchAsync = wrapAsync(Router.patch);
 
+    // check admin access
+    adminRouter.use((req, _res, next) => {
+      // TODO implement admins & admin access
+      // requireAccess(req, 'admin');
+      next();
+    });
+
     // plugin routes
     adminRouter.postAsync('/plugin/', (req) => Plugin.create(req.body));
     adminRouter.getAsync('/plugin/', (req) => Plugin.readAll(req.query));
@@ -155,6 +164,14 @@ export default (pluginRegistry) => {
     pluginRouter.postAsync = wrapAsync(Router.post);
     pluginRouter.putAsync = wrapAsync(Router.put);
     pluginRouter.patchAsync = wrapAsync(Router.patch);
+
+    // check plugin access
+    // TODO statically ensure that all routes have a :pluginUuid param
+    // to ensure authorization is checked
+    pluginRouter.param('pluginUuid', (req, _res, next) => {
+      requireAccess(req, req.params.pluginUuid);
+      next();
+    });
 
     // per-plugin account routes
     pluginRouter.getAsync('/plugin/:pluginUuid/account/:nativeId', (req) =>
