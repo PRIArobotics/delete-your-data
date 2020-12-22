@@ -61,6 +61,11 @@ export default (pluginRegistry) => {
   router.putAsync = wrapAsync(Router.put);
   router.patchAsync = wrapAsync(Router.patch);
 
+  async function convertDatesInQuery(req) {
+    if ('earliest' in req.query) req.query.earliest = new Date(+req.query.earliest);
+    if ('latest' in req.query) req.query.latest = new Date(+req.query.latest);
+  }
+
   {
     const adminRouter = Router();
     // add wrappers for async handlers
@@ -100,11 +105,6 @@ export default (pluginRegistry) => {
     adminRouter.deleteAsync('/account/:uuid', (req) => Account.del(req.params.uuid));
 
     // log routes
-    async function convertDatesInQuery(req) {
-      if ('earliest' in req.query) req.query.earliest = new Date(+req.query.earliest);
-      if ('latest' in req.query) req.query.latest = new Date(+req.query.latest);
-    }
-
     adminRouter.postAsync('/log/', (req) => Log.create(req.body));
     adminRouter.getAsync('/log/', convertDatesInQuery, (req) => Log.readAll(req.query));
     adminRouter.getAsync('/log/:id(\\d+)', (req) => Log.read(req.params.id));
@@ -174,6 +174,12 @@ export default (pluginRegistry) => {
     });
 
     // per-plugin account routes
+    pluginRouter.postAsync('/plugin/:pluginUuid/account/', (req) =>
+      Account.create({ ...req.params, ...req.body }),
+    );
+    pluginRouter.getAsync('/plugin/:pluginUuid/account/', (req) =>
+      Account.readAll({ ...req.params, ...req.query }),
+    );
     pluginRouter.getAsync('/plugin/:pluginUuid/account/:nativeId', (req) =>
       Account.readByNativeId(req.params),
     );
@@ -185,6 +191,14 @@ export default (pluginRegistry) => {
     );
 
     // per-plugin log routes
+    pluginRouter.postAsync('/plugin/:pluginUuid/log/', (req) =>
+      // TODO check the account belongs to the plugin given by :pluginUuid
+      Log.create({ ...req.params, ...req.body }),
+    );
+    pluginRouter.getAsync('/plugin/:pluginUuid/log/', convertDatesInQuery, (req) =>
+      // TODO limit results to accounts belonging ot the plugin given by :pluginUuid
+      Log.readAll({ ...req.params, ...req.query }),
+    );
     pluginRouter.getAsync('/plugin/:pluginUuid/log/:nativeLocation', (req) =>
       Log.readByNativeLocation(req.params),
     );
