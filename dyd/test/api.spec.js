@@ -21,10 +21,10 @@ const basicAuthHeader = (() => {
   return `Basic ${credentials}`;
 })();
 
-Token.check.mockImplementation(async (_uuid, _token) => true);
-Access.readAll.mockImplementation(async (_criteria) => [
+Token.check.mockImplementation(async (_uuid, token) => token === 'secret');
+Access.readAll.mockImplementation(async ({ tokenUuid }) => [
   {
-    tokenUuid: '20ce53ec-310a-49ac-9df3-0bc04f11301e',
+    tokenUuid,
     pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
   },
 ]);
