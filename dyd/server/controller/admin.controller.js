@@ -62,6 +62,21 @@ export async function read(uuid) {
   return unpackAdmin(admin);
 }
 
+export async function check(username, password) {
+  // query database
+  try {
+    const admin = await Admin.findOne({ where: { username } });
+    if (admin === null) return false;
+
+    const matches = await bcrypt.compare(password, admin.passwordHash);
+    return matches;
+  } catch (err) /* istanbul ignore next */ {
+    throw new httpErrors[500](err.message || 'An error occurred...');
+  }
+}
+
+// TODO support password change
+
 export async function del(uuid) {
   // save to database
   let num;
