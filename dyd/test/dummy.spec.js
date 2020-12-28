@@ -47,7 +47,7 @@ beforeAll(async () => {
     expect(res.statusCode).toEqual(200);
 
     tokenUuid = res.body.uuid;
-    tokenSecret = res.body.token;
+    tokenSecret = res.body.secret;
   }
 
   // grant access

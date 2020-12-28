@@ -115,9 +115,9 @@ export default (pluginRegistry) => {
     // token routes
     adminRouter.postAsync('/token/', (req) => Token.create(req.body));
     adminRouter.getAsync('/token/', (req) => Token.readAll(req.query));
-    adminRouter.getAsync('/token/:tokenString', (req) => Token.read(req.params.tokenString));
+    adminRouter.getAsync('/token/:uuid', (req) => Token.read(req.params.uuid));
     adminRouter.deleteAsync('/token/', (req) => Token.delMany(req.body));
-    adminRouter.deleteAsync('/token/:tokenString', (req) => Token.del(req.params.tokenString));
+    adminRouter.deleteAsync('/token/:uuid', (req) => Token.del(req.params.uuid));
 
     // access routes
     adminRouter.postAsync('/access/', (req) => Access.create(req.body));

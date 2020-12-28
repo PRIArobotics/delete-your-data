@@ -20,12 +20,12 @@ export async function create({ description }) {
 
   // save to database
   try {
-    //create the token String
-    const token = crypto.randomBytes(20).toString('hex');
-    const tokenHash = await bcrypt.hash(token, 10);
+    // create the secret
+    const secret = crypto.randomBytes(20).toString('hex');
+    const secretHash = await bcrypt.hash(secret, 10);
 
-    const tokenObj = await Token.create({ tokenHash, description });
-    return { ...unpackToken(tokenObj), token };
+    const token = await Token.create({ description, secretHash });
+    return { ...unpackToken(token), secret };
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
@@ -61,13 +61,13 @@ export async function read(uuid) {
   return unpackToken(token);
 }
 
-export async function check(uuid, token) {
+export async function check(uuid, secret) {
   // query database
   try {
-    const tokenObj = await Token.findByPk(uuid);
-    if (tokenObj === null) return false;
+    const token = await Token.findByPk(uuid);
+    if (token === null) return false;
 
-    const matches = await bcrypt.compare(token, tokenObj.tokenHash);
+    const matches = await bcrypt.compare(secret, token.secretHash);
     return matches;
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');

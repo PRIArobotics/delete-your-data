@@ -45,10 +45,10 @@ export const actions = {
   },
 
   async create({ commit }, item) {
-    const { token, ...newItem } = await this.$axios.$post('/api/token/', item);
+    const { secret, ...newItem } = await this.$axios.$post('/api/token/', item);
     commit('createItem', newItem);
 
-    return token;
+    return secret;
   },
 
   async delete({ commit }, item) {

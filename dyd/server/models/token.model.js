@@ -9,11 +9,11 @@ export default (sequelize) => {
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
       },
-      tokenHash: {
+      description: {
         type: Sequelize.STRING(128),
       },
-      description: {
-        type: Sequelize.STRING(64),
+      secretHash: {
+        type: Sequelize.STRING(128),
       },
     },
     {
