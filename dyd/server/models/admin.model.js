@@ -12,13 +12,19 @@ export default (sequelize) => {
       username: {
         type: Sequelize.STRING(128),
       },
-      pw: {
+      passwordHash: {
         type: Sequelize.STRING(128),
       },
     },
     {
       sequelize,
       modelName: 'admin',
+      indexes: [
+        {
+          fields: ['username'],
+          unique: true,
+        },
+      ],
     },
   );
 

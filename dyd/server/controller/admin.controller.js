@@ -8,7 +8,7 @@ import { Admin } from '../models';
 
 function unpackAdmin(admin) {
     let { uuid, username } = admin;
-  
+
     return { uuid, username };
   }
 
@@ -20,12 +20,13 @@ export async function create({ username }) {
 
   // save to database
   try {
-    //create the token String
-    const pw = crypto.randomBytes(20).toString('hex');
-    const pwHash = await bcrypt.hash(pw, 10);
+    // create the password
+    // TODO let user set the password
+    const password = crypto.randomBytes(20).toString('hex');
+    const passwordHash = await bcrypt.hash(password, 10);
 
-    const adminObj = await Admin.create({ pwHash, username });
-    return { ...unpackAdmin(adminObj), pw };
+    const admin = await Admin.create({ username, passwordHash });
+    return { ...unpackAdmin(admin), password };
   } catch (err) /* istanbul ignore next */ {
     throw new httpErrors[500](err.message || 'An error occurred...');
   }
