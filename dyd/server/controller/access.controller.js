@@ -1,5 +1,5 @@
 import httpErrors from 'httperrors';
-import { Op } from 'sequelize';
+import { Op, ValidationError } from 'sequelize';
 
 import { Access } from '../models';
 
@@ -17,8 +17,15 @@ export async function create({ pluginUuid, tokenUuid }) {
   try {
     const access = await Access.create({ pluginUuid, tokenUuid });
     return access;
-  } catch (err) /* istanbul ignore next */ {
-    throw new httpErrors[500](err.message || 'An error occurred...');
+  } catch (err) {
+    // if it's a duplicate key error, handle that
+    // istanbul ignore else
+    if (err instanceof ValidationError) {
+      const messages = err.errors.map(item => item.message)
+      throw new httpErrors[400](`Validation error: ${messages.join(', ')}`);
+    } else {
+      throw new httpErrors[500](err.message || 'An error occurred...');
+    }
   }
 }
 
