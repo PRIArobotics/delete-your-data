@@ -32,9 +32,7 @@ describe('Token Controller', () => {
     }
 
     // create errors
-    await expect(
-      Token.create({}),
-    ).rejects.toThrow(httpErrors[400]);
+    await expect(Token.create({})).rejects.toThrow(httpErrors[400]);
 
     // read all
     {
@@ -57,7 +55,7 @@ describe('Token Controller', () => {
       expect(token).toMatchObject({
         uuid: expect.any(String),
         description: 'token_test',
-    });
+      });
       expect(token).not.toHaveProperty('secret');
       expect(token).not.toHaveProperty('secretHash');
     }
