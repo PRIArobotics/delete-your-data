@@ -17,6 +17,7 @@ export default async function createApp(pluginRegistry) {
   await nuxt.ready();
 
   // Build only in dev mode
+  // istanbul ignore if: does not apply to test environment
   if (config.dev) {
     const builder = new Builder(nuxt);
     await builder.build();

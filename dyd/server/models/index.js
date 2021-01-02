@@ -2,6 +2,7 @@ import consola from 'consola';
 import Sequelize from 'sequelize';
 
 let config;
+// istanbul ignore if: does not apply to test environment
 if (process.env.NODE_ENV === 'production') {
   consola.warn({
     message: 'production DB config not implemented yet!',
@@ -14,7 +15,10 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   config = {
     dialect: 'sqlite',
-    storage: process.env.NODE_ENV === 'test' ? './database.test.sqlite' : './database.sqlite',
+    storage:
+      process.env.NODE_ENV === 'test'
+        ? './database.test.sqlite'
+        : /* istanbul ignore next: does not apply to test environment */ './database.sqlite',
   };
 }
 
