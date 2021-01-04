@@ -21,7 +21,7 @@ export async function create({ pluginUuid, tokenUuid }) {
     // if it's a duplicate key error, handle that
     // istanbul ignore else
     if (err instanceof ValidationError) {
-      const messages = err.errors.map(item => item.message)
+      const messages = err.errors.map((item) => item.message);
       throw new httpErrors[400](`Validation error: ${messages.join(', ')}`);
     } else {
       throw new httpErrors[500](err.message || 'An error occurred...');
