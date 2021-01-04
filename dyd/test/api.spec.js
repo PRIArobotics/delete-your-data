@@ -5,29 +5,21 @@
 import request from 'supertest';
 
 import appPromise from './test_app';
-import { Plugin, Account, Log, Token, Access } from '~/server/controller';
+import { Plugin, Account, Log } from '~/server/controller';
+import { authMiddleware, requireAccess } from '~/server/auth';
 
 jest.mock('~/server/controller/plugin.controller');
 jest.mock('~/server/controller/account.controller');
 jest.mock('~/server/controller/log.controller');
-jest.mock('~/server/controller/token.controller');
-jest.mock('~/server/controller/access.controller');
+jest.mock('~/server/auth');
 
-const basicAuthHeader = (() => {
-  const tokenUuid = '20ce53ec-310a-49ac-9df3-0bc04f11301e';
-  const tokenSecret = 'secret';
-  const credentials = Buffer.from(`${tokenUuid}:${tokenSecret}`, 'utf8').toString('base64');
+// stub out the auth middleware
+authMiddleware.mockImplementation((_req, _res, next) => {
+  next();
+});
 
-  return `Basic ${credentials}`;
-})();
-
-Token.check.mockImplementation(async (_uuid, token) => token === 'secret');
-Access.readAll.mockImplementation(async ({ tokenUuid }) => [
-  {
-    tokenUuid,
-    pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
-  },
-]);
+// don't check access, i.e. never throw an error
+requireAccess.mockImplementation((_req, _pluginUuid) => {});
 
 describe('REST API', () => {
   test('POST /api/plugin', async () => {
@@ -301,9 +293,12 @@ describe('REST API', () => {
     const nativeIdEnc = encodeURIComponent(JSON.stringify(account.nativeId));
     const res = await request(await appPromise)
       .get(`/api/plugin/${account.pluginUuid}/account/${nativeIdEnc}`)
-      .set('Authorization', basicAuthHeader)
       .send();
 
+    expect(requireAccess).toHaveBeenCalledWith(
+      expect.anything(),
+      '7224835f-a10b-44d3-94b2-959580a327cf',
+    );
     expect(Account.readByNativeId).toHaveBeenCalledWith({
       pluginUuid: account.pluginUuid,
       nativeId: account.nativeId,
@@ -327,9 +322,12 @@ describe('REST API', () => {
     const nativeIdEnc = encodeURIComponent(JSON.stringify(nativeId));
     const res = await request(await appPromise)
       .patch(`/api/plugin/${pluginUuid}/account/${nativeIdEnc}`)
-      .set('Authorization', basicAuthHeader)
       .send(body);
 
+    expect(requireAccess).toHaveBeenCalledWith(
+      expect.anything(),
+      '7224835f-a10b-44d3-94b2-959580a327cf',
+    );
     expect(Account.updateByNativeId).toHaveBeenCalledWith({ pluginUuid, nativeId }, body);
     expect(res.statusCode).toEqual(200);
   });
@@ -342,9 +340,12 @@ describe('REST API', () => {
     const nativeIdEnc = encodeURIComponent(JSON.stringify(nativeId));
     const res = await request(await appPromise)
       .delete(`/api/plugin/${pluginUuid}/account/${nativeIdEnc}`)
-      .set('Authorization', basicAuthHeader)
       .send();
 
+    expect(requireAccess).toHaveBeenCalledWith(
+      expect.anything(),
+      '7224835f-a10b-44d3-94b2-959580a327cf',
+    );
     expect(Account.delByNativeId).toHaveBeenCalledWith({ pluginUuid, nativeId });
     expect(res.statusCode).toEqual(200);
   });
@@ -518,9 +519,12 @@ describe('REST API', () => {
     const nativeLocationEnc = encodeURIComponent(JSON.stringify(log.nativeLocation));
     const res = await request(await appPromise)
       .get(`/api/plugin/${log.pluginUuid}/log/${nativeLocationEnc}`)
-      .set('Authorization', basicAuthHeader)
       .send();
 
+    expect(requireAccess).toHaveBeenCalledWith(
+      expect.anything(),
+      '7224835f-a10b-44d3-94b2-959580a327cf',
+    );
     expect(Log.readByNativeLocation).toHaveBeenCalledWith({
       pluginUuid: log.pluginUuid,
       nativeLocation: log.nativeLocation,
@@ -544,9 +548,12 @@ describe('REST API', () => {
     const nativeLocationEnc = encodeURIComponent(JSON.stringify(nativeLocation));
     const res = await request(await appPromise)
       .patch(`/api/plugin/${pluginUuid}/log/${nativeLocationEnc}`)
-      .set('Authorization', basicAuthHeader)
       .send(body);
 
+    expect(requireAccess).toHaveBeenCalledWith(
+      expect.anything(),
+      '7224835f-a10b-44d3-94b2-959580a327cf',
+    );
     expect(Log.updateByNativeLocation).toHaveBeenCalledWith({ pluginUuid, nativeLocation }, body);
     expect(res.statusCode).toEqual(200);
   });
@@ -559,9 +566,12 @@ describe('REST API', () => {
     const nativeLocationEnc = encodeURIComponent(JSON.stringify(nativeLocation));
     const res = await request(await appPromise)
       .delete(`/api/plugin/${pluginUuid}/log/${nativeLocationEnc}`)
-      .set('Authorization', basicAuthHeader)
       .send();
 
+    expect(requireAccess).toHaveBeenCalledWith(
+      expect.anything(),
+      '7224835f-a10b-44d3-94b2-959580a327cf',
+    );
     expect(Log.delByNativeLocation).toHaveBeenCalledWith({ pluginUuid, nativeLocation });
     expect(res.statusCode).toEqual(200);
   });
