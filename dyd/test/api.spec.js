@@ -516,6 +516,39 @@ describe('REST API', () => {
     ]);
   });
 
+  test('POST /api/plugin/:pluginUuid/account', async () => {
+    let account;
+
+    Account.create.mockImplementationOnce(async ({ pluginUuid, nativeId }) => {
+      const createdAt = new Date();
+      account = {
+        uuid: '1d47affb-74b9-42cc-920b-c97908064a79',
+        personUuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
+        pluginUuid,
+        createdAt,
+        updatedAt: createdAt,
+        nativeId,
+      };
+      return account;
+    });
+
+    const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
+    const body = {
+      nativeId: 'account',
+    };
+    const res = await request(await appPromise)
+      .post(`/api/plugin/${pluginUuid}/account/`)
+      .send(body);
+
+    expect(Account.create).toHaveBeenCalledWith({ pluginUuid, ...body });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      ...account,
+      createdAt: account.createdAt.toISOString(),
+      updatedAt: account.updatedAt.toISOString(),
+    });
+  });
+
   test('GET /api/plugin/:pluginUuid/account/:nativeId', async () => {
     const createdAt = new Date();
     const account = {
@@ -587,6 +620,39 @@ describe('REST API', () => {
     );
     expect(Account.delByNativeId).toHaveBeenCalledWith({ pluginUuid, nativeId });
     expect(res.statusCode).toEqual(200);
+  });
+
+  test('POST /api/plugin/:pluginUuid/log', async () => {
+    let log;
+
+    Log.create.mockImplementationOnce(async ({ accountUuid, nativeLocation }) => {
+      const createdAt = new Date();
+      log = {
+        id: 1,
+        accountUuid,
+        createdAt,
+        updatedAt: createdAt,
+        nativeLocation,
+      };
+      return log;
+    });
+
+    const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
+    const body = {
+      accountUuid: '1d47affb-74b9-42cc-920b-c97908064a79',
+      nativeLocation: 'foo',
+    };
+    const res = await request(await appPromise)
+      .post(`/api/plugin/${pluginUuid}/log/`)
+      .send(body);
+
+    expect(Log.create).toHaveBeenCalledWith({ pluginUuid, ...body });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      ...log,
+      createdAt: log.createdAt.toISOString(),
+      updatedAt: log.updatedAt.toISOString(),
+    });
   });
 
   test('GET /api/plugin/:pluginUuid/log/:nativeLocation', async () => {
