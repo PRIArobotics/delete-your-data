@@ -7,9 +7,19 @@ import { Op } from 'sequelize';
 import { Token } from '../models';
 
 function unpackToken(token) {
-  let { uuid, description } = token;
+  let {
+    uuid,
+    createdAt,
+    updatedAt,
+    description,
+  } = token;
 
-  return { uuid, description };
+  return {
+    uuid,
+    createdAt,
+    updatedAt,
+    description,
+  };
 }
 
 export async function create({ description }) {

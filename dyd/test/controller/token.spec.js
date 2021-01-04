@@ -23,6 +23,8 @@ describe('Token Controller', () => {
       // toMatchObject because sequelize model instances are not plain objects
       expect(token).toMatchObject({
         uuid: expect.any(String),
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
         description: 'token_test',
         secret: expect.any(String),
       });
@@ -41,6 +43,8 @@ describe('Token Controller', () => {
       expect(tokens).toMatchObject([
         {
           uuid: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
           description: 'token_test',
         },
       ]);
@@ -54,6 +58,8 @@ describe('Token Controller', () => {
       // toMatchObject because sequelize model instances are not plain objects
       expect(token).toMatchObject({
         uuid: expect.any(String),
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
         description: 'token_test',
       });
       expect(token).not.toHaveProperty('secret');

@@ -38,7 +38,12 @@ describe('Token Controller', () => {
     {
       const access = await Access.create({ pluginUuid, tokenUuid });
       // toMatchObject because sequelize model instances are not plain objects
-      expect(access).toMatchObject({ pluginUuid, tokenUuid });
+      expect(access).toMatchObject({
+        pluginUuid,
+        tokenUuid,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      });
     }
 
     // create errors
@@ -55,19 +60,34 @@ describe('Token Controller', () => {
     {
       const accesses = await Access.readAll({ tokenUuid });
       // toMatchObject because sequelize model instances are not plain objects
-      expect(accesses).toMatchObject([{ pluginUuid, tokenUuid }]);
+      expect(accesses).toMatchObject([{
+        pluginUuid,
+        tokenUuid,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      }]);
     }
     {
       const accesses = await Access.readAll({ pluginUuid, tokenUuid });
       // toMatchObject because sequelize model instances are not plain objects
-      expect(accesses).toMatchObject([{ pluginUuid, tokenUuid }]);
+      expect(accesses).toMatchObject([{
+        pluginUuid,
+        tokenUuid,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      }]);
     }
 
     // read
     {
       const access = await Access.read(pluginUuid, tokenUuid);
       // toMatchObject because sequelize model instances are not plain objects
-      expect(access).toMatchObject({ pluginUuid, tokenUuid });
+      expect(access).toMatchObject({
+        pluginUuid,
+        tokenUuid,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      });
     }
 
     // read errors

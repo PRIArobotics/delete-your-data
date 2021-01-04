@@ -8,18 +8,18 @@ function unpackLog(log) {
     account: { pluginUuid },
     accountUuid,
     createdAt,
+    updatedAt,
     id,
     nativeLocation,
-    updatedAt,
   } = log;
 
   return {
     pluginUuid,
     accountUuid,
     createdAt,
+    updatedAt,
     id,
     nativeLocation,
-    updatedAt,
   };
 }
 
