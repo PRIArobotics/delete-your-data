@@ -277,79 +277,6 @@ describe('REST API', () => {
     expect(res.statusCode).toEqual(200);
   });
 
-  test('GET /api/plugin/:pluginUuid/account/:nativeId', async () => {
-    const createdAt = new Date();
-    const account = {
-      uuid: '1d47affb-74b9-42cc-920b-c97908064a79',
-      personUuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
-      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
-      createdAt,
-      updatedAt: createdAt,
-      nativeId: { username: 'acc/ount' },
-    };
-
-    Account.readByNativeId.mockImplementationOnce(async () => account);
-
-    const nativeIdEnc = encodeURIComponent(JSON.stringify(account.nativeId));
-    const res = await request(await appPromise)
-      .get(`/api/plugin/${account.pluginUuid}/account/${nativeIdEnc}`)
-      .send();
-
-    expect(requireAccess).toHaveBeenCalledWith(
-      expect.anything(),
-      '7224835f-a10b-44d3-94b2-959580a327cf',
-    );
-    expect(Account.readByNativeId).toHaveBeenCalledWith({
-      pluginUuid: account.pluginUuid,
-      nativeId: account.nativeId,
-    });
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toEqual({
-      ...account,
-      createdAt: account.createdAt.toISOString(),
-      updatedAt: account.updatedAt.toISOString(),
-    });
-  });
-
-  test('PATCH /api/plugin/:pluginUuid/account/:nativeId', async () => {
-    Account.updateByNativeId.mockImplementationOnce(async () => ({}));
-
-    const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
-    const nativeId = 'account';
-    const body = {
-      nativeId: 'account2',
-    };
-    const nativeIdEnc = encodeURIComponent(JSON.stringify(nativeId));
-    const res = await request(await appPromise)
-      .patch(`/api/plugin/${pluginUuid}/account/${nativeIdEnc}`)
-      .send(body);
-
-    expect(requireAccess).toHaveBeenCalledWith(
-      expect.anything(),
-      '7224835f-a10b-44d3-94b2-959580a327cf',
-    );
-    expect(Account.updateByNativeId).toHaveBeenCalledWith({ pluginUuid, nativeId }, body);
-    expect(res.statusCode).toEqual(200);
-  });
-
-  test('DELETE /api/plugin/:pluginUuid/account/:nativeId', async () => {
-    Account.delByNativeId.mockImplementationOnce(async () => ({}));
-
-    const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
-    const nativeId = 'account';
-    const nativeIdEnc = encodeURIComponent(JSON.stringify(nativeId));
-    const res = await request(await appPromise)
-      .delete(`/api/plugin/${pluginUuid}/account/${nativeIdEnc}`)
-      .send();
-
-    expect(requireAccess).toHaveBeenCalledWith(
-      expect.anything(),
-      '7224835f-a10b-44d3-94b2-959580a327cf',
-    );
-    expect(Account.delByNativeId).toHaveBeenCalledWith({ pluginUuid, nativeId });
-    expect(res.statusCode).toEqual(200);
-  });
-
   test('POST /api/log', async () => {
     let log;
 
@@ -503,79 +430,6 @@ describe('REST API', () => {
     expect(res.statusCode).toEqual(200);
   });
 
-  test('GET /api/plugin/:pluginUuid/log/:nativeLocation', async () => {
-    const createdAt = new Date();
-    const log = {
-      id: 1,
-      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
-      accountUuid: '1d47affb-74b9-42cc-920b-c97908064a79',
-      createdAt,
-      updatedAt: createdAt,
-      nativeLocation: 'foo',
-    };
-
-    Log.readByNativeLocation.mockImplementationOnce(async () => log);
-
-    const nativeLocationEnc = encodeURIComponent(JSON.stringify(log.nativeLocation));
-    const res = await request(await appPromise)
-      .get(`/api/plugin/${log.pluginUuid}/log/${nativeLocationEnc}`)
-      .send();
-
-    expect(requireAccess).toHaveBeenCalledWith(
-      expect.anything(),
-      '7224835f-a10b-44d3-94b2-959580a327cf',
-    );
-    expect(Log.readByNativeLocation).toHaveBeenCalledWith({
-      pluginUuid: log.pluginUuid,
-      nativeLocation: log.nativeLocation,
-    });
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toEqual({
-      ...log,
-      createdAt: log.createdAt.toISOString(),
-      updatedAt: log.updatedAt.toISOString(),
-    });
-  });
-
-  test('PATCH /api/plugin/:pluginUuid/log/:nativeLocation', async () => {
-    Log.updateByNativeLocation.mockImplementationOnce(async () => ({}));
-
-    const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
-    const nativeLocation = 'foo';
-    const body = {
-      nativeId: 'account2',
-    };
-    const nativeLocationEnc = encodeURIComponent(JSON.stringify(nativeLocation));
-    const res = await request(await appPromise)
-      .patch(`/api/plugin/${pluginUuid}/log/${nativeLocationEnc}`)
-      .send(body);
-
-    expect(requireAccess).toHaveBeenCalledWith(
-      expect.anything(),
-      '7224835f-a10b-44d3-94b2-959580a327cf',
-    );
-    expect(Log.updateByNativeLocation).toHaveBeenCalledWith({ pluginUuid, nativeLocation }, body);
-    expect(res.statusCode).toEqual(200);
-  });
-
-  test('DELETE /api/plugin/:pluginUuid/log/:nativeLocation', async () => {
-    Log.delByNativeLocation.mockImplementationOnce(async () => ({}));
-
-    const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
-    const nativeLocation = 'foo';
-    const nativeLocationEnc = encodeURIComponent(JSON.stringify(nativeLocation));
-    const res = await request(await appPromise)
-      .delete(`/api/plugin/${pluginUuid}/log/${nativeLocationEnc}`)
-      .send();
-
-    expect(requireAccess).toHaveBeenCalledWith(
-      expect.anything(),
-      '7224835f-a10b-44d3-94b2-959580a327cf',
-    );
-    expect(Log.delByNativeLocation).toHaveBeenCalledWith({ pluginUuid, nativeLocation });
-    expect(res.statusCode).toEqual(200);
-  });
-
   test('GET /api/account/:uuid/log', async () => {
     const createdAt = new Date();
     const log = {
@@ -660,5 +514,151 @@ describe('REST API', () => {
         updatedAt: log.updatedAt.toISOString(),
       },
     ]);
+  });
+
+  test('GET /api/plugin/:pluginUuid/account/:nativeId', async () => {
+    const createdAt = new Date();
+    const account = {
+      uuid: '1d47affb-74b9-42cc-920b-c97908064a79',
+      personUuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
+      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      createdAt,
+      updatedAt: createdAt,
+      nativeId: { username: 'acc/ount' },
+    };
+
+    Account.readByNativeId.mockImplementationOnce(async () => account);
+
+    const nativeIdEnc = encodeURIComponent(JSON.stringify(account.nativeId));
+    const res = await request(await appPromise)
+      .get(`/api/plugin/${account.pluginUuid}/account/${nativeIdEnc}`)
+      .send();
+
+    expect(requireAccess).toHaveBeenCalledWith(
+      expect.anything(),
+      '7224835f-a10b-44d3-94b2-959580a327cf',
+    );
+    expect(Account.readByNativeId).toHaveBeenCalledWith({
+      pluginUuid: account.pluginUuid,
+      nativeId: account.nativeId,
+    });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      ...account,
+      createdAt: account.createdAt.toISOString(),
+      updatedAt: account.updatedAt.toISOString(),
+    });
+  });
+
+  test('PATCH /api/plugin/:pluginUuid/account/:nativeId', async () => {
+    Account.updateByNativeId.mockImplementationOnce(async () => ({}));
+
+    const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
+    const nativeId = 'account';
+    const body = {
+      nativeId: 'account2',
+    };
+    const nativeIdEnc = encodeURIComponent(JSON.stringify(nativeId));
+    const res = await request(await appPromise)
+      .patch(`/api/plugin/${pluginUuid}/account/${nativeIdEnc}`)
+      .send(body);
+
+    expect(requireAccess).toHaveBeenCalledWith(
+      expect.anything(),
+      '7224835f-a10b-44d3-94b2-959580a327cf',
+    );
+    expect(Account.updateByNativeId).toHaveBeenCalledWith({ pluginUuid, nativeId }, body);
+    expect(res.statusCode).toEqual(200);
+  });
+
+  test('DELETE /api/plugin/:pluginUuid/account/:nativeId', async () => {
+    Account.delByNativeId.mockImplementationOnce(async () => ({}));
+
+    const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
+    const nativeId = 'account';
+    const nativeIdEnc = encodeURIComponent(JSON.stringify(nativeId));
+    const res = await request(await appPromise)
+      .delete(`/api/plugin/${pluginUuid}/account/${nativeIdEnc}`)
+      .send();
+
+    expect(requireAccess).toHaveBeenCalledWith(
+      expect.anything(),
+      '7224835f-a10b-44d3-94b2-959580a327cf',
+    );
+    expect(Account.delByNativeId).toHaveBeenCalledWith({ pluginUuid, nativeId });
+    expect(res.statusCode).toEqual(200);
+  });
+
+  test('GET /api/plugin/:pluginUuid/log/:nativeLocation', async () => {
+    const createdAt = new Date();
+    const log = {
+      id: 1,
+      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      accountUuid: '1d47affb-74b9-42cc-920b-c97908064a79',
+      createdAt,
+      updatedAt: createdAt,
+      nativeLocation: 'foo',
+    };
+
+    Log.readByNativeLocation.mockImplementationOnce(async () => log);
+
+    const nativeLocationEnc = encodeURIComponent(JSON.stringify(log.nativeLocation));
+    const res = await request(await appPromise)
+      .get(`/api/plugin/${log.pluginUuid}/log/${nativeLocationEnc}`)
+      .send();
+
+    expect(requireAccess).toHaveBeenCalledWith(
+      expect.anything(),
+      '7224835f-a10b-44d3-94b2-959580a327cf',
+    );
+    expect(Log.readByNativeLocation).toHaveBeenCalledWith({
+      pluginUuid: log.pluginUuid,
+      nativeLocation: log.nativeLocation,
+    });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      ...log,
+      createdAt: log.createdAt.toISOString(),
+      updatedAt: log.updatedAt.toISOString(),
+    });
+  });
+
+  test('PATCH /api/plugin/:pluginUuid/log/:nativeLocation', async () => {
+    Log.updateByNativeLocation.mockImplementationOnce(async () => ({}));
+
+    const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
+    const nativeLocation = 'foo';
+    const body = {
+      nativeId: 'account2',
+    };
+    const nativeLocationEnc = encodeURIComponent(JSON.stringify(nativeLocation));
+    const res = await request(await appPromise)
+      .patch(`/api/plugin/${pluginUuid}/log/${nativeLocationEnc}`)
+      .send(body);
+
+    expect(requireAccess).toHaveBeenCalledWith(
+      expect.anything(),
+      '7224835f-a10b-44d3-94b2-959580a327cf',
+    );
+    expect(Log.updateByNativeLocation).toHaveBeenCalledWith({ pluginUuid, nativeLocation }, body);
+    expect(res.statusCode).toEqual(200);
+  });
+
+  test('DELETE /api/plugin/:pluginUuid/log/:nativeLocation', async () => {
+    Log.delByNativeLocation.mockImplementationOnce(async () => ({}));
+
+    const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
+    const nativeLocation = 'foo';
+    const nativeLocationEnc = encodeURIComponent(JSON.stringify(nativeLocation));
+    const res = await request(await appPromise)
+      .delete(`/api/plugin/${pluginUuid}/log/${nativeLocationEnc}`)
+      .send();
+
+    expect(requireAccess).toHaveBeenCalledWith(
+      expect.anything(),
+      '7224835f-a10b-44d3-94b2-959580a327cf',
+    );
+    expect(Log.delByNativeLocation).toHaveBeenCalledWith({ pluginUuid, nativeLocation });
+    expect(res.statusCode).toEqual(200);
   });
 });
