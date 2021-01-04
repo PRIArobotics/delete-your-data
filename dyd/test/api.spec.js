@@ -5,12 +5,13 @@
 import request from 'supertest';
 
 import appPromise from './test_app';
-import { Plugin, Account, Log } from '~/server/controller';
+import { Plugin, Account, Log, Token } from '~/server/controller';
 import { authMiddleware, requireAccess } from '~/server/auth';
 
 jest.mock('~/server/controller/plugin.controller');
 jest.mock('~/server/controller/account.controller');
 jest.mock('~/server/controller/log.controller');
+jest.mock('~/server/controller/token.controller');
 jest.mock('~/server/auth');
 
 // stub out the auth middleware
@@ -427,6 +428,111 @@ describe('REST API', () => {
       .send();
 
     expect(Log.del).toHaveBeenCalledWith(id);
+    expect(res.statusCode).toEqual(200);
+  });
+
+  test('POST /api/token', async () => {
+    let token;
+
+    Token.create.mockImplementationOnce(async ({ description }) => {
+      const createdAt = new Date();
+      token = {
+        uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+        createdAt,
+        updatedAt: createdAt,
+        description,
+        secret: 'secret',
+      };
+      return token;
+    });
+
+    const body = {
+      description: 'dummy',
+    };
+    const res = await request(await appPromise)
+      .post('/api/token')
+      .send(body);
+
+    expect(Token.create).toHaveBeenCalledWith(body);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      ...token,
+      createdAt: token.createdAt.toISOString(),
+      updatedAt: token.updatedAt.toISOString(),
+    });
+  });
+
+  test('GET /api/token', async () => {
+    const createdAt = new Date();
+    const token = {
+      uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      createdAt,
+      updatedAt: createdAt,
+      description: 'dummy',
+    };
+
+    Token.readAll.mockImplementationOnce(async () => [token]);
+
+    const res = await request(await appPromise)
+      .get(`/api/token`)
+      .send();
+
+    expect(Token.readAll).toHaveBeenCalledWith({});
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual([
+      {
+        ...token,
+        createdAt: token.createdAt.toISOString(),
+        updatedAt: token.updatedAt.toISOString(),
+      },
+    ]);
+  });
+
+  test('GET /api/token/:uuid', async () => {
+    const createdAt = new Date();
+    const token = {
+      uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      createdAt,
+      updatedAt: createdAt,
+      description: 'dummy',
+    };
+
+    Token.read.mockImplementationOnce(async () => token);
+
+    const res = await request(await appPromise)
+      .get(`/api/token/${token.uuid}`)
+      .send();
+
+    expect(Token.read).toHaveBeenCalledWith(token.uuid);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      ...token,
+      createdAt: token.createdAt.toISOString(),
+      updatedAt: token.updatedAt.toISOString(),
+    });
+  });
+
+  test('DELETE /api/token', async () => {
+    Token.delMany.mockImplementationOnce(async () => ({}));
+
+    const body = { tokens: ['7224835f-a10b-44d3-94b2-959580a327cf'] };
+    const res = await request(await appPromise)
+      .delete(`/api/token`)
+      .send(body);
+
+    expect(Token.delMany).toHaveBeenCalledWith(body);
+    expect(res.statusCode).toEqual(200);
+  });
+
+  test('DELETE /api/token/:uuid', async () => {
+    Token.del.mockImplementationOnce(async () => ({}));
+
+    const uuid = '7224835f-a10b-44d3-94b2-959580a327cf';
+    const res = await request(await appPromise)
+      .delete(`/api/token/${uuid}`)
+      .send();
+
+    expect(Token.del).toHaveBeenCalledWith(uuid);
     expect(res.statusCode).toEqual(200);
   });
 
