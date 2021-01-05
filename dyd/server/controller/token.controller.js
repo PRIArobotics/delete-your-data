@@ -7,12 +7,7 @@ import { Op } from 'sequelize';
 import { Token } from '../models';
 
 function unpackToken(token) {
-  let {
-    uuid,
-    createdAt,
-    updatedAt,
-    description,
-  } = token;
+  let { uuid, createdAt, updatedAt, description } = token;
 
   return {
     uuid,

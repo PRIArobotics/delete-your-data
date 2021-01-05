@@ -122,9 +122,15 @@ export default (pluginRegistry) => {
     // access routes
     adminRouter.postAsync('/access/', (req) => Access.create(req.body));
     adminRouter.getAsync('/access/', (req) => Access.readAll(req.query));
-    adminRouter.getAsync('/token/:tokenUuid/access/', (req) => Access.readAll({ ...req.query, ...req.params }));
-    adminRouter.getAsync('/token/:tokenUuid/access/:pluginUuid', (req) => Access.read(req.params.pluginUuid, req.params.tokenUuid));
-    adminRouter.deleteAsync('/token/:tokenUuid/access/:pluginUuid', (req) => Access.del(req.params.pluginUuid, req.params.tokenUuid));
+    adminRouter.getAsync('/token/:tokenUuid/access/', (req) =>
+      Access.readAll({ ...req.query, ...req.params }),
+    );
+    adminRouter.getAsync('/token/:tokenUuid/access/:pluginUuid', (req) =>
+      Access.read(req.params.pluginUuid, req.params.tokenUuid),
+    );
+    adminRouter.deleteAsync('/token/:tokenUuid/access/:pluginUuid', (req) =>
+      Access.del(req.params.pluginUuid, req.params.tokenUuid),
+    );
 
     // additional routes
     adminRouter.getAsync('/account/:uuid/log', convertDatesInQuery, (req) =>
@@ -139,7 +145,9 @@ export default (pluginRegistry) => {
 
     // logic routes
     adminRouter.postAsync('/account/redact', (req) => Account.redact(pluginRegistry, req.body));
-    adminRouter.postAsync('/person/redact', (req) => Account.redactPersons(pluginRegistry, req.body));
+    adminRouter.postAsync('/person/redact', (req) =>
+      Account.redactPersons(pluginRegistry, req.body),
+    );
     adminRouter.postAsync('/log/redact', (req) => Log.redact(pluginRegistry, req.body));
 
     router.use(adminRouter);
@@ -197,7 +205,7 @@ export default (pluginRegistry) => {
       Log.create({ ...req.params, ...req.body }),
     );
     pluginRouter.getAsync('/plugin/:pluginUuid/log/', convertDatesInQuery, (req) =>
-      // TODO limit results to accounts belonging ot the plugin given by :pluginUuid
+      // TODO limit results to accounts belonging to the plugin given by :pluginUuid
       Log.readAll({ ...req.params, ...req.query }),
     );
     pluginRouter.getAsync('/plugin/:pluginUuid/log/:nativeLocation', (req) =>
