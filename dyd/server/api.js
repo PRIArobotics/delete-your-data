@@ -122,8 +122,9 @@ export default (pluginRegistry) => {
     // access routes
     adminRouter.postAsync('/access/', (req) => Access.create(req.body));
     adminRouter.getAsync('/access/', (req) => Access.readAll(req.query));
-    adminRouter.getAsync('/access/:tokenString', (req) => Access.read(req.params.tokenString));
-    adminRouter.deleteAsync('/access/:tokenString', (req) => Access.del(req.params.tokenString));
+    adminRouter.getAsync('/token/:tokenUuid/access/', (req) => Access.readAll({ ...req.query, ...req.params }));
+    adminRouter.getAsync('/token/:tokenUuid/access/:pluginUuid', (req) => Access.read(req.params.pluginUuid, req.params.tokenUuid));
+    adminRouter.deleteAsync('/token/:tokenUuid/access/:pluginUuid', (req) => Access.del(req.params.pluginUuid, req.params.tokenUuid));
 
     // additional routes
     adminRouter.getAsync('/account/:uuid/log', convertDatesInQuery, (req) =>
