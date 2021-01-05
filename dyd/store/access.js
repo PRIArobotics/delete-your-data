@@ -52,7 +52,7 @@ export const actions = {
   },
 
   async delete({ commit }, item) {
-    await this.$axios.$delete(`/api/access/${item.uuid}`);
+    await this.$axios.$delete(`/api/token/${item.tokenUuid}/access/${item.pluginUuid}`);
     commit('deleteItem', item);
   },
 };
