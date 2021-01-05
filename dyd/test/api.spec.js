@@ -5,13 +5,14 @@
 import request from 'supertest';
 
 import appPromise from './test_app';
-import { Plugin, Account, Log, Token } from '~/server/controller';
+import { Plugin, Account, Log, Token, Access } from '~/server/controller';
 import { authMiddleware, requireAccess } from '~/server/auth';
 
 jest.mock('~/server/controller/plugin.controller');
 jest.mock('~/server/controller/account.controller');
 jest.mock('~/server/controller/log.controller');
 jest.mock('~/server/controller/token.controller');
+jest.mock('~/server/controller/access.controller');
 jest.mock('~/server/auth');
 
 // stub out the auth middleware
@@ -437,7 +438,7 @@ describe('REST API', () => {
     Token.create.mockImplementationOnce(async ({ description }) => {
       const createdAt = new Date();
       token = {
-        uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+        uuid: 'a3bf00d8-d7a5-4be0-aee8-2531a4cb861e',
         createdAt,
         updatedAt: createdAt,
         description,
@@ -465,7 +466,7 @@ describe('REST API', () => {
   test('GET /api/token', async () => {
     const createdAt = new Date();
     const token = {
-      uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      uuid: 'a3bf00d8-d7a5-4be0-aee8-2531a4cb861e',
       createdAt,
       updatedAt: createdAt,
       description: 'dummy',
@@ -491,7 +492,7 @@ describe('REST API', () => {
   test('GET /api/token/:uuid', async () => {
     const createdAt = new Date();
     const token = {
-      uuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      uuid: 'a3bf00d8-d7a5-4be0-aee8-2531a4cb861e',
       createdAt,
       updatedAt: createdAt,
       description: 'dummy',
@@ -515,7 +516,7 @@ describe('REST API', () => {
   test('DELETE /api/token', async () => {
     Token.delMany.mockImplementationOnce(async () => ({}));
 
-    const body = { tokens: ['7224835f-a10b-44d3-94b2-959580a327cf'] };
+    const body = { tokens: ['a3bf00d8-d7a5-4be0-aee8-2531a4cb861e'] };
     const res = await request(await appPromise)
       .delete(`/api/token`)
       .send(body);
@@ -527,12 +528,132 @@ describe('REST API', () => {
   test('DELETE /api/token/:uuid', async () => {
     Token.del.mockImplementationOnce(async () => ({}));
 
-    const uuid = '7224835f-a10b-44d3-94b2-959580a327cf';
+    const uuid = 'a3bf00d8-d7a5-4be0-aee8-2531a4cb861e';
     const res = await request(await appPromise)
       .delete(`/api/token/${uuid}`)
       .send();
 
     expect(Token.del).toHaveBeenCalledWith(uuid);
+    expect(res.statusCode).toEqual(200);
+  });
+
+  test('POST /api/access', async () => {
+    let access;
+
+    Access.create.mockImplementationOnce(async ({ tokenUuid, pluginUuid }) => {
+      const createdAt = new Date();
+      access = {
+        tokenUuid,
+        pluginUuid,
+        createdAt,
+        updatedAt: createdAt,
+      };
+      return access;
+    });
+
+    const body = {
+      tokenUuid: 'a3bf00d8-d7a5-4be0-aee8-2531a4cb861e',
+      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+    };
+    const res = await request(await appPromise)
+      .post('/api/access')
+      .send(body);
+
+    expect(Access.create).toHaveBeenCalledWith(body);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      ...access,
+      createdAt: access.createdAt.toISOString(),
+      updatedAt: access.updatedAt.toISOString(),
+    });
+  });
+
+  test('GET /api/access', async () => {
+    const createdAt = new Date();
+    const access = {
+      tokenUuid: 'a3bf00d8-d7a5-4be0-aee8-2531a4cb861e',
+      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      createdAt,
+      updatedAt: createdAt,
+    };
+
+    Access.readAll.mockImplementationOnce(async () => [access]);
+
+    const res = await request(await appPromise)
+      .get(`/api/access`)
+      .send();
+
+    expect(Access.readAll).toHaveBeenCalledWith({});
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual([
+      {
+        ...access,
+        createdAt: access.createdAt.toISOString(),
+        updatedAt: access.updatedAt.toISOString(),
+      },
+    ]);
+  });
+
+  test('GET /api/token/:tokenUuid/access', async () => {
+    const createdAt = new Date();
+    const access = {
+      tokenUuid: 'a3bf00d8-d7a5-4be0-aee8-2531a4cb861e',
+      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      createdAt,
+      updatedAt: createdAt,
+    };
+
+    Access.readAll.mockImplementationOnce(async () => [access]);
+
+    const res = await request(await appPromise)
+      .get(`/api/token/${access.tokenUuid}/access`)
+      .send();
+
+    expect(Access.readAll).toHaveBeenCalledWith({});
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual([
+      {
+        ...access,
+        createdAt: access.createdAt.toISOString(),
+        updatedAt: access.updatedAt.toISOString(),
+      },
+    ]);
+  });
+
+  test('GET /api/token/:tokenUuid/access/:pluginUuid', async () => {
+    const createdAt = new Date();
+    const access = {
+      tokenUuid: 'a3bf00d8-d7a5-4be0-aee8-2531a4cb861e',
+      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      createdAt,
+      updatedAt: createdAt,
+    };
+
+    Access.read.mockImplementationOnce(async () => access);
+
+    const res = await request(await appPromise)
+      .get(`/api/token/${access.tokenUuid}/access/${access.pluginUuid}`)
+      .send();
+
+    expect(Access.read).toHaveBeenCalledWith(access.pluginUuid, access.tokenUuid);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      ...access,
+      createdAt: access.createdAt.toISOString(),
+      updatedAt: access.updatedAt.toISOString(),
+    });
+  });
+
+  test('DELETE /api/token/:tokenUuid/access/:pluginUuid', async () => {
+    Access.del.mockImplementationOnce(async () => ({}));
+
+    const tokenUuid = 'a3bf00d8-d7a5-4be0-aee8-2531a4cb861e';
+    const pluginUuid = '7224835f-a10b-44d3-94b2-959580a327cf';
+    const res = await request(await appPromise)
+      .delete(`/api/token/${tokenUuid}/access/${pluginUuid}`)
+      .send();
+
+    expect(Access.del).toHaveBeenCalledWith(pluginUuid, tokenUuid);
     expect(res.statusCode).toEqual(200);
   });
 
