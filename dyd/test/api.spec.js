@@ -776,6 +776,34 @@ describe('REST API', () => {
     });
   });
 
+  test('GET /api/plugin/:pluginUuid/account', async () => {
+    const createdAt = new Date();
+    const account = {
+      uuid: '1d47affb-74b9-42cc-920b-c97908064a79',
+      personUuid: '3e54b9d2-e852-4bdb-97e0-6c25a405b776',
+      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      createdAt,
+      updatedAt: createdAt,
+      nativeId: 'account',
+    };
+
+    Account.readAll.mockImplementationOnce(async () => [account]);
+
+    const res = await request(await appPromise)
+      .get(`/api/plugin/${account.pluginUuid}/account`)
+      .send();
+
+    expect(Account.readAll).toHaveBeenCalledWith({ pluginUuid: account.pluginUuid });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual([
+      {
+        ...account,
+        createdAt: account.createdAt.toISOString(),
+        updatedAt: account.updatedAt.toISOString(),
+      },
+    ]);
+  });
+
   test('GET /api/plugin/:pluginUuid/account/:nativeId', async () => {
     const createdAt = new Date();
     const account = {
@@ -880,6 +908,66 @@ describe('REST API', () => {
       createdAt: log.createdAt.toISOString(),
       updatedAt: log.updatedAt.toISOString(),
     });
+  });
+
+  test('GET /api/plugin/:pluginUuid/log', async () => {
+    const createdAt = new Date();
+    const log = {
+      id: 1,
+      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      accountUuid: '1d47affb-74b9-42cc-920b-c97908064a79',
+      createdAt,
+      updatedAt: createdAt,
+      nativeLocation: 'foo',
+    };
+
+    Log.readAll.mockImplementationOnce(async () => [log]);
+
+    const res = await request(await appPromise)
+      .get(`/api/plugin/${log.pluginUuid}/log`)
+      .send();
+
+    expect(Log.readAll).toHaveBeenCalledWith({ pluginUuid: log.pluginUuid });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual([
+      {
+        ...log,
+        createdAt: log.createdAt.toISOString(),
+        updatedAt: log.updatedAt.toISOString(),
+      },
+    ]);
+  });
+
+  test('GET /api/plugin/:pluginUuid/log with time range', async () => {
+    const createdAt = new Date();
+    const log = {
+      id: 1,
+      pluginUuid: '7224835f-a10b-44d3-94b2-959580a327cf',
+      accountUuid: '1d47affb-74b9-42cc-920b-c97908064a79',
+      createdAt,
+      updatedAt: createdAt,
+      nativeLocation: 'foo',
+    };
+
+    Log.readAll.mockImplementationOnce(async () => [log]);
+
+    const res = await request(await appPromise)
+      .get(`/api/plugin/${log.pluginUuid}/log?earliest=${+createdAt}&latest=${+createdAt}`)
+      .send();
+
+    expect(Log.readAll).toHaveBeenCalledWith({
+      pluginUuid: log.pluginUuid,
+      earliest: createdAt,
+      latest: createdAt,
+    });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual([
+      {
+        ...log,
+        createdAt: log.createdAt.toISOString(),
+        updatedAt: log.updatedAt.toISOString(),
+      },
+    ]);
   });
 
   test('GET /api/plugin/:pluginUuid/log/:nativeLocation', async () => {
