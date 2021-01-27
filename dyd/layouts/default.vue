@@ -1,81 +1,83 @@
 <template>
-  <v-app dark>
-    <v-navigation-drawer v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" fixed app>
-      <v-list>
-        <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact>
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
+  <v-app dark class="keep">
+    <v-app-bar app clipped-left color="grey darken-3">
+      <v-app-bar-nav-icon @click="drawer = !drawer" />
+      <span class="title ml-3 mr-5"> <span class="font-weight-light">Delete Your</span> Data</span>
+      <!--
+      <v-text-field
+        solo-inverted
+        flat
+        hide-details
+        label="Search"
+        prepend-inner-icon="mdi-magnify"
+        v-model="searchTerm"
+        @keyup="searchPlugin"
+      />
+        -->
+      <v-spacer />
+    </v-app-bar>
+    <v-navigation-drawer v-model="drawer" app clipped color="grey lighten-3">
+      <v-list dense class="grey lighten-3">
+        <template v-for="(item, i) in items">
+          <v-row v-if="item.heading" :key="i" align="center">
+            <v-col cols="6">
+              <v-subheader v-if="item.heading" class="black--text">
+                {{ item.heading }}
+              </v-subheader>
+            </v-col>
+            <v-col cols="6" class="text-right">
+              <v-btn small text>edit</v-btn>
+            </v-col>
+          </v-row>
+          <v-divider v-else-if="item.divider" :key="i" />
+          <v-list-item v-else :key="i" :to="item.url">
+            <v-list-item-action>
+              <v-icon class="black--text">{{ item.icon }}</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title class="black--text">
+                {{ item.text }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" fixed app>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="clipped = !clipped">
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="fixed = !fixed">
-        <v-icon>mdi-minus</v-icon>
-      </v-btn>
-      <v-toolbar-title v-text="title" />
-      <v-spacer />
-      <v-btn icon @click.stop="rightDrawer = !rightDrawer">
-        <v-icon>mdi-menu</v-icon>
-      </v-btn>
-    </v-app-bar>
     <v-main>
       <v-container>
         <nuxt />
       </v-container>
     </v-main>
-    <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
-      <v-list>
-        <v-list-item @click.native="right = !right">
-          <v-list-item-action>
-            <v-icon light>
-              mdi-repeat
-            </v-icon>
-          </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-footer :fixed="fixed" app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
-    </v-footer>
   </v-app>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      clipped: false,
-      drawer: false,
-      fixed: false,
-      items: [
-        {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/',
-        },
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire',
-        },
-      ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js',
-    };
+  data: () => ({
+    drawer: null,
+    // searchTerm: '',
+    items: [
+      { icon: 'mdi-puzzle', text: 'Plugin', url: '/plugins' },
+      { divider: true },
+      { icon: 'mdi-account', text: 'Account', url: '/accounts' },
+      { divider: true },
+      { icon: 'mdi-inbox-multiple', text: 'Log', url: '/log' },
+      { divider: true },
+      { icon: 'mdi-security', text: 'Token', url: '/tokens' },
+      { divider: true },
+      { icon: 'mdi-lock-open', text: 'Access', url: '/access' },
+    ],
+  }),
+  methods: {
+    // searchPlugin() {
+    //   alert(this.searchTerm);
+    // },
   },
 };
 </script>
+
+<style>
+.keep .v-navigation-drawer__border {
+  display: none;
+}
+</style>

@@ -52,7 +52,6 @@ import { createNamespacedHelpers } from 'vuex';
 const { mapState, mapActions } = createNamespacedHelpers('tokens');
 
 export default {
-  layout: 'crud',
   data: () => ({
     headers: [
       { text: 'UUID', value: 'uuid', align: 'start' },

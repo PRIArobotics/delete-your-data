@@ -81,7 +81,6 @@ const { mapState: mapPluginState } = createNamespacedHelpers('plugins');
 const { mapState: mapTokenState } = createNamespacedHelpers('tokens');
 
 export default {
-  layout: 'crud',
   data: () => ({
     headers: [
       { text: 'Token', value: 'description', align: 'start' },

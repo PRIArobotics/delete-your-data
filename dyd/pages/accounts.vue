@@ -78,7 +78,6 @@ const { mapState, mapActions } = createNamespacedHelpers('accounts');
 const { mapState: mapPluginState } = createNamespacedHelpers('plugins');
 
 export default {
-  layout: 'crud',
   data: () => ({
     headers: [
       { text: 'Native ID', value: 'nativeId', align: 'start' },

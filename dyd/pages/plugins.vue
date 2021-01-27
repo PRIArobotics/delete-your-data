@@ -80,7 +80,6 @@ import { createNamespacedHelpers } from 'vuex';
 const { mapState, mapActions } = createNamespacedHelpers('plugins');
 
 export default {
-  layout: 'crud',
   data: () => ({
     headers: [
       { text: 'Name', value: 'name', align: 'start' },

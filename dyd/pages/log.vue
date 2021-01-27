@@ -88,7 +88,6 @@ const { mapState, mapActions } = createNamespacedHelpers('log');
 const { mapState: mapAccountState } = createNamespacedHelpers('accounts');
 
 export default {
-  layout: 'crud',
   data: () => ({
     headers: [
       { text: 'Created', value: 'createdAt', align: 'start' },
