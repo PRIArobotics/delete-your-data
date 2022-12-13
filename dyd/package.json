@@ -19,7 +19,7 @@
     "bcrypt": "^5.0.0",
     "cross-env": "^5.2.0",
     "dyd-axios-rest-plugin": "file:../dyd-axios-rest-plugin",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "fs": "^0.0.1-security",
     "httperrors": "^2.3.0",
     "nuxt": "~2.12.0",
